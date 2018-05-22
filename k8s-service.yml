@@ -1,0 +1,68 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: $K8S_NAMESPACE
+  labels:
+    name: $K8S_NAMESPACE
+---
+kind: Secret
+apiVersion: v1
+data:
+  .dockercfg: $K8S_DOCKERCFG
+type: kubernetes.io/dockercfg
+metadata:
+  name: srvebiz01-docker
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: $CONTAINER_IMAGE_NAME
+  labels:
+    app: $CONTAINER_IMAGE_NAME
+spec:
+  ports:
+    - port: $CONTAINER_SERVICE_PORT
+      targetPort: $CONTAINER_TARGET_PORT
+  selector:
+    app: $CONTAINER_IMAGE_NAME
+  #type: ClusterIP
+  type: LoadBalancer
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: $CONTAINER_IMAGE_NAME
+  labels:
+    app: $CONTAINER_IMAGE_NAME
+spec:
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: $CONTAINER_IMAGE_NAME
+        tier: frontend
+    spec:
+      containers:
+      - image: $CONTAINER_TAG
+        name: $CONTAINER_IMAGE_NAME
+        ports:
+        - containerPort: $CONTAINER_TARGET_PORT
+          name: $CONTAINER_IMAGE_NAME
+        env:
+          - name: SPRING_PROFILES_ACTIVE
+            value: $CONTAINER_ENV
+      imagePullSecrets:
+      - name: srvebiz01-docker
+---        
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: $CONTAINER_IMAGE_NAME
+spec:
+  scaleTargetRef:
+    kind: Deployment
+    name: $CONTAINER_IMAGE_NAME
+  minReplicas: $CONTAINER_MIN_REPLICAS
+  maxReplicas: $CONTAINER_MAX_REPLICAS
+  targetCPUUtilizationPercentage: $CONTAINER_CPU

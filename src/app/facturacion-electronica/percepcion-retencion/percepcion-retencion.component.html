@@ -1,0 +1,25 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="card">
+          <div class="card-header card-header-text" data-background-color="blue">
+            <h4 class="card-title">{{titulo | translate}}</h4>
+          </div>
+          <div class="card-content">
+            <div class="row">
+              <div class="col-xs-12 col-sm-3 col-md-3 col-lg-2">
+                <select name="cmbTiposComprobante" class="form-control" (change)="cargarComprobante()" [(ngModel)]="comprobanteSeleccionadoValor" [disabled]="!(mostrarCombo | async)">
+                  <option *ngFor="let tipoComprobante of tiposDeComprobante | async" [ngValue]="tipoComprobante"> {{tipoComprobante.descripcionLarga | translate}} </option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <router-outlet></router-outlet>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

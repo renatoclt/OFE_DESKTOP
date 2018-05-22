@@ -1,0 +1,53 @@
+<div [@dialog] *ngIf="visible"  class="dialog cardborder"  style="padding: 14px 5px;">
+
+        <div class="container-fluid ">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card ">
+                        <div class="card-header card-header-icon" data-background-color="blue">
+                            <i class="material-icons">assignment</i>
+                        </div>
+                        <h3 class="card-title">{{'bitacora' | translate}}</h3>
+                        <div class="card-content ">
+
+                            <div class="content table-responsive ">
+                              <table class="table">
+                                    <thead>
+                                            <tr>
+                                                <th>{{'fecha' | translate}}</th>
+                                                <th data-sortable="true">{{'hora' | translate}}</th>
+                                                <th>{{'usuario' | translate}}</th>
+                                                <th>{{'descripcion' | translate}}</th>
+                                                <th>Detalle</th>
+                                              </tr>
+                                          </thead>
+                                        <tbody>
+
+                                        <tr *ngFor="let bitacora of listaBitacoras | orderBy: order:true" >
+                                            <td>{{bitacora.fechaCreacion |date:'dd/MM/yyyy' }}</td>
+                                            <td>{{bitacora.fechaCreacion| date:'h:mm:ss' }}</td>
+                                            <td>{{bitacora.usuarioCreacion}}</td>
+                                            <td rel="tooltip" title="{{bitacora.vcObservacionEvento}}" data-placement="left">{{bitacora.vcDescripcionEvento}}</td>
+                                            <td>
+                                              <button id="btnAcciones" class="btn btn-sm btn-simple btn-icon btn-info" rel="tooltip" title="Ver" data-placement="left"
+                                                      (click)="verObservacionEvento(bitacora.vcObservacionEvento)">
+                                                <i class="material-icons">visibility</i>
+                                              </button>
+                                            </td>
+
+                                        </tr>
+
+                              </table>
+                            </div>
+                            <div class="form-footer text-right">
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-default blue" (click)="close()" data-dismiss="modal" data-background-color="blue">{{'cerrar' | translate}}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<div *ngIf="visible" class="overlay" (click)="close()"></div>

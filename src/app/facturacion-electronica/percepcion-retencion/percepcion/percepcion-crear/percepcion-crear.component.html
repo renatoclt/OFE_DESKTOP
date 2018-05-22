@@ -1,0 +1,198 @@
+<div class="card">
+  <div class="card-header card-header-text" data-background-color="blue">
+    <h4 class="card-title">{{titulo | translate}}</h4>
+  </div>
+  <div class="card-content">
+    <form [formGroup]="percepcionFormGroup" autocomplete="off">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group label-floating">
+            <label class="control-label">{{'serie' | translate}}<span class="star">*</span></label>
+            <select id="cmbserie" name="cmbserie" formControlName="cmbserie" class="form-control" [compareWith]="compararSerie">
+              <option *ngFor="let serie of series | async" [ngValue]="serie"> {{serie.serie}}</option>
+            </select>
+            <div class="row" *ngIf="!percepcionFormGroup.get('cmbserie').valid && percepcionFormGroup.get('cmbserie').touched">
+              <div class="col-md-12">
+                <span *ngIf="percepcionFormGroup.controls['cmbserie'].hasError('required')"
+                      class="text-danger">{{'campoRequerido' | translate}}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-group label-floating">
+            <label class="control-label">{{'fechaPago' | translate}} <span class="star">*</span> </label>
+            <input id="datefechapago" formControlName="datefechapago" autocomplete="off" type="text" class="form-control" datepicker/>
+            <div *ngIf="!percepcionFormGroup.get('datefechapago').valid && percepcionFormGroup.get('datefechapago').touched">
+              <div class="row">
+                <div class="col-md-12">
+                <span *ngIf="percepcionFormGroup.controls['datefechapago'].hasError('required')"
+                      class="text-danger">{{'campoRequerido' | translate}}</span>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <span *ngIf="percepcionFormGroup.controls['datefechapago'].hasError('errorFecha')" class="text-danger">
+                    {{percepcionFormGroup.controls['datefechapago'].getError('errorFecha') | translate}}
+                  </span>
+                  <span *ngIf="percepcionFormGroup.controls['datefechapago'].hasError('errorFecha')"
+                        class="text-danger">{{percepcionFormGroup.controls['datefechapago'].getError('errorFecha') | translate}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group label-floating">
+            <label class="control-label">{{'tipoMoneda' | translate}} <span class="star">*</span> </label>
+            <input id="txttipomoneda"  formControlName="txttipomoneda" class="form-control" type="text">
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group label-floating">
+            <label class="control-label"> <i class="material-icons" style="font-size: 1.5rem;
+                  margin-right: 0.5rem;">search</i> {{'ruc' | translate}} <span class="star">*</span></label>
+            <input rucDirective id="txtruc" formControlName="txtruc" autocomplete="off" class="form-control" type="text"
+                   (keyup)="busquedaruc($event)">
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group label-floating">
+            <label class="control-label"> <i class="material-icons" style="font-size: 1.5rem;
+                  margin-right: 0.5rem;">search</i>{{'razonSocial' | translate}}<span class="star">*</span></label>
+            <input ng2-auto-complete
+                   type="text"
+                   autocomplete="off"
+                   id="razonsocial"
+                   formControlName="razonsocial"
+                   [source]="listarOrganizacionesDeAutcompletado.bind(this)"
+                   [list-formatter]="autocompleListFormatter"
+                   [value-formatter]="autocompleListFormatter"
+                   [loading-text]="'cargando' | translate"
+                   (valueChanged)="cambioSeleccionEntidadEmisora($event)"
+                   (change)="cambioBusquedaAutocompleteEntidadEmisora()"
+                   min-chars=1
+                   [no-match-found-text]="'noSeEncontraronResultados' | translate"
+                   class="form-control">
+            <span
+              *ngIf="!percepcionFormGroup.get('razonsocial').valid && percepcionFormGroup.get('razonsocial').touched">
+                            <span *ngIf="percepcionFormGroup.controls['razonsocial'].hasError('required')"
+                                  class="text-danger">{{'campoRequerido' | translate}}</span>
+                          </span>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="form-group label-floating">
+            <label class="control-label">{{'txtcorreo' | translate}} <span class="star">*</span> </label>
+            <input id="txtcorreo" formControlName="txtcorreo" class="form-control" autocomplete="off" type="text">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-8">
+          <div class="form-group label-floating">
+            <label class="control-label">{{'txtdireccionfiscal' | translate}} <span class="star">*</span> </label>
+            <input id="txtdireccionfiscal" formControlName="txtdireccionfiscal" autocomplete="off" class="form-control" type="text">
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group label-floating">
+            <label class="control-label">{{'porcentajePercepcion' | translate}} <span class="star">*</span> </label>
+            <select id="cmbPorcentajePercepcion" name="cmbPorcentajePercepcion" formControlName="cmbPorcentajePercepcion" class="form-control"
+                    (change)="cambioPorcentajePercepcion()"
+                    [compareWith]="compararParametros">
+              <option [ngValue]="null" disabled>{{'seleccioneUnTipoDePercepcion' | translate}}</option>
+              <option *ngFor="let tipoPercepcion of tiposPercepcion | async" [ngValue]="tipoPercepcion"> {{tipoPercepcion.descripcion_dominio}}</option>
+            </select>
+            <div class="row" *ngIf="!percepcionFormGroup.get('cmbPorcentajePercepcion').valid && percepcionFormGroup.get('cmbPorcentajePercepcion').touched">
+              <div class="col-md-12">
+                <span *ngIf="percepcionFormGroup.controls['cmbPorcentajePercepcion'].hasError('required')"  class="text-danger">{{'campoRequerido' | translate}}</span>
+              </div>
+              <div class="col-md-12">
+                  <span *ngIf="percepcionFormGroup.get('cmbPorcentajePercepcion').hasError('seleccioneUnTipoDePercepcion')"
+                        class="text-danger">{{'seleccioneUnTipoDePercepcion' | translate}}
+                  </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <div class="card">
+      <div class="card-header card-header-icon" data-background-color="blue">
+        <i class="material-icons">list</i>
+      </div>
+      <div class="row"><h3>{{'listaItems' | translate}}</h3></div>
+      <div class="row"><p>&nbsp;</p></div>
+      <nav class="navbar navbar-info" role="navigation"></nav>
+      <div class="card-content">
+        <app-data-table #tablaNormal
+                        (iniciarData)="iniciarData($event)"
+                        (accion)="ejecutarAccion($event)"
+                        (eliminar)="eliminar($event)"
+                        (agregar)="agregarItem($event)"
+                        [idTabla]="'tabla1'"
+                        [ordenarPorElCampo]="ordenarPorElCampo"
+                        [ordenarAscendente]="true"
+                        [columnas]="columnasTabla"
+                        [acciones]="accionesTabla"
+                        [tipoAccion]="tipoAccion"
+                        [habilitarAcciones]="true"
+                        [habilitarCheckBox]="true"
+                        [habilitarAgregar]="true"
+                        [habilitarEliminar]="true"></app-data-table>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <form [formGroup]="percepcionFormGroup">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="col-md-9">&nbsp;</div>
+                <div class="col-md-3">
+                  <div class="form-group label-floating">
+                    <label class="control-label">{{'total' | translate}}</label>
+                    <input type="text" id="txttotal" formControlName="txttotal" class="form-control">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+
+        </div>
+      </div>
+    </div>
+    <div class="row"><p> &nbsp;</p></div>
+    <div class="row">
+      <div class="col-md-12">
+        <form [formGroup]="percepcionFormGroup">
+          <div class="label-floating">
+            <label class="control-label">{{'observaciones' | translate}}</label>
+            <input id="txtobservacion" formControlName="txtobservacion" class="form-control" type="text">
+            <span
+              *ngIf="!percepcionFormGroup.get('txtobservacion').valid && percepcionFormGroup.get('txtobservacion').touched">
+                            <span *ngIf="percepcionFormGroup.controls['txtobservacion'].hasError('maxLength')"
+                                  class="text-danger">{{'maximoCaracteres' | translate: {digito: 500} }}</span>
+                          </span>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="row"><p> &nbsp;</p></div>
+    <div class="row">
+      <div class="col-md-12" align="right">
+        <button type="submit" class="btn btn-default" (click)=" vistaprevia()"
+                [disabled]="!(percepcionFormGroup.valid && validarDataTable())">{{'vistaPrevia' | translate}}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+

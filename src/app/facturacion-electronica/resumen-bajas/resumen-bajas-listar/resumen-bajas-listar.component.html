@@ -1,0 +1,129 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="row col-md-12">
+      <div class="card">
+        <div class="card-header card-header-text" data-background-color="blue">
+          <h4 class="card-title">{{'consultarResumenBajas' | translate}}</h4>
+        </div>
+        <div class="card-content">
+          <form [formGroup]="resumenBajasFormGroup"  autocomplete="off">
+            <div class="row">
+              <div class="col-xs-12 col-sm-4 col-md-4">
+                <div class="form-group label-floating">
+                  <label class="control-label">{{ 'tipoComprobante' | translate}} <span class="star">*</span></label>
+                  <select name="cmbtipodoc" id="tipoComprobanteRegistro" formControlName="tipoComprobanteRegistro" (change)="cambioDocumentos()" class="form-control">
+                    <option  *ngFor="let tipoComprobante of tiposComprobantes | async"[value]="tipoComprobante.codigo"> {{tipoComprobante.descripcionLarga}} </option>
+                  </select>
+                </div>
+                <span
+                  *ngIf="!resumenBajasFormGroup.get('tipoComprobanteRegistro').valid && resumenBajasFormGroup.get('tipoComprobanteRegistro').touched">
+                  <span *ngIf="resumenBajasFormGroup.controls['tipoComprobanteRegistro'].hasError('required')"
+                        class="text-danger">{{'campoRequerido' | translate}}</span>
+                </span>
+              </div>
+              <!--<div class="col-xs-12 col-sm-4 col-md-4" >-->
+                <!--<div class="form-group label-floating">-->
+                  <!--<label class="control-label">{{'estado' | translate}}<span class="star">*</span></label>-->
+                  <!--<select name="cmbestado" id="estado" formControlName="estado" class="form-control" >-->
+                    <!--<option *ngFor="let estado of estados | async"[value]="estado.idEstadoComprobante"> {{estado.descripcion}} </option>-->
+                  <!--</select>-->
+                <!--</div>-->
+              <!--</div>-->
+              <div class="col-xs-12 col-sm-4 col-md-4" align="right">
+                <div class="form-group label-floating">
+                  <label class="control-label">{{'ticket' | translate}} </label>
+                  <input ticketDirective id="ticket" formControlName="ticket" type="text" class="form-control">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-12 col-sm-4 col-md-4">
+                <div class="form-group label-floating">
+                  <label class="control-label">{{'fechaEmisionDel' | translate}}<span class="star">*</span> </label>
+                  <input type="text" id="fechaEmisionDel" formControlName="fechaEmisionDel" class="form-control"  name="fechaEmisionDel" datepicker />
+                </div>
+                <span class="text-danger"
+                      *ngIf="resumenBajasFormGroup.errors && resumenBajasFormGroup.errors.errorFechaEmision">
+                  {{resumenBajasFormGroup.errors.errorFechaEmision | translate}}
+                </span>
+                <span
+                  *ngIf="!resumenBajasFormGroup.get('fechaEmisionDel').valid && resumenBajasFormGroup.get('fechaEmisionDel').touched">
+                  <span *ngIf="resumenBajasFormGroup.controls['fechaEmisionDel'].hasError('required')"
+                        class="text-danger">{{'campoRequerido' | translate}}</span>
+                </span>
+              </div>
+              <div class="col-xs-12 col-sm-4 col-md-4">
+                <div class="form-group label-floating">
+                  <label class="control-label">{{'al' | translate}} <span class="star">*</span></label>
+                  <input type="text" id="fechaEmisionAl" formControlName="fechaEmisionAl" class="form-control"  name="fechaEmisionAl" datepicker />
+                </div>
+                <span
+                  *ngIf="!resumenBajasFormGroup.get('fechaEmisionAl').valid && resumenBajasFormGroup.get('fechaEmisionAl').touched">
+                  <span *ngIf="resumenBajasFormGroup.controls['fechaEmisionAl'].hasError('required')"
+                        class="text-danger">{{'campoRequerido' | translate}}</span>
+                </span>
+              </div>
+            </div>
+            <!--<div class="row">-->
+              <!--<div class="col-xs-12 col-sm-4 col-md-4">-->
+                <!--<div class="form-group label-floating">-->
+                  <!--<label class="control-label">{{'fechaDeBajaDel' | translate}}</label>-->
+                  <!--<input type="text" id="fechaBajaDel" formControlName="fechaBajaDel" class="form-control"  name="fechaBajaDel" datepicker />-->
+                <!--</div>-->
+                <!--<span class="text-danger"-->
+                      <!--*ngIf="resumenBajasFormGroup.errors && resumenBajasFormGroup.errors.errorFechaBaja">-->
+                  <!--{{resumenBajasFormGroup.errors.errorFechaBaja | translate}}-->
+                <!--</span>-->
+              <!--</div>-->
+              <!--<div class="col-xs-12 col-sm-4 col-md-4" align="right">-->
+                <!--<div class="form-group label-floating">-->
+                  <!--<label class="control-label">{{'al' | translate}}</label>-->
+                  <!--<input type="text" id="fechaBajaAl" formControlName="fechaBajaAl" class="form-control"  name="fechaBajaAl" datepicker />-->
+                <!--</div>-->
+              <!--</div>-->
+              <!--<div class="col-xs-12 col-sm-4 col-md-4" align="right"></div>-->
+            <!--</div>-->
+            <div class="row">
+              <div class="col-xs-12 col-sm-12 col-sm-12">
+                <div class="form-group pull-right">
+                  <button type="button" class="btn btn-default" (click)="buscarResumenBajas()" [disabled]="!resumenBajasFormGroup.valid">{{'buscar' | translate}}</button>
+                  <button type="button" class="btn btn-default" (click)= "limpiar()">{{'limpiar' | translate}}</button>
+                </div>
+              </div>
+            </div>
+          </form>
+          <div class="row"><p>&nbsp;</p></div>
+          <div class="card">
+            <div class="card-header card-header-icon" data-background-color="blue">
+              <i class="material-icons">list</i>
+            </div>
+
+            <div class="row"><h3>{{'resumenBajas' | translate}}</h3></div>
+            <div class="row"><p> &nbsp; </p></div>
+            <nav class="navbar navbar-info" role="navigation"></nav>
+            <div class="row"><p> &nbsp; </p></div>
+
+            <div class="row">
+              <div class="col-md-12">
+                <app-data-table #tablaResumenBajas
+                                [idTabla]="'tablaResumenBajas'"
+                                [columnas]="columnasTabla"
+
+                                [acciones]="accionesEnCabecera"
+                                (accion)="ejecutarAccionComoAtributo($event)"
+                                [ordenarPorElCampo]="'tsFechaemision'"
+                                [usaServicio]="true"
+                                [servicio]="_comprobantesService"
+                                [parametros]="parametrosResumenBajas"
+                                [tipoAtributoServicio]="tipoAtributoResumenBajas"
+                                [urlServicio]="urlResumenBajasService"
+                                >
+                </app-data-table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

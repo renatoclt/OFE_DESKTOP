@@ -1,0 +1,25 @@
+<div class="row">
+  <div class="col-md-12">
+    <app-data-table
+      #tablaDetalle
+      [idTabla]="'tablaDetalle'"
+      [columnas]="columnasTabla"
+      [ordenarPorElCampo]="ordenarPorElCampo"
+      [nombreIdDelItem]="nombreIdDelItem"
+
+      [acciones]="acciones"
+      [tipoAccion]="tipoAccion"
+      [habilitarAcciones]="true"
+      (iniciarData)="iniciarData($event)"
+      (accion)="ejecutarAccion($event)"
+      [pintarFilas]="pintarFilas"
+      [nombreCampoParaPintarFilas]="nombreCampoParaPintarFilas"
+    >
+    </app-data-table>
+  </div>
+</div>
+<app-tipo-nota-debito-editar-item
+  #editarItemComponent
+  [idModal]="idModal"
+>
+</app-tipo-nota-debito-editar-item>

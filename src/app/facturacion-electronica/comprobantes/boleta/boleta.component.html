@@ -1,0 +1,304 @@
+<div class="container-fluid">
+    <div class="row">
+      <div >
+        <div class="card">
+          <div class="card-header card-header-text" data-background-color="blue">
+            <h4 class="card-title">{{'crearBoleta' | translate}}</h4>
+          </div>
+          <div class="card-content">
+            <form [formGroup]="boletaFormGroup" (ngSubmit)="irVistaPrevia()" novalidate autocomplete="off">
+              <div class="row">
+                <div class="col-xs-12 col-sm-6 col-md-4">
+                  <div class="form-group label-floating">
+                    <label id="lblSerie" class="control-label">{{'serie' | translate}}
+                      <span class="star">*</span>
+                    </label>
+                    <select id="cmbSerie" name="cmbSerie" formControlName="cmbSerie" class="form-control">
+                      <option *ngFor="let serie of series" [value]="serie.idSerie">
+                        {{serie.serie}}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <!-- <div class="col-xs-12 col-sm-6 col-md-4">
+                  <div class="form-group label-floating">
+                    <label id="lblRuc" name="lblRuc" class="control-label">
+                      <i class="material-icons">search</i>{{'ruc' | translate}}
+                      <span class="star">*</span>
+                    </label>
+                    <input rucDirective type="text" name="txtRuc" id="txtRuc" formControlName="txtRuc"
+                    autocomplete="off" class="form-control" (keyup)="busquedaruc($event)">
+                  </div>
+                </div> -->
+                <div class="col-xs-12 col-sm-6 col-md-4">
+                  <div class="form-group label-floating">
+                    <label id="lblSerie" class="control-label">{{'tipoDocumento' | translate}}
+                      <span class="star">*</span>
+                    </label>
+                    <select id="cmbTipoDocumento"
+                          name="cmbTipoDocumento"
+                          formControlName="cmbTipoDocumento"
+                          class="form-control"
+                          (change)="setFormatoDocumento()">
+                    <option *ngFor="let tipoDocumento of tiposDocumentos | async" [value]="tipoDocumento.codigo">
+                      {{tipoDocumento.descripcionLarga}}
+                    </option>
+                  </select>
+                  </div>
+                </div>
+
+                <!-- <div class="col-sm-3" *ngIf="flagTipoDocumento"> -->
+                <div class="col-sm-3">
+                  <div class="form-group label-floating">
+                    <label class="control-label"><i class="material-icons">search</i>{{'numeroDocumento' | translate}}</label>
+                    <input tipoDocumentoDirective 
+                            [size]="tamanioTipoDocumento" [formato]="formatoTipoDocumento"
+                            id="txtNumeroDocumento" type="text" name="txtNumeroDocumento"
+                            formControlName="txtNumeroDocumento" class="form-control"
+                            autocomplete="off" (keyup)="busquedaruc($event)"
+                            >
+                  </div>
+                </div>
+
+                <!-- <div class="col-sm-3" *ngIf="!flagTipoDocumento">
+                  <div class="form-group label-floating">
+                    <label class="control-label"><i class="material-icons">search</i>{{'numeroDocumento' | translate}}</label>
+                    <input tipoDocumentoDirective 
+                            [size]="tamanioTipoDocumento" [formato]="formatoTipoDocumento"
+                            id="txtNumeroDocumento" type="text" name="txtNumeroDocumento"
+                            formControlName="txtNumeroDocumento" class="form-control"
+                            >
+                  </div>
+                </div> -->
+              </div>
+
+              <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-4">
+                  <div class="form-group label-floating">
+                    <label id="lblRazonSocial" name="lblRazonSocial" class="control-label">{{'razonSocial' | translate}}
+                      <span class="star">*</span>
+                    </label>
+                    <input #inputRazonSocial type="text" id="txtRazonSocial" name="txtRazonSocial" formControlName="txtRazonSocial" class="form-control">
+                  </div>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-4">
+                  <div class="form-group label-floating">
+                    <label id="lblDireccionFiscal" name="lblDireccionFiscal" class="control-label">{{'txtdireccionfiscal' | translate}}
+                      <span class="star">*</span></label>
+                    <input type="text" id="txtDireccionFiscal" name="txtDireccionFiscal" formControlName="txtDireccionFiscal" class="form-control">
+                  </div>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-4">
+                  <div class="form-group label-floating">
+                    <label id="lblCorreo" name="lblCorreo" class="control-label">{{'txtcorreo' | translate}}
+                      <span class="star">*</span>
+                    </label>
+                    <input type="email" id="txtCorreo" name="txtCorreo" formControlName="txtCorreo" class="form-control"
+                    title="Please provide only a Best Startup Ever corporate email address">
+                    <span *ngIf="!boletaFormGroup.get('txtCorreo').valid && (boletaFormGroup.get('txtCorreo').touched)">
+                        <span *ngIf="boletaFormGroup.controls['txtCorreo'].hasError('required')" class="text-danger">Correo es requerido.</span>
+                        <span *ngIf="boletaFormGroup.controls['txtCorreo'].hasError('pattern')" class="text-danger">Formato correo inválido.</span>
+                    </span>
+                  </div>
+                </div>
+                <!-- <div class="col-xs-12 col-sm-6 col-md-4">
+                  <div class="form-group label-floating">
+                    <label id="lblDetraccion" name="lblDetraccion" class="control-label">{{'detraccion' | translate}}</label>
+                    <input precioDirectiva type="text" id="txtDetraccion" name="txtDetraccion" formControlName="txtDetraccion" class="form-control"
+                      (blur)="calcularMontos()">
+                  </div>
+                </div> -->
+              </div>
+              <div class="row">
+                <div class="col-xs-12 col-sm-6 col-md-4">
+                  <div class="form-group label-floating">
+                    <label id="lblFechaEmision" name="lblFechaEmision" class="control-label">{{'fechaEmision' | translate}}
+                      <span class="star">*</span>
+                    </label>
+                    <input type="text" id="txtFechaEmision" name="txtFechaEmision" formControlName="txtFechaEmision" class="form-control" datepicker
+                      minlength="10" min="10" maxlength="10" max="10" />
+                      <span *ngIf="boletaFormGroup.controls['txtFechaEmision'].hasError('errorFecha')" class="text-danger">{{boletaFormGroup.controls['txtFechaEmision'].getError('errorFecha') | translate}}</span>
+                      <!-- <span class="text-danger" *ngIf="boletaFormGroup.errors && boletaFormGroup.errors.errorFecha">{{boletaFormGroup.errors.errorFecha | translate}}</span> -->
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-4">
+                  <div class="form-group label-floating">
+                    <label id="lblFechaVencimiento" name="lblFechaVencimiento" class="control-label">{{'fechaVencimiento' | translate}}
+                      <span class="star">*</span>
+                    </label>
+                    <input type="text" id="txtFechaVencimiento" name="txtFechaVencimiento" formControlName="txtFechaVencimiento" class="form-control"
+                      datepicker minlength="10" min="10" maxlength="10" max="10" />
+                    <span *ngIf="boletaFormGroup.controls['txtFechaVencimiento'].hasError('errorFechaMayorAHoy')" class="text-danger">{{boletaFormGroup.controls['txtFechaVencimiento'].getError('errorFechaMayorAHoy') | translate}}</span>
+                    <span *ngIf="flagRangoFechas" class="text-danger">{{errorRangoFecha}}</span>
+                    <span class="text-danger" *ngIf="boletaFormGroup.errors && boletaFormGroup.errors.errorFecha">{{boletaFormGroup.errors.errorFecha | translate}}</span>
+                  </div>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-4">
+                  <div class="form-group label-floating">
+                    <label id="lblMoneda" name="lblMoneda" class="control-label">{{'tipoMoneda' | translate}}
+                      <span class="star">*</span>
+                    </label>
+                    <select id="cmbMoneda" name="cmbMoneda" formControlName="cmbMoneda" class="form-control">
+                      <option *ngFor="let moneda of monedas | async" [value]="moneda.codigo">{{moneda.descripcionCorta}}</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-12 col-sm-6 col-md-4">
+                  <div class="form-group">
+                    <div class="checkbox">
+                      <label>
+                        <input type="checkbox" name="chkBoletaAnticipo" id="chkBoletaAnticipo" formControlName="chkBoletaAnticipo" [checked]="esBoletaAnticipo"
+                          (click)="seleccionBoletaAnticipo($event.target.checked)">{{'boletaAnticipo' | translate}}
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row ">
+                <!-- <div class="col-md-12 float-right"> -->
+                  <div class="col-xs-12 col-sm-12 col-md-6 col-lg-3 float-right">
+                    <button class="btn btn-default float-right" type="button" (click)="irDocumentoRelacionado()" [disabled]="esBoletaAnticipo">{{'documentoRelacionado' | translate}}</button>
+                  <!-- </div> -->
+                </div>
+              </div>
+
+
+                <div class="card">
+                  <div class="card-header card-header-icon" data-background-color="blue">
+                      <i class="material-icons">list</i>
+                  </div>
+                  <div class="row"><h3>{{'listaItems' | translate}}</h3></div>
+                  <div class="row"><p>&nbsp;</p></div>
+                  <nav class="navbar navbar-info" role="navigation"></nav>
+                  <div class="card-content">
+                    <app-data-table
+                      (iniciarData)="iniciarData($event)"
+                      (accion)="ejecutarAccion($event)"
+                      (eliminar)="eliminar($event)"
+                      (tipoProductoSeleccionado)="tipoProductoSeleccionado($event)"
+                      #otro
+                      [tipoBotonAgregar]="tipoBotonAgregar"
+                      [idTabla]="'tabla2'"
+                      [columnas]="columnasTabla"
+                      [acciones]="AccionesPrueba"
+                      [tipoAccion]="tipo"
+                      [habilitarAgregar]="true"
+                      [habilitarAcciones]="true"
+                      [habilitarCheckBox]="true"
+                      [habilitarFuncionalidadAgregar]="esBoletaAnticipo">
+                    </app-data-table>
+                  </div>
+
+                </div>
+
+              <!-- <div class="row" *ngIf="boleta.documentoReferencia">
+                <div class="col-md-12">
+                  <table class="table table-striped">
+                    <tbody>
+                      <tr *ngFor="let item of boleta.documentoReferencia">
+                        <td>
+                          {{item.nombreTipoDocumento + ' ' + item.serieDocumentoDestino + '-' + item.correlativoDocumentoDestino}}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div> -->
+
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group label-floating">
+                    <label class="control-label">{{'observaciones' | translate}}</label>
+                    <textarea class="form-control" id="txtObservaciones" name="txtObservaciones" formControlName="txtObservaciones" rows="3"></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row align-right">
+                <div class="col-xs-12 col-sm-4 col-md-4 ">
+                  <div class="form-group label-floating">
+                    <label id="lblOperacionesGrabadas" name="lblOperacionesGrabadas" class="control-label">{{'operacionesGravadas' | translate}}</label>
+                    <input type="text" id="txtOperacionesGrabadas" name="txtOperacionesGrabadas" formControlName="txtOperacionesGrabadas" class="form-control">
+                  </div>
+                </div>
+                <div class="col-xs-12 col-sm-4 col-md-4 ">
+                  <div class="form-group label-floating">
+                    <label id="lblOperacionesInafectas" name="lblOperacionesInafectas" class="control-label">{{'operacionesInafectas' | translate}}</label>
+                    <input type="text" id="txtOperacionesInafectas" name="txtOperacionesInafectas" formControlName="txtOperacionesInafectas"
+                      class="form-control">
+                  </div>
+                </div>
+                <div class="col-xs-12 col-sm-4 col-md-4 ">
+                  <div class="form-group label-floating">
+                    <label id="lblOperacionesExoneradas" name="lblOperacionesExoneradas" class="control-label">{{'operacionesExoneradas' | translate}}</label>
+                    <input type="text" id="txtOperacionesExoneradas" name="txtOperacionesExoneradas" formControlName="txtOperacionesExoneradas"
+                      class="form-control">
+                  </div>
+                </div>
+                <div class="col-xs-12 col-sm-4 col-md-4 ">
+                  <div class="form-group label-floating">
+                    <label id="lblTotalDescuentos" name="lblTotalDescuentos" class="control-label">{{'totalDescuentos' | translate}}</label>
+                    <input type="text" id="txtTotalDescuentos" name="txtTotalDescuentos" formControlName="txtTotalDescuentos" class="form-control">
+                  </div>
+                </div>
+                <div class="col-xs-12 col-sm-4 col-md-4 ">
+                  <div class="form-group label-floating">
+                    <label id="lblSumatoriaOtrosTributos" name="lblSumatoriaOtrosTributos" class="control-label">{{'sumatoriaOtrosTributos' | translate}}</label>
+                    <input precioDirectiva type="text" id="txtSumatoriaOtrosTributos" name="txtSumatoriaOtrosTributos" formControlName="txtSumatoriaOtrosTributos"
+                      class="form-control" (blur)="calcularMontos()">
+                  </div>
+                </div>
+                <div class="col-xs-12 col-sm-4 col-md-4 ">
+                  <div class="form-group label-floating">
+                    <label id="lblSumatoriaOtrosCargos" name="lblSumatoriaOtrosCargos" class="control-label">{{'sumatoriaOtrosCargos' | translate}}</label>
+                    <input precioDirectiva type="text" id="txtSumatoriaOtrosCargos" name="txtSumatoriaOtrosCargos" formControlName="txtSumatoriaOtrosCargos"
+                      class="form-control" (blur)="calcularMontos()">
+                  </div>
+                </div>
+                <div class="col-xs-12 col-sm-4 col-md-4 ">
+                  <div class="form-group label-floating">
+                    <label id="lblTotalAnticipos" name="lblTotalAnticipos" class="control-label">{{'totalAnticipos' | translate}}</label>
+                    <input type="text" id="txtTotalAnticipos" name="txtTotalAnticipos" formControlName="txtTotalAnticipos" class="form-control">
+                  </div>
+                </div>
+                <div class="col-xs-12 col-sm-4 col-md-4 ">
+                  <div class="form-group label-floating">
+                    <label id="lblSumatoriaIsc" name="lblSumatoriaIsc" class="control-label">{{'sumatoriaIsc' | translate}}</label>
+                    <input type="text" id="txtSumatoriaIsc" name="txtSumatoriaIsc" formControlName="txtSumatoriaIsc" class="form-control">
+                  </div>
+                </div>
+                <div class="col-xs-12 col-sm-4 col-md-4 ">
+                  <div class="form-group label-floating">
+                    <label id="lblSumatoriaIgv" name="lblSumatoriaIgv" class="control-label">{{'sumatoriaIgv' | translate}}</label>
+                    <input type="text" id="txtSumatoriaIgv" name="txtSumatoriaIgv" formControlName="txtSumatoriaIgv" class="form-control">
+                  </div>
+                </div>
+                <div class="col-xs-12 col-sm-4 col-md-4 ">
+                  <div class="form-group label-floating">
+                    <label id="lblSubTotal" name="lblSubTotal" class="control-label">{{'subTotal' | translate}}</label>
+                    <input type="text" id="txtSubTotal" name="txtSubTotal" formControlName="txtSubTotal" class="form-control">
+                  </div>
+                </div>
+                <div class="col-xs-12 col-sm-4 col-md-4 ">
+                  <div class="form-group label-floating">
+                    <label id="lblImporteTotal" name="lblImporteTotal" class="control-label">{{'importeTotal' | translate}}</label>
+                    <input type="text" id="txtImporteTotal" name="txtImporteTotal" formControlName="txtImporteTotal" class="form-control">
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                  <div class="col-md-12" align="right">
+                    <button type="submit" class="btn btn-default" [disabled]="!(flagVistaPrevia && boletaFormGroup.valid)">{{'vistaPrevia' | translate}}</button>
+                    <!-- <button type="submit" class="btn btn-default btn-block">{{'vistaPrevia' | translate}}</button> -->
+                    <!-- <button type="button" class="btn btn-default btn-block" (click)="probarBotonVistaPrevia()">Probar Vista Previa</button> -->
+                  </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

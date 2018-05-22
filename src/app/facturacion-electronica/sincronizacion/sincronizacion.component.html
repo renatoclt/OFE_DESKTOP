@@ -1,0 +1,48 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header card-header-text" data-background-color="blue">
+                        <h4 class="card-title">{{'sincronizacion' | translate}}</h4>
+                    </div>
+                    <div class="card-content">
+                        <div class="col-lg-12">
+                            <div class="card">
+                                <div class="card-content">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col" class="center">{{'codigo' | translate}}</th>
+                                                <th scope="col">{{'documento' | translate}}</th>
+                                                <th scope="col">{{'ultimaFechaSincronizacion' | translate}}</th>
+                                                <!-- <th scope="col">tipo comprobante</th> -->
+                                                <th scope="col" style="text-align: center">{{'accion' | translate}}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let item of listSincronizacion">
+                                                <th scope="col">{{item.id}}</th>
+                                                <th scope="col">{{item.descripcion}}</th>
+                                                <th scope="col">{{item.fechaSincronizacion}}</th>
+                                                <!-- <th scope="col">{{item.tipoComprobante}}</th> -->
+                                                <th scope="col" style="text-align: center">
+                                                    <button *ngIf="item.tipoComprobante != '05' && item.tipoComprobante != '06'" title="Bitácora" type="button" style="background: transparent; border: 0px" (click)="verBitacora(item.tipoComprobante)">
+                                                        <i class="material-icons">book</i>
+                                                    </button>
+                                                    <button type="button" style="background: transparent; border: 0px" title="Sincronizar" (click)="sincronizar(item)">
+                                                        <i class="material-icons">autorenew</i>
+                                                    </button>
+                                                </th>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

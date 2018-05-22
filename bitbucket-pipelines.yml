@@ -1,0 +1,151 @@
+
+image:
+  name: srvebiz01-docker-local.jfrog.io/nodejs-build:8.0.0
+  username: $CONTAINER_REPO_USER
+  password: $CONTAINER_REPO_PWD
+
+pipelines:
+  default:
+    - step:
+        caches:
+          - maven
+        script: # Modify the commands below to build your repository.
+          - npm install
+          - npm run build_prod
+  branches:
+    master:
+      - step:
+          name: Build and test - production
+          caches:
+            - maven
+          script:
+            - git config --global user.name "$MAIN_REPO_USER"
+            - git config --global user.email "$GIT_USER"
+            - export VERSION_JSON=$(npm version patch -m "[skip ci]prepare release")
+            - export MVN_VERSION1="${VERSION_JSON}-PRD"
+            - echo $MVN_VERSION1
+            - npm install
+            - npm run build_prod
+            #- git tag --delete $VERSION_JSON
+            #- git tag -a $MVN_VERSION1 -m "[skip ci] $MVN_VERSION1"
+            #- git add package.json;
+            #- git push && git push --tags
+            
+            - export CONTAINER_TAG=$CONTAINER_REPO_URL/$CONTAINER_IMAGE_NAME:$MVN_VERSION1
+            - docker build -t $CONTAINER_IMAGE_NAME:$BITBUCKET_BUILD_NUMBER --build-arg PORT_EXPOSE=$CONTAINER_TARGET_PORT --no-cache . 
+            - docker tag $CONTAINER_IMAGE_NAME:$BITBUCKET_BUILD_NUMBER $CONTAINER_TAG
+            - docker login $CONTAINER_REPO_URL -u $CONTAINER_REPO_USER -p $CONTAINER_REPO_PWD
+            - docker push $CONTAINER_TAG
+            
+            - export CERTIFICATE_AUTHORITY_DATA=$CERTIFICATE_AUTHORITY_DATA_PRD
+            - export CLIENT_CERTIFICATE_DATA=$CLIENT_CERTIFICATE_DATA_PRD
+            - export CLIENT_KEY_DATA=$CLIENT_KEY_DATA_PRD
+            - export K8S_URL=$K8S_URL_PRD
+            - export K8S_NAMESPACE=$K8S_NAMESPACE_PRD
+            - export CONTAINER_ENV=$CONTAINER_ENV_PRD
+            
+            - envsubst </root/.kube/kubectl_config> /root/.kube/config
+            - kubectl config set-cluster default-cluster --server=$K8S_URL
+            - kubectl config set-context default-cluster --cluster=default-cluster --user=default-user
+            - kubectl config use-context default-cluster
+            - kubectl config set contexts.default-cluster.namespace $K8S_NAMESPACE
+            - envsubst <k8s-service.yml> k8s-service-final.yml
+            - cat k8s-service-final.yml
+            - kubectl apply -f k8s-service-final.yml 
+    qa:
+      - step:
+          name: Build and test - qa
+          caches:
+            - maven
+          script:
+            - git config --global user.name "$MAIN_REPO_USER"
+            - git config --global user.email "$GIT_USER"
+            - export VERSION_JSON=$(npm version patch -m "[skip ci]prepare release")
+            - export MVN_VERSION1="${VERSION_JSON}-QA"
+            - echo $MVN_VERSION1
+            - npm install
+            - npm run build_qa
+            #- git tag --delete $VERSION_JSON
+            #- git tag -a $MVN_VERSION1 -m "[skip ci] $MVN_VERSION1"
+            #- git add package.json;
+            #- git push && git push --tags
+            
+            - export CONTAINER_TAG=$CONTAINER_REPO_URL/$CONTAINER_IMAGE_NAME:$MVN_VERSION1
+            - docker build -t $CONTAINER_IMAGE_NAME:$BITBUCKET_BUILD_NUMBER --build-arg PORT_EXPOSE=$CONTAINER_TARGET_PORT --no-cache . 
+            - docker tag $CONTAINER_IMAGE_NAME:$BITBUCKET_BUILD_NUMBER $CONTAINER_TAG
+            - docker login $CONTAINER_REPO_URL -u $CONTAINER_REPO_USER -p $CONTAINER_REPO_PWD
+            - docker push $CONTAINER_TAG
+            
+            - export CERTIFICATE_AUTHORITY_DATA=$CERTIFICATE_AUTHORITY_DATA_QA
+            - export CLIENT_CERTIFICATE_DATA=$CLIENT_CERTIFICATE_DATA_QA
+            - export CLIENT_KEY_DATA=$CLIENT_KEY_DATA_QA
+            - export K8S_URL=$K8S_URL_QA
+            - export K8S_NAMESPACE=$K8S_NAMESPACE_QA
+            - export CONTAINER_ENV=$CONTAINER_ENV_QA
+            
+            - envsubst </root/.kube/kubectl_config> /root/.kube/config
+            - kubectl config set-cluster default-cluster --server=$K8S_URL
+            - kubectl config set-context default-cluster --cluster=default-cluster --user=default-user
+            - kubectl config use-context default-cluster
+            - kubectl config set contexts.default-cluster.namespace $K8S_NAMESPACE
+            - envsubst <k8s-service.yml> k8s-service-final.yml
+            - cat k8s-service-final.yml
+            - kubectl apply -f k8s-service-final.yml 
+    development:
+      - step:
+          name: Build and test - development
+          caches:
+            - node
+          script:
+            - git config --global user.name "$MAIN_REPO_USER"
+            - git config --global user.email "$GIT_USER"
+            - export VERSION_JSON=$(npm version patch -m "[skip ci]prepare release")
+            - export MVN_VERSION1="${VERSION_JSON}-SNAPSHOT"
+            - echo $MVN_VERSION1
+            - npm install
+            - npm run build_dev
+            - git tag --delete $VERSION_JSON
+            - git tag -a $MVN_VERSION1 -m "[skip ci] $MVN_VERSION1"
+            - git add package.json;
+            - git push && git push --tags
+            
+            - export CONTAINER_TAG=$CONTAINER_REPO_URL/$CONTAINER_IMAGE_NAME:$MVN_VERSION1
+            - docker build -t $CONTAINER_IMAGE_NAME:$BITBUCKET_BUILD_NUMBER --build-arg PORT_EXPOSE=$CONTAINER_TARGET_PORT --no-cache . 
+            - docker tag $CONTAINER_IMAGE_NAME:$BITBUCKET_BUILD_NUMBER $CONTAINER_TAG
+            - docker login $CONTAINER_REPO_URL -u $CONTAINER_REPO_USER -p $CONTAINER_REPO_PWD
+            - docker push $CONTAINER_TAG
+            
+            - export CERTIFICATE_AUTHORITY_DATA=$CERTIFICATE_AUTHORITY_DATA_DEV
+            - export CLIENT_CERTIFICATE_DATA=$CLIENT_CERTIFICATE_DATA_DEV
+            - export CLIENT_KEY_DATA=$CLIENT_KEY_DATA_DEV
+            - export K8S_URL=$K8S_URL_DEV
+            - export K8S_NAMESPACE=$K8S_NAMESPACE_DEV
+            - export CONTAINER_ENV=$CONTAINER_ENV_DEV
+            
+            - envsubst </root/.kube/kubectl_config> /root/.kube/config
+            - kubectl config set-cluster default-cluster --server=$K8S_URL
+            - kubectl config set-context default-cluster --cluster=default-cluster --user=default-user
+            - kubectl config use-context default-cluster
+            - kubectl config set contexts.default-cluster.namespace $K8S_NAMESPACE
+            - envsubst <k8s-service.yml> k8s-service-final.yml
+            - cat k8s-service-final.yml
+            - kubectl apply -f k8s-service-final.yml 
+
+  custom: 
+    force-build:
+      - step:
+          caches:
+            - maven
+          script:
+            - npm install
+            - npm run build_prod
+    force-sonar:
+      - step:
+          caches:
+            - maven
+          script:
+            - npm install
+            - npm run build_prod
+options:
+ docker: true
+
