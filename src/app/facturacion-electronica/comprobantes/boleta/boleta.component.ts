@@ -932,11 +932,22 @@ export class BoletaComponent implements OnInit, AfterViewInit {
                 bandera = 1;
                 return true;
               } else {
-                if (Number(monto) <= 0 ) {
+                const numero = Number(monto);
+                if (isNaN(numero)) {
+                  bandera = 1;
+                  return false;
+                } else {
+                  if (numero <= 0 ) {
+                    bandera = 2;
+                    return true;
+                  }
+                  return false;
+                }
+                /*if (Number(monto) <= 0 ) {
                   bandera = 2;
                   return true;
                 }
-                return false;
+                return false;*/
               }
             });
             if (bandera) {
@@ -1200,11 +1211,22 @@ export class BoletaComponent implements OnInit, AfterViewInit {
                 bandera = 1;
                 return true;
               } else {
-                if (Number(monto) <= 0) {
+                const numero = Number(monto);
+                if (isNaN(numero)) {
+                  bandera = 1;
+                  return false;
+                } else {
+                  if (numero <= 0 ) {
+                    bandera = 2;
+                    return true;
+                  }
+                  return false;
+                }
+                /*if (Number(monto) <= 0) {
                   bandera = 2;
                   return true;
                 }
-                return false;
+                return false;*/
               }
             });
             if (bandera) {
