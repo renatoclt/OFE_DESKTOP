@@ -18,6 +18,7 @@ import { SincronizacionBoletas } from '../general/services/sincronizacion/sincro
 import { SincronizacionFacturas } from '../general/services/sincronizacion/sincronizacionFactura';
 import { SincronizacionPercepciones } from '../general/services/sincronizacion/sincronizacionPercepeciones';
 import { retencionesService } from '../../service/retencionesservice';
+import { SincronizacionParametros } from '../general/services/sincronizacion/sincronizacionParametros';
 // import { TiposServicSe } from '../../../_src/app/facturacion-electronica/general/utils/tipos.service';
 
 declare var swal: any;
@@ -26,7 +27,7 @@ declare var swal: any;
     templateUrl: './sincronizacion.component.html',
     //OFFLINE CAMBIO
     //providers: [SincronizacionService, TiposService],
-    providers: [SincronizacionService, SincronizacionRetenciones, SincronizacionBoletas, SincronizacionFacturas, SincronizacionPercepciones],
+    providers: [SincronizacionService, SincronizacionRetenciones, SincronizacionBoletas, SincronizacionFacturas, SincronizacionPercepciones,SincronizacionParametros],
     styleUrls: []
 })
 export class SincronizacionComponent implements OnInit {
@@ -42,6 +43,7 @@ export class SincronizacionComponent implements OnInit {
         public sincronizacionPercepciones: SincronizacionPercepciones,
         public sincronizacionBoletas: SincronizacionBoletas,
         public sincronizacionFacturas: SincronizacionFacturas,
+        public sincronizacionParametros: SincronizacionParametros,
         public parametrosService: ParametrosService, private tipos: TiposService,private spinner: SpinnerService) {
         this.cabecera = ['Documento', 'Ultima Fecha Sincronizacion', 'Acciones'];
         this.atributos = ['TipoComprobante', 'FechaSincronizacion', 'Acciones'];
@@ -74,7 +76,7 @@ export class SincronizacionComponent implements OnInit {
                 await this.actualizarPercepciones(item.fechaSincronizacion);
                 break;
             case this.tipos.PARAMETRO_TIPO_PARAMETROS:
-                console.log('Percepcion');
+                await this.actualizarParametros();
                 break;
             case this.tipos.PARAMETRO_TIPO_CLIENTES:
                 console.log('Clientes');
@@ -88,6 +90,84 @@ export class SincronizacionComponent implements OnInit {
         this.sincronizacionService.buscarPorIdioma(idioma).subscribe((data) => {
             this.listSincronizacion = data;
         });
+    }
+
+    async actualizarParametros(){
+        this.spinner.set(true);
+        this.sincronizacionParametros.actualizarToken(await this.sincronizacionParametros.tokenNuevo().toPromise().then(
+            async resolve =>{
+                // await this.sincronizacionParametros.eliminarIdioma().toPromise();
+                // await this.sincronizacionParametros.guardarIdioma().toPromise();
+                // await this.sincronizacionParametros.eliminarIdiomaQuery().toPromise();
+                // await this.sincronizacionParametros.guardarIdiomaQuery().toPromise();
+                // await this.sincronizacionParametros.eliminarEvento().toPromise();
+                // await this.sincronizacionParametros.guardarEvento().toPromise();
+                // await this.sincronizacionParametros.eliminarMaestra().toPromise();
+                // await this.sincronizacionParametros
+                // let dataMaestra = await this.sincronizacionParametros.obtenerMaestra().toPromise()
+                // await this.sincronizacionParametros.guardarMaestra(dataMaestra).toPromise();
+                // await this.sincronizacionParametros.eliminarParametrosEntidad().toPromise();
+                // await this.sincronizacionParametros.guardarParemetroEntidad().toPromise();
+                // await this.sincronizacionParametros.eliminarTipoEntidad().toPromise();
+                // await this.sincronizacionParametros.guardarTipoEntidad().toPromise();
+                // await this.sincronizacionParametros.eliminarQueryEstado().toPromise();
+                // await this.sincronizacionParametros.guardarQueryEstado().toPromise();
+                try{
+                    let dataEntidad = await this.sincronizacionParametros.obtenerEntidad().toPromise();
+                    await this.sincronizacionParametros.eliminarEntidad().toPromise();
+                    await this.sincronizacionParametros.guardarEntidad(dataEntidad).toPromise();
+                    // let imagenEbiz = await this.sincronizacionParametros.obtenerAzure('logo_ebiz.png').toPromise();
+                    // let imagenEmpresa = await this.sincronizacionParametros.obtenerAzure(dataEntidad.logoCloud).toPromise();
+                    // let plantillaRetenciones = await this.sincronizacionParametros.obtenerAzure('retenciones-final.xml').toPromise();
+                    // await this.sincronizacionParametros.eliminarDocumentoAzure().toPromise();
+                    // await this.sincronizacionParametros.guardarDocumentoAzure('1',dataEntidad.id, '20' , imagenEbiz, imagenEmpresa, plantillaRetenciones);
+                    // let plantillaBoletas = await this.sincronizacionParametros.obtenerAzure('facturas.xml').toPromise();
+                    // await this.sincronizacionParametros.guardarDocumentoAzure('2',dataEntidad.id, '01' , imagenEbiz, imagenEmpresa, plantillaBoletas);
+                    // let plantillaPercepcion = await this.sincronizacionParametros.obtenerAzure('percepcion.xml').toPromise();
+                    // await this.sincronizacionParametros.guardarDocumentoAzure('3',dataEntidad.id, '40' , imagenEbiz, imagenEmpresa, plantillaPercepcion);
+                    // let plantillaFacturas = await this.sincronizacionParametros.obtenerAzure('facturas.xml').toPromise();
+                    // await this.sincronizacionParametros.guardarDocumentoAzure('4',dataEntidad.id, '03' , imagenEbiz, imagenEmpresa, plantillaFacturas);
+                    await this.sincronizacionParametros.eliminarSerie().toPromise();
+                    await this.sincronizacionParametros.guardarSerie(await this.sincronizacionParametros.obtenerSerie().toPromise()).toPromise();
+                }
+                catch(e){
+                    this.spinner.set(false);
+                    swal({
+                        text: "No se pudo obtener informacion de la organización.",
+                        type: 'error',
+                        buttonsStyling: false,
+                        confirmButtonClass: "btn btn-error",
+                        confirmButtonText: 'CONTINUAR',
+                    });
+                    return;
+                }
+                
+                // await this.sincronizacionParametros.eliminarParametro().toPromise();
+                // await this.sincronizacionParametros.guardarParametro(await this.sincronizacionParametros.obtenerParametros().toPromise()).toPromise();
+                // await this.sincronizacionParametros.eliminarTipoPrecioVenta().toPromise();
+                // await this.sincronizacionParametros.guardarTipoPrecioVenta(await this.sincronizacionParametros.obtenerTipoPrecioVenta().toPromise()).toPromise();
+                // await this.sincronizacionParametros.eliminarTipoAfectacionIgv();
+                // await this.sincronizacionParametros.guardarTipoAfectacionIgv(await this.sincronizacionParametros.obtenerTipoAfectacionIgv().toPromise()).toPromise();   
+                // await this.sincronizacionParametros.eliminarTipoCalculoIsc().toPromise();
+                // await this.sincronizacionParametros.guardarTipoCalculoIsc(await this.sincronizacionParametros.obtenerTipoCalculoIsc().toPromise()).toPromise();
+                // await this.sincronizacionParametros.eliminarConcepto().toPromise();
+                // await this.sincronizacionParametros.guardarConcepto(await this.sincronizacionParametros.obtenerConceptos().toPromise()).toPromise();
+                // await this.sincronizacionParametros.eliminarUsuarios().toPromise();
+                // let ruc = localStorage.getItem('org_ruc');
+                // await this.sincronizacionParametros.guardarUsuariosOffline(await this.sincronizacionParametros.obtenerUsuariosOffline(ruc).toPromise()).toPromise();
+                // this.spinner.set(false);
+            },
+            reject => {
+                this.spinner.set(false);
+                swal({
+                    text: "No esta conectado a internet.",
+                    type: 'error',
+                    buttonsStyling: false,
+                    confirmButtonClass: "btn btn-error",
+                    confirmButtonText: 'CONTINUAR',
+                });
+            }
+        ));
     }
     
     async actualizarRetenciones(fecha){
