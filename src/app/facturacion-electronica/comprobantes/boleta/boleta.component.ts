@@ -471,7 +471,7 @@ export class BoletaComponent implements OnInit, AfterViewInit {
     this.tabla.insertarData(this.listaProductos);
   }
   public irDocumentoRelacionado() {
-    // this.guardarOrganizacion();
+    this.guardarOrganizacion();
     this.setBoletaCabeceraDetalle();
     this._persistenciaService.setFactura(this.boleta);
     const listaTmpDocumentosRelacionados = this._persistenciaService.getDocumentosReferencia();
@@ -850,7 +850,7 @@ export class BoletaComponent implements OnInit, AfterViewInit {
     //  this.recargarTabla();
   }
   public seleccionBoletaAnticipo(value: boolean) {
-    // this.guardarOrganizacion();
+    this.guardarOrganizacion();
     let mensajeDocumentosRelacionadosExistentes: string;
     let tituloAdvertencia: string;
     let eliminarLabel: string;
@@ -1467,19 +1467,25 @@ export class BoletaComponent implements OnInit, AfterViewInit {
     organizacion.nombreComercial = this.boletaFormGroup.controls['txtRazonSocial'].value;
     organizacion.ruc = this.boletaFormGroup.controls['txtNumeroDocumento'].value; 
     organizacion.idTipoDocumento = this.boletaFormGroup.controls['cmbTipoDocumento'].value;
-    if(organizacion.ruc.toString().length == this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_RUC_TAMANIO && organizacion.tipoDocumento == this._cataloDocumentos.TIPO_DOCUMENTO_IDENTIDAD_RUC){
+    console.log('ingreseeeee',organizacion.ruc.toString().length,'fasdf',organizacion.idTipoDocumento)
+    if(organizacion.ruc.toString().length == this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_RUC_TAMANIO && organizacion.idTipoDocumento == this._cataloDocumentos.TIPO_DOCUMENTO_IDENTIDAD_RUC){
+      console.log('ingreseeeee1')
       this._conceptoDocumentoService.guardarOrganizacion(organizacion).subscribe();
     }
-    if(organizacion.ruc.toString().length == this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_CARNET_EXTRANJERIA_TAMANIO && organizacion.tipoDocumento == this._cataloDocumentos.TIPO_DOCUMENTO_IDENTIDAD_CARNET_EXTRANJERIA){
+    if(organizacion.ruc.toString().length == this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_CARNET_EXTRANJERIA_TAMANIO && organizacion.idTipoDocumento == this._cataloDocumentos.TIPO_DOCUMENTO_IDENTIDAD_CARNET_EXTRANJERIA){
+      console.log('ingreseeeee2')
       this._conceptoDocumentoService.guardarOrganizacion(organizacion).subscribe();
     }
-    if(organizacion.ruc.toString().length == this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_CEDULA_DIPLOMATICA_IDENTIDAD_TAMANIO && organizacion.tipoDocumento == this._cataloDocumentos.TIPO_DOCUMENTO_IDENTIDAD_CEDULA_DIPLOMATICA_IDENTIDAD){
+    if(organizacion.ruc.toString().length == this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_CEDULA_DIPLOMATICA_IDENTIDAD_TAMANIO && organizacion.idTipoDocumento == this._cataloDocumentos.TIPO_DOCUMENTO_IDENTIDAD_CEDULA_DIPLOMATICA_IDENTIDAD){
+      console.log('ingreseeeee3')
       this._conceptoDocumentoService.guardarOrganizacion(organizacion).subscribe();
     }
-    if(organizacion.ruc.toString().length == this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_DNI_TAMANIO && organizacion.tipoDocumento == this._cataloDocumentos.TIPO_DOCUMENTO_IDENTIDAD_DNI){
+    if(organizacion.ruc.toString().length == this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_DNI_TAMANIO && organizacion.idTipoDocumento == this._cataloDocumentos.TIPO_DOCUMENTO_IDENTIDAD_DNI){
+      console.log('ingreseeeee4')
       this._conceptoDocumentoService.guardarOrganizacion(organizacion).subscribe();
     }
-    if(organizacion.ruc.toString().length == this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_PASAPORTE_TAMANIO && organizacion.tipoDocumento == this._cataloDocumentos.TIPO_DOCUMENTO_IDENTIDAD_PASAPORTE){
+    if(organizacion.ruc.toString().length == this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_PASAPORTE_TAMANIO && organizacion.idTipoDocumento == this._cataloDocumentos.TIPO_DOCUMENTO_IDENTIDAD_PASAPORTE){
+      console.log('ingreseeeee5')
       this._conceptoDocumentoService.guardarOrganizacion(organizacion).subscribe();
     }
   }
