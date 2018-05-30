@@ -40,7 +40,7 @@ function goTimeLeft() {
     TIME_LEFT = TIME_LEFT - 1;
     if (TIME_LEFT < 0)
         TIME_LEFT = 0;
-    $("#lblTimeLeft").html("Su sesión expirará en " + TIME_LEFT + " segundos.");
+    // $("#lblTimeLeft").html("Su sesión expirará en " + TIME_LEFT + " segundos.");
 }
 
 function goMessage() {
@@ -81,7 +81,7 @@ function goActive() {
 }
 
 function logout() {
-    oNavbarComponent.logout();
+    //oNavbarComponent.logout();
     /*localStorage.clear();
     let baseurl=$('#baseurl').attr('href');
     window.location.href = baseurl;*/
@@ -206,7 +206,7 @@ var DatatableFunctions = new function () {
     };
 
     this.logout = function () {
-        oNavbarComponent.logout();
+        // oNavbarComponent.logout();
     };
 
     this.initDatatable = function (e, settings, json, datatable) {

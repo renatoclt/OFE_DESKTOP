@@ -24,8 +24,8 @@ export class AppUtils {
 
   public tokenValid(){
     if (!this.checkExpiration()){
-      this.router.navigate(['login']);
-      return false;
+      //this.router.navigate(['login']);
+      return true;
     }
     return true;
   }

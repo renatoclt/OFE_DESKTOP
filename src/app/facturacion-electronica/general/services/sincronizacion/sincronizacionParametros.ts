@@ -100,6 +100,25 @@ export class SincronizacionParametros {
         return this.httpClient.post<any>(url, {});    
     }
 
+    public getCabezera(): HttpHeaders{
+        const usuario = JSON.parse(localStorage.getItem('usuarioActual'));
+        const access_token = localStorage.getItem('access_token');
+        const token_type = 'Bearer';
+        const ocp_apim_subscription_key = localStorage.getItem('Ocp_Apim_Subscription_Key');
+        const origen_datos = 'PEB2M';
+        const tipo_empresa = usuario.tipo_empresa;
+        const org_id = usuario.org_id;
+        let headers = new HttpHeaders()
+                        .set("Authorization", token_type + ' ' + access_token)
+                        .set("Content-Type", 'application/json')
+                        .set('Accept', 'application/json')
+                        .set('Ocp-Apim-Subscription-Key', '07a12d074c714f62ab037bb2f88e30d3')
+                        .set('origen_datos', 'PEB2M')
+                        .set('tipo_empresa', tipo_empresa)
+                        .set('org_id', org_id);
+        return headers;
+    }
+
     public eliminarMaestra(): Observable<any>{
         let url = this.servidores.HOSTLOCAL + '/sincronizacion/maestraEliminar';
         const salida = new BehaviorSubject<any>(null);    
@@ -109,7 +128,7 @@ export class SincronizacionParametros {
     public obtenerMaestra(): Observable<any>{
         let url = this.servidores.PARMQRY + '/maestra';
         const parametros = new HttpParams();
-        return this.httpClient.get(url, { params: parametros });
+        return this.httpClient.get(url, { params: parametros , headers: this.getCabezera()});
     }
     public guardarMaestra(data): Observable<any>{
         let listaMaestra: DtoMaestra[] = [];
@@ -262,7 +281,7 @@ export class SincronizacionParametros {
     public obtenerParametros(): Observable<any>{
         let url = this.servidores.PARMQRY + '/parametros';
         const parametros = new HttpParams();
-        return this.httpClient.get(url, { params: parametros  });
+        return this.httpClient.get(url, { params: parametros, headers : this.getCabezera()  });
     }
 
     public guardarParametro(data): Observable<any>{
@@ -280,18 +299,19 @@ export class SincronizacionParametros {
     public guardarSerie(data): Observable<any>{
         this.serieDTO = [];
         let url = this.servidores.HOSTLOCAL + '/sincronizacion/querySerie';
-        data._embedded.serieRedises.forEach(element => {
+        data._embedded.serieCommands.forEach(element => {
             let serie : DtoSeries = new DtoSeries();
             serie.correlativo = element.correlativo;
-            serie.idTipoSerie = element.idTipoSerie;
+            serie.idTipoSerie = element.tipoSerie;
             serie.direccion = element.direccion;
-            serie.estado = "";
+            serie.estado = element.estado;
             serie.idEntidad = element.idEntidad;
             serie.idSerie = element.idSerie;
-            serie.idTipoComprobante = element.idTipoComprobante;
+            serie.idTipoComprobante = element.idTipoDocumento;
             serie.serie = element.serie;
-            serie.idUbigeo = element.idUbigeo ,
-            serie.codigoUbigeo = element.codigoUbigeo ;
+            serie.idUbigeo = element.idDominioUbigeo ,
+            serie.codigoUbigeo = "" ;
+            serie.mac = element.direccionMac;
             this.serieDTO.push(serie);
         });
         return this.httpClient.post<DtoSeries[]>(url, this.serieDTO );
@@ -314,19 +334,19 @@ export class SincronizacionParametros {
         let url = this.servidores.FILEQRY + "/archivos/search?nombre_archivo="+nombre;
         const parametros = new HttpParams();
         let salida = new Observable<any>();
-        return this.httpClient.get(url, { params: parametros, responseType: "text/plain" });
+        return this.httpClient.get(url, { params: parametros, responseType: "text/plain", headers: this.getCabezera() });
     }
 
     public obtenerSerie(): Observable<any>{
-        let url = this.servidores.PARMQRY + '/seriess';
-        const parametros = new HttpParams();
-        return this.httpClient.get(url, { params: parametros  });
+        let url = this.servidores.ORGAQRY + '/seriesCmd/search/correlativos';
+        const parametros = new HttpParams().set('id_entidad', localStorage.getItem('id_entidad')); ;
+        return this.httpClient.get(url, { params: parametros, headers: this.getCabezera() });
     }
 
     public obtenerTipoPrecioVenta(): Observable<any>{
         let url = this.servidores.PARMQRY + '/tipoprecioventa';
         const parametros = new HttpParams();
-        return this.httpClient.get(url, {params: parametros});
+        return this.httpClient.get(url, {params: parametros , headers: this.getCabezera()});
     }
 
     public guardarTipoPrecioVenta(data): Observable<any>{
@@ -344,7 +364,7 @@ export class SincronizacionParametros {
     public obtenerTipoAfectacionIgv(): Observable<any>{
         let url = this.servidores.PARMQRY + '/tipoafectacionigv';
         const parametros = new HttpParams();
-        return this.httpClient.get(url, {params: parametros})
+        return this.httpClient.get(url, {params: parametros, headers: this.getCabezera()})
     }
 
     public guardarTipoAfectacionIgv(data): Observable<any>{
@@ -361,7 +381,7 @@ export class SincronizacionParametros {
     public obtenerTipoCalculoIsc(): Observable<any>{
         let url = this.servidores.PARMQRY + '/tipocalculoisc';
         const parametros = new HttpParams();
-        return this.httpClient.get(url, {params: parametros});
+        return this.httpClient.get(url, {params: parametros, headers: this.getCabezera()});
     }
 
     public guardarTipoCalculoIsc(data): Observable<any>{
@@ -377,7 +397,7 @@ export class SincronizacionParametros {
     public obtenerConceptos(): Observable<any>{
         let url = this.servidores.PARMQRY + '/concepto';
         const parametros = new HttpParams();
-        return this.httpClient.get(url, {params: parametros});
+        return this.httpClient.get(url, {params: parametros, headers: this.getCabezera()});
     }
 
     public guardarConcepto(data): Observable<any>{

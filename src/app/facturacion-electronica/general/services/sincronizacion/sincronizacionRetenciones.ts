@@ -25,7 +25,6 @@ export class SincronizacionRetenciones {
     private urlActualizarErrorRetencionBaja: string = '/sincronizacionRetencion/actualizarErrorBaja';
     private urlActualizarRetencionBaja: string = '/sincronizacionRetencion/actualizarBaja'
     constructor(private loginService: LoginService, private servidores: Servidores,private httpClient: HttpClient){
-
     }
 
     tokenNuevo():Observable<any[]>{ 
@@ -50,18 +49,29 @@ export class SincronizacionRetenciones {
     }
 
     enviarRetencionesCreadas(retencion):Observable<any>{
-        const usuario = JSON.parse(localStorage.getItem('usuarioActual'));
-        const org_id = usuario.org_id;
-        let headers =  new HttpHeaders().set('Content-Type', 'application/json')
-                                        .set('Accept', 'application/json')
-                                        .set('origen_datos', 'PEB2M')
-                                        .set("Authorization", 'Bearer ' + localStorage.getItem('access_token'))
-                                        .set("tipo_empresa", localStorage.getItem('tipo_empresa'))
-                                        .set("org_id",  org_id)
-                                        .set("Ocp-Apim-Subscription-Key", localStorage.getItem('Ocp_Apim_Subscription_Key'));
         const parametros = new HttpParams();
         this.url = this.servidores.DOCUCMD + this.urlEnviarRetencion;
-        return this.httpClient.post<RetencionErpDTO>(this.url, retencion , {headers:headers } );
+        return this.httpClient.post<RetencionErpDTO>(this.url, retencion , {headers:this.getCabezera() } );
+    }
+
+
+    public getCabezera(): HttpHeaders{
+        const usuario = JSON.parse(localStorage.getItem('usuarioActual'));
+        const access_token = localStorage.getItem('access_token');
+        const token_type = 'Bearer';
+        const ocp_apim_subscription_key = localStorage.getItem('Ocp_Apim_Subscription_Key');
+        const origen_datos = 'PEB2M';
+        const tipo_empresa = usuario.tipo_empresa;
+        const org_id = usuario.org_id;
+        let headers = new HttpHeaders()
+                        .set("Authorization", token_type + ' ' + access_token)
+                        .set("Content-Type", 'application/json')
+                        .set('Accept', 'application/json')
+                        .set('Ocp-Apim-Subscription-Key', '07a12d074c714f62ab037bb2f88e30d3')
+                        .set('origen_datos', 'PEB2M')
+                        .set('tipo_empresa', tipo_empresa)
+                        .set('org_id', org_id);
+        return headers;
     }
 
     private convertirSincronizacionLongToDate(item){
@@ -94,13 +104,12 @@ export class SincronizacionRetenciones {
         const parametros = new HttpParams();
         this.url = this.hostLocal + this.urlActualizarEstadoComprobante;
         return this.httpClient.get(this.url, {params: parametros});
-
     }
 
     obtenerRetencion(id):Observable<any>{
         const parametroGetDocumento = new HttpParams().set('id', id);
         this.url = this.servidores.DOCUQRY + this.urlObtenerComprobante;
-        return this.httpClient.get(this.url,{ params: parametroGetDocumento })
+        return this.httpClient.get(this.url,{ params: parametroGetDocumento, responseType: "text/plain" , headers: this.getCabezera() })
     }
 
     guardarRetencionPendientes(documento):Observable<any>{
@@ -141,7 +150,7 @@ export class SincronizacionRetenciones {
                     .set('ticketResumen','')
                     .set('anticipo','N');
         this.url = this.servidores.DOCUQRY + this.urlObtenerRetenciones;
-        return this.httpClient.get(this.url,{ params: parametrosR });
+        return this.httpClient.get(this.url,{ params: parametrosR , headers: this.getCabezera()});
     }
 
     descargarRetencionesPagina(pagina, fecha):Observable<any>{
@@ -170,7 +179,7 @@ export class SincronizacionRetenciones {
                                                             .set('ticketResumen','')
                                                             .set('anticipo','N'); 
         this.url = this.servidores.DOCUQRY + this.urlObtenerRetenciones;
-        return this.httpClient.get(this.url,{ params: parametrosFinal });
+        return this.httpClient.get(this.url,{ params: parametrosFinal , headers: this.getCabezera()});
     }
 
     guardarRetencionDescargada(retencion):Observable<any>{
@@ -190,18 +199,9 @@ export class SincronizacionRetenciones {
     }
 
     enviarRetencionBaja(retencionBaja):Observable<any>{
-        const usuario = JSON.parse(localStorage.getItem('usuarioActual'));
-        const org_id = usuario.org_id;
-        let headers =  new HttpHeaders().set('Content-Type', 'application/json')
-                                        .set('Accept', 'application/json')
-                                        .set('origen_datos', 'PEB2M')
-                                        .set("Authorization", 'Bearer ' + localStorage.getItem('access_token'))
-                                        .set("tipo_empresa", localStorage.getItem('tipo_empresa'))
-                                        .set("org_id",  org_id)
-                                        .set("Ocp-Apim-Subscription-Key", localStorage.getItem('Ocp_Apim_Subscription_Key'));
         const parametros = new HttpParams();
         this.url = this.servidores.DOCUCMD + this.urlEnviarRetencionesBaja;
-        return this.httpClient.post<any>(this.url, retencionBaja , {headers:headers } );
+        return this.httpClient.post<any>(this.url, retencionBaja , {headers: this.getCabezera() } );
     }
 
     actualizarErrorRetencionBaja(_id):Observable<any>{

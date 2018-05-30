@@ -9,5 +9,6 @@ export class DtoSeries{
     idUbigeo: string;
     codigoUbigeo: string;
     estado: string;
+    mac: string;
 }
 

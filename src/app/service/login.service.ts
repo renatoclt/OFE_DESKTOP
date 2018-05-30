@@ -102,7 +102,9 @@ export class LoginService {
         params.append("grant_type", OAUTH_GRANT_TYPE);
         params.append("username", username.trim().toUpperCase());
         params.append("password", password);
-        localStorage.setItem('id_entidad', '4');
+
+        //TODO HARDCODE
+        localStorage.setItem('id_entidad', '1');
         let options = new RequestOptions({ headers: headers });
         return this.http.post(`${URL_OAUTH}/token`, params, options).map(this.handleData)
             .catch(this.handleError);
@@ -501,8 +503,10 @@ export class LoginService {
     }
     public obtenerMaestra(): Observable<any>{
         let url = this._servidores.PARMQRY + '/maestra';
+        // let url = 'https://dev.ebizlatindata.com/fe/ms-parametro-query/v1/maestra/search/filtros?tabla=10007';
         const parametros = new HttpParams();
-        return this.httpClient.get(url, { params: parametros });
+        
+        return this.httpClient.get(url, { params: parametros , headers: this.getCabezera()});
     }
     public guardarMaestra(data): Observable<any>{
         let listaMaestra: DtoMaestra[] = [];
@@ -551,12 +555,12 @@ export class LoginService {
     public obtenerSerie(): Observable<any>{
         let url = this._servidores.PARMQRY + '/seriess';
         const parametros = new HttpParams();
-        return this.httpClient.get(url, { params: parametros  });
+        return this.httpClient.get(url, { params: parametros , headers: this.getCabezera()  });
     }
     public guardarSerie(data): Observable<any>{
         this.serieDTO = [];
         let url = this._servidores.HOSTLOCAL + '/sincronizacion/querySerie';
-        data._embedded.serieRedises.forEach(element => {
+        data._embedded.serieCommands.forEach(element => {
             let serie : DtoSeries = new DtoSeries();
             serie.correlativo = element.correlativo;
             serie.idTipoSerie = element.idTipoSerie;
@@ -589,7 +593,7 @@ export class LoginService {
     public obtenerParametros(): Observable<any>{
         let url = this._servidores.PARMQRY + '/parametros';
         const parametros = new HttpParams();
-        return this.httpClient.get(url, { params: parametros  });
+        return this.httpClient.get(url, { params: parametros  , headers: this.getCabezera() });
     }
 
     public guardarParametro(data): Observable<any>{
@@ -608,7 +612,7 @@ export class LoginService {
     public obtenerTipoPrecioVenta(): Observable<any>{
         let url = this._servidores.PARMQRY + '/tipoprecioventa';
         const parametros = new HttpParams();
-        return this.httpClient.get(url, {params: parametros});
+        return this.httpClient.get(url, {params: parametros  , headers: this.getCabezera()});
     }
 
     public guardarTipoPrecioVenta(data): Observable<any>{
@@ -625,7 +629,7 @@ export class LoginService {
     public obtenerTipoAfectacionIgv(): Observable<any>{
         let url = this._servidores.PARMQRY + '/tipoafectacionigv';
         const parametros = new HttpParams();
-        return this.httpClient.get(url, {params: parametros})
+        return this.httpClient.get(url, {params: parametros, headers: this.getCabezera()})
     }
 
     public guardarTipoAfectacionIgv(data): Observable<any>{
@@ -642,7 +646,7 @@ export class LoginService {
     public obtenerTipoCalculoIsc(): Observable<any>{
         let url = this._servidores.PARMQRY + '/tipocalculoisc';
         const parametros = new HttpParams();
-        return this.httpClient.get(url, {params: parametros});
+        return this.httpClient.get(url, {params: parametros, headers: this.getCabezera()});
     }
 
     public guardarTipoCalculoIsc(data): Observable<any>{
@@ -659,7 +663,7 @@ export class LoginService {
     public obtenerConceptos(): Observable<any>{
         let url = this._servidores.PARMQRY + '/concepto';
         const parametros = new HttpParams();
-        return this.httpClient.get(url, {params: parametros});
+        return this.httpClient.get(url, {params: parametros, headers: this.getCabezera()});
     }
 
     public guardarConcepto(data): Observable<any>{
@@ -692,6 +696,25 @@ export class LoginService {
                         .set('tipo_empresa', tipo_empresa)
                         .set('org_id', org_id);
         return this.httpClient.get(url, { params: parametros , headers: headers });
+    }
+
+    public getCabezera(): HttpHeaders{
+        const usuario = JSON.parse(localStorage.getItem('usuarioActual'));
+        const access_token = localStorage.getItem('access_token');
+        const token_type = 'Bearer';
+        const ocp_apim_subscription_key = localStorage.getItem('Ocp_Apim_Subscription_Key');
+        const origen_datos = 'PEB2M';
+        const tipo_empresa = usuario.tipo_empresa;
+        const org_id = usuario.org_id;
+        let headers = new HttpHeaders()
+                        .set("Authorization", token_type + ' ' + access_token)
+                        .set("Content-Type", 'application/json')
+                        .set('Accept', 'application/json')
+                        .set('Ocp-Apim-Subscription-Key', '07a12d074c714f62ab037bb2f88e30d3')
+                        .set('origen_datos', 'PEB2M')
+                        .set('tipo_empresa', tipo_empresa)
+                        .set('org_id', org_id);
+        return headers;
     }
 
     public guardarEntidad(data: any): Observable<any>{
@@ -740,7 +763,7 @@ export class LoginService {
         let url = this._servidores.FILEQRY + "/archivos/search?nombre_archivo="+nombre;
         const parametros = new HttpParams();
         let salida = new Observable<any>();
-        return this.httpClient.get(url, { params: parametros, responseType: "text/plain" });
+        return this.httpClient.get(url, { params: parametros, responseType: "text/plain" , headers: this.getCabezera()});
     }
       
     public guardarDocumentoAzure(id, idEntidad, tipoComprobante ,logoEbiz, logoEmpresa, plantilla): Observable<any>{
@@ -781,7 +804,8 @@ export class LoginService {
         const parametros = new HttpParams()
             .set('ruc', ruc);
         const Organizacion = '';
-        localStorage.setItem('id_entidad', '4');
+        //TODO HARDCODE
+        localStorage.setItem('id_entidad', '1');
         localStorage.setItem('org_direccion', 'AV. NICOLAS AYLLON NRO. 3820 URB. SANTA RAQUEL - LIMA LIMA ATE');
         localStorage.setItem('org_email', 'lizbethlima@ulasalle.edu.pe');
     }

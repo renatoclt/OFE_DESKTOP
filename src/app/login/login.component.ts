@@ -103,25 +103,50 @@ export class LoginComponent extends BaseComponent implements OnInit {
             await this.loginService.guardarParemetroEntidad().toPromise();
             await this.loginService.guardarTipoEntidad().toPromise();
             await this.loginService.guardarQueryEstado().toPromise();
-            let dataEntidad = await this.loginService.obtenerEntidad().toPromise()
-            await this.loginService.guardarEntidad(dataEntidad).toPromise();
-            let imagenEbiz = await this.loginService.obtenerAzure('logo_ebiz.png').toPromise();
-            let imagenEmpresa = await this.loginService.obtenerAzure(dataEntidad.logoCloud).toPromise();
-            let plantillaRetenciones = await this.loginService.obtenerAzure('retenciones-final.xml').toPromise();
-            await this.loginService.guardarDocumentoAzure('1',dataEntidad.id, '20' , imagenEbiz, imagenEmpresa, plantillaRetenciones);
-            let plantillaBoletas = await this.loginService.obtenerAzure('facturas.xml').toPromise();
-            await this.loginService.guardarDocumentoAzure('2',dataEntidad.id, '01' , imagenEbiz, imagenEmpresa, plantillaBoletas);
-            let plantillaPercepcion = await this.loginService.obtenerAzure('percepcion.xml').toPromise();
-            await this.loginService.guardarDocumentoAzure('3',dataEntidad.id, '40' , imagenEbiz, imagenEmpresa, plantillaPercepcion);
-            let plantillaFacturas = await this.loginService.obtenerAzure('facturas.xml').toPromise();
-            await this.loginService.guardarDocumentoAzure('4',dataEntidad.id, '03' , imagenEbiz, imagenEmpresa, plantillaFacturas);
-            await this.loginService.guardarSerie(await this.loginService.obtenerSerie().toPromise()).toPromise();
-            await this.loginService.guardarParametro(await this.loginService.obtenerParametros().toPromise()).toPromise();
-            await this.loginService.guardarTipoPrecioVenta(await this.loginService.obtenerTipoPrecioVenta().toPromise()).toPromise();
-            await this.loginService.guardarTipoAfectacionIgv(await this.loginService.obtenerTipoAfectacionIgv().toPromise()).toPromise();   
-            await this.loginService.guardarTipoCalculoIsc(await this.loginService.obtenerTipoCalculoIsc().toPromise()).toPromise();
-            await this.loginService.guardarConcepto(await this.loginService.obtenerConceptos().toPromise()).toPromise();
-            await this.loginService.guardarEmpresaLocal(this.loginModel.ruc).toPromise();
+            try{
+                let dataEntidad = await this.loginService.obtenerEntidad().toPromise();
+                await this.loginService.guardarEntidad(dataEntidad).toPromise();
+                let imagenEbiz = await this.loginService.obtenerAzure('logo_ebiz.png').toPromise();
+                let imagenEmpresa = await this.loginService.obtenerAzure(dataEntidad.logoCloud).toPromise();
+                let plantillaRetenciones = await this.loginService.obtenerAzure('retenciones-final.xml').toPromise();
+                await this.loginService.guardarDocumentoAzure('1',dataEntidad.id, '20' , imagenEbiz, imagenEmpresa, plantillaRetenciones);
+                let plantillaBoletas = await this.loginService.obtenerAzure('facturas.xml').toPromise();
+                await this.loginService.guardarDocumentoAzure('2',dataEntidad.id, '01' , imagenEbiz, imagenEmpresa, plantillaBoletas);
+                let plantillaPercepcion = await this.loginService.obtenerAzure('percepcion.xml').toPromise();
+                await this.loginService.guardarDocumentoAzure('3',dataEntidad.id, '40' , imagenEbiz, imagenEmpresa, plantillaPercepcion);
+                let plantillaFacturas = await this.loginService.obtenerAzure('facturas.xml').toPromise();
+                await this.loginService.guardarDocumentoAzure('4',dataEntidad.id, '03' , imagenEbiz, imagenEmpresa, plantillaFacturas);
+                await this.loginService.guardarSerie(await this.loginService.obtenerSerie().toPromise()).toPromise();
+            }
+            catch(e){
+                swal({
+                    text: "No se pudo obtener informacion de la organización.",
+                    type: 'error',
+                    buttonsStyling: false,
+                    confirmButtonClass: "btn btn-error",
+                    confirmButtonText: 'CONTINUAR',
+                });
+                
+            }
+            try{
+                await this.loginService.guardarParametro(await this.loginService.obtenerParametros().toPromise()).toPromise();
+                await this.loginService.guardarTipoPrecioVenta(await this.loginService.obtenerTipoPrecioVenta().toPromise()).toPromise();
+                await this.loginService.guardarTipoAfectacionIgv(await this.loginService.obtenerTipoAfectacionIgv().toPromise()).toPromise();   
+                await this.loginService.guardarTipoCalculoIsc(await this.loginService.obtenerTipoCalculoIsc().toPromise()).toPromise();
+                await this.loginService.guardarConcepto(await this.loginService.obtenerConceptos().toPromise()).toPromise();
+                await this.loginService.guardarEmpresaLocal(this.loginModel.ruc).toPromise();
+            }
+            catch(e){
+                swal({
+                    text: "No se pudo obtener informacion de los tablas maestras.",
+                    type: 'error',
+                    buttonsStyling: false,
+                    confirmButtonClass: "btn btn-error",
+                    confirmButtonText: 'CONTINUAR',
+                });
+
+            }
+            
         }
         
         // DatatableFunctions.ConnectWebsockets();

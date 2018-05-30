@@ -140,8 +140,27 @@ export class SincronizacionFacturas {
                     .set('ticketResumen','')
                     .set('anticipo','N');
         this.url = this.servidores.DOCUQRY + this.urlObtenerFacturas;
-        return this.httpClient.get(this.url,{ params: parametrosR });
+        return this.httpClient.get(this.url,{ params: parametrosR, headers: this.getCabezera() });
     }
+
+    public getCabezera(): HttpHeaders{
+        const usuario = JSON.parse(localStorage.getItem('usuarioActual'));
+        const access_token = localStorage.getItem('access_token');
+        const token_type = 'Bearer';
+        const ocp_apim_subscription_key = localStorage.getItem('Ocp_Apim_Subscription_Key');
+        const origen_datos = 'PEB2M';
+        const tipo_empresa = usuario.tipo_empresa;
+        const org_id = usuario.org_id;
+        let headers = new HttpHeaders()
+                        .set("Authorization", token_type + ' ' + access_token)
+                        .set("Content-Type", 'application/json')
+                        .set('Accept', 'application/json')
+                        .set('Ocp-Apim-Subscription-Key', '07a12d074c714f62ab037bb2f88e30d3')
+                        .set('origen_datos', 'PEB2M')
+                        .set('tipo_empresa', tipo_empresa)
+                        .set('org_id', org_id);
+        return headers;
+    } 
 
     descargarFacturasPagina(pagina, fecha):Observable<any>{
         var parts = fecha.split("-");
@@ -169,7 +188,7 @@ export class SincronizacionFacturas {
                                                             .set('ticketResumen','')
                                                             .set('anticipo','N'); 
         this.url = this.servidores.DOCUQRY + this.urlObtenerFacturas;
-        return this.httpClient.get(this.url,{ params: parametrosFinal });
+        return this.httpClient.get(this.url,{ params: parametrosFinal, headers: this.getCabezera() });
     }
 
     guardarFacturaDescargada(factura):Observable<any>{

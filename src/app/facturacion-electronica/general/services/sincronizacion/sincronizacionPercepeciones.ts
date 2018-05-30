@@ -101,7 +101,7 @@ export class SincronizacionPercepciones {
     obtenerPercepcion(id):Observable<any>{
         const parametroGetDocumento = new HttpParams().set('id', id);
         this.url = this.servidores.DOCUQRY + this.urlObtenerComprobante;
-        return this.httpClient.get(this.url,{ params: parametroGetDocumento })
+        return this.httpClient.get(this.url,{ params: parametroGetDocumento, headers: this.getCabezera() })
     }
 
     guardarPercepcionPendientes(documento):Observable<any>{
@@ -140,7 +140,7 @@ export class SincronizacionPercepciones {
                     .set('ticketResumen','')
                     .set('anticipo','N');
         this.url = this.servidores.DOCUQRY + this.urlObtenerPercepciones;
-        return this.httpClient.get(this.url,{ params: parametrosR });
+        return this.httpClient.get(this.url,{ params: parametrosR , headers: this.getCabezera()});
     }
 
     descargarPercepcionesPagina(pagina, fecha):Observable<any>{
@@ -169,7 +169,7 @@ export class SincronizacionPercepciones {
                                                             .set('ticketResumen','')
                                                             .set('anticipo','N'); 
         this.url = this.servidores.DOCUQRY + this.urlObtenerPercepciones;
-        return this.httpClient.get(this.url,{ params: parametrosFinal });
+        return this.httpClient.get(this.url,{ params: parametrosFinal, headers: this.getCabezera() });
     }
 
     guardarPercepcionDescargada(retencion):Observable<any>{
@@ -212,6 +212,26 @@ export class SincronizacionPercepciones {
     actualizarPercepcionBaja(_id,numeroDocumento):Observable<any>{
         this.url = this.hostLocal + this.urlActualizarPercepcionBaja;
         return this.httpClient.post<any>(this.url, {id: _id, numeroDocumento: numeroDocumento});
+    }
+
+
+    public getCabezera(): HttpHeaders{
+        const usuario = JSON.parse(localStorage.getItem('usuarioActual'));
+        const access_token = localStorage.getItem('access_token');
+        const token_type = 'Bearer';
+        const ocp_apim_subscription_key = localStorage.getItem('Ocp_Apim_Subscription_Key');
+        const origen_datos = 'PEB2M';
+        const tipo_empresa = usuario.tipo_empresa;
+        const org_id = usuario.org_id;
+        let headers = new HttpHeaders()
+                        .set("Authorization", token_type + ' ' + access_token)
+                        .set("Content-Type", 'application/json')
+                        .set('Accept', 'application/json')
+                        .set('Ocp-Apim-Subscription-Key', '07a12d074c714f62ab037bb2f88e30d3')
+                        .set('origen_datos', 'PEB2M')
+                        .set('tipo_empresa', tipo_empresa)
+                        .set('org_id', org_id);
+        return headers;
     }
 
 }
