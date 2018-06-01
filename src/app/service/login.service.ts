@@ -563,15 +563,16 @@ export class LoginService {
         data._embedded.serieCommands.forEach(element => {
             let serie : DtoSeries = new DtoSeries();
             serie.correlativo = element.correlativo;
-            serie.idTipoSerie = element.idTipoSerie;
+            serie.idTipoSerie = element.tipoSerie;
             serie.direccion = element.direccion;
-            serie.estado = "";
+            serie.estado = element.estado;
             serie.idEntidad = element.idEntidad;
             serie.idSerie = element.idSerie;
-            serie.idTipoComprobante = element.idTipoComprobante;
+            serie.idTipoComprobante = element.idTipoDocumento;
             serie.serie = element.serie;
-            serie.idUbigeo = element.idUbigeo ,
-            serie.codigoUbigeo = element.codigoUbigeo ;
+            serie.idUbigeo = element.idDominioUbigeo ,
+            serie.codigoUbigeo = "" ;
+            serie.mac = element.direccionMac;
             this.serieDTO.push(serie);
         });
         return this.httpClient.post<DtoSeries[]>(url, this.serieDTO );
