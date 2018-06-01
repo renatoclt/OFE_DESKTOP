@@ -317,32 +317,32 @@ export class SincronizacionComponent implements OnInit {
                             await this.sincronizacionBoletas.actualizarErrorBoleta(boleta.idComprobanteOffline, reject).toPromise().then( async resolve => { return resolve} , reject => {return null});
                         });
                 }
-                // for (let boleta of await this.sincronizacionBoletas.obtenerBoletasPendientes().toPromise().then( async resolve => { return resolve} , reject => {return null})){
-                //     await this.sincronizacionBoletas.guardarBoletaDescargada(await this.sincronizacionBoletas.obtenerBoleta(boleta.id).toPromise()).toPromise();
-                // }
+                for (let boleta of await this.sincronizacionBoletas.obtenerBoletasPendientes().toPromise().then( async resolve => { return resolve} , reject => {return null})){
+                    await this.sincronizacionBoletas.guardarBoletaDescargada(await this.sincronizacionBoletas.obtenerBoleta(boleta.id).toPromise()).toPromise();
+                }
         
-                // for (let boleta of await this.sincronizacionBoletas.obtenerBoletaBajas().toPromise().then( async resolve => { return resolve} , reject => {return null})){
-                //     await this.sincronizacionBoletas.enviarBoletaBaja(boleta).toPromise().then(
-                //     async resolve => {
-                //         await this.sincronizacionBoletas.actualizarBoletaBaja(boleta.idComprobanteOffline, resolve.numeroComprobante).toPromise();
-                //     } , 
-                //     async reject => {
-                //         await this.sincronizacionBoletas.actualizarErrorBoletaBaja(boleta.idComprobanteOffline).toPromise();
-                //     });
-                // }
-                // let boletasDescargadas = await this.sincronizacionBoletas.descargarBoletas(fecha).toPromise();
-                // if(boletasDescargadas.totalElements){
-                //     for(let i=0; i * 10 < boletasDescargadas.totalElements; i++){
-                //         let rercepciones = await this.sincronizacionBoletas.descargarBoletasPagina(i, fecha).toPromise();
-                //         let fechaDescarga = '';
-                //         for (let boleta of  rercepciones.content){
-                //             await this.sincronizacionBoletas.guardarBoletaDescargada(boleta).toPromise();
-                //             fechaDescarga = boleta.tsFechaemision;
-                //         }
-                //         await this.sincronizacionBoletas.actualizarFechaDescarga(fechaDescarga).toPromise();
-                //     }
-                // }
-                // await this.sincronizacionBoletas.actualizarFechaDescarga(Number(new Date())).toPromise();
+                for (let boleta of await this.sincronizacionBoletas.obtenerBoletaBajas().toPromise().then( async resolve => { return resolve} , reject => {return null})){
+                    await this.sincronizacionBoletas.enviarBoletaBaja(boleta).toPromise().then(
+                    async resolve => {
+                        await this.sincronizacionBoletas.actualizarBoletaBaja(boleta.idComprobanteOffline, resolve.numeroComprobante).toPromise();
+                    } , 
+                    async reject => {
+                        await this.sincronizacionBoletas.actualizarErrorBoletaBaja(boleta.idComprobanteOffline).toPromise();
+                    });
+                }
+                let boletasDescargadas = await this.sincronizacionBoletas.descargarBoletas(fecha).toPromise();
+                if(boletasDescargadas.totalElements){
+                    for(let i=0; i * 10 < boletasDescargadas.totalElements; i++){
+                        let rercepciones = await this.sincronizacionBoletas.descargarBoletasPagina(i, fecha).toPromise();
+                        let fechaDescarga = '';
+                        for (let boleta of  rercepciones.content){
+                            await this.sincronizacionBoletas.guardarBoletaDescargada(boleta).toPromise();
+                            fechaDescarga = boleta.tsFechaemision;
+                        }
+                        await this.sincronizacionBoletas.actualizarFechaDescarga(fechaDescarga).toPromise();
+                    }
+                }
+                await this.sincronizacionBoletas.actualizarFechaDescarga(Number(new Date())).toPromise();
                 this.spinner.set(false);
             },
             reject => {
