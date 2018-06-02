@@ -383,16 +383,16 @@ export class SincronizacionComponent implements OnInit {
                     )).toPromise();
                 }
         
-                for (let factura of await this.sincronizacionFacturas.obtenerFacturaBajas().toPromise().then( async resolve => { return resolve} , reject => {return null})){
-                    await this.sincronizacionFacturas.enviarFacturaBaja(factura).toPromise().then(
-                    async resolve => {
-                        await this.sincronizacionFacturas.actualizarFacturaBaja(factura.idComprobanteOffline, resolve.numeroComprobante).toPromise();
-                    } , 
-                    async reject => {
-                        console.log(factura);
-                        await this.sincronizacionFacturas.actualizarErrorFacturaBaja(factura.idComprobanteOffline).toPromise();
-                    });
-                }
+                // for (let factura of await this.sincronizacionFacturas.obtenerFacturaBajas().toPromise().then( async resolve => { return resolve} , reject => {return null})){
+                //     await this.sincronizacionFacturas.enviarFacturaBaja(factura).toPromise().then(
+                //     async resolve => {
+                //         await this.sincronizacionFacturas.actualizarFacturaBaja(factura.idComprobanteOffline, resolve.numeroComprobante).toPromise();
+                //     } , 
+                //     async reject => {
+                //         console.log(factura);
+                //         await this.sincronizacionFacturas.actualizarErrorFacturaBaja(factura.idComprobanteOffline).toPromise();
+                //     });
+                // }
                 let facturasDescargadas = await this.sincronizacionFacturas.descargarFacturas(fecha).toPromise();
                 if(facturasDescargadas.totalElements){
                     for(let i=0; i * 10 < facturasDescargadas.totalElements; i++){

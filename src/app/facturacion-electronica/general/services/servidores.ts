@@ -38,6 +38,8 @@ export class Servidores {
   // public server2 = 'http://104.196.1.181';
   // public server1 = 'http://35.196.243.220';
   // public server2 = 'http://104.196.1.181';
+  
+
   public server1 = 'https://dev.ebizlatindata.com';
   public server2 = 'https://dev.ebizlatindata.com';
   public serverorganizacionprueba = 'http://104.196.1.181';
@@ -49,8 +51,8 @@ export class Servidores {
   public NOTIFIC    = this.server1 + '/fe/ms-notificaciones/v1';
   public FILEQRY    = this.server1 + '/fe/ms-archivos-query/v1';
   public INVEQRY    = this.server1 + '/fe/ms-inveqry/v1';
-  public DOCUCMD    = this.server1 + '/fe/ms-documentos-command/v1';
-  // public DOCUCMD    = 'http://192.168.70.24:8020/api/fe/ms-documentos-command/v1';
+  //public DOCUCMD    = this.server1 + '/fe/ms-documentos-command/v1';
+  public DOCUCMD    = 'http://192.168.70.29:8080/api/fe/ms-documentos-command/v1';
 
   //  SERVER 2
   public AFEDOCUQRY = this.server2 + '/fe/ms-parametro-query/v1';
