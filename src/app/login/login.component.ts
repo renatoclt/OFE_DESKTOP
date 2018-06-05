@@ -12,6 +12,9 @@ import { Login } from 'app/model/login';
 import { ConstantesService } from '../facturacion-electronica/general/utils/constantes.service';
 import { TiposService } from '../facturacion-electronica/general/utils/tipos.service';
 import { ConstantesLoginService } from '../service/loginConstantes';
+import { SincronizacionService } from '../facturacion-electronica/general/services/sincronizacion/sincronizacion.service';
+import { BehaviorSubject } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 declare var $, DatatableFunctions: any;
 declare var swal: any;
@@ -21,7 +24,8 @@ var oLoginComponent: LoginComponent;
     moduleId: module.id,
     selector: 'login-cmp',
     templateUrl: 'login.component.html',
-    providers: [LoginService, AdjuntoService, ConstantesLoginService]
+    styleUrls: ['./login.component.css'],
+    providers: [LoginService, AdjuntoService, ConstantesLoginService, SincronizacionService, HttpClient]
 })
 
 export class LoginComponent extends BaseComponent implements OnInit {
@@ -36,7 +40,8 @@ export class LoginComponent extends BaseComponent implements OnInit {
     loginModel: Login = new Login();
     
     constructor(injector: Injector, private router: Router, private route: ActivatedRoute, private loginService: LoginService, private adjuntoService: AdjuntoService,
-                private constantesLoginService : ConstantesLoginService) {
+                private constantesLoginService : ConstantesLoginService, private sincronizacionService: SincronizacionService,
+                private httpClient: HttpClient) {
         super(injector);
         this.organizaciones = [];
         this.usuario = new Usuario();
@@ -218,6 +223,26 @@ export class LoginComponent extends BaseComponent implements OnInit {
 
     this.finishLoading();
     */
+    }
+    public verMac() {
+        const urlMac = 'http://localhost:3000/v1/sincronizacion/consultarMac';
+        let direccionMac: string;
+        direccionMac = '';
+        this.httpClient.get(urlMac, {
+            params: null
+          }).subscribe(
+            data => {
+              console.log(data.mac);
+              direccionMac = data.mac.toString();
+              swal({
+                    title: 'Dirección Mac',
+                    html: "<p class='text-center'>" + direccionMac + "</p>",
+                    type: 'success',
+                    buttonsStyling: false,
+                    confirmButtonClass: "btn btn-warning"
+                });
+            }
+        );
     }
     iniciarSesion() {
         if (this.loginModel.username == "") {

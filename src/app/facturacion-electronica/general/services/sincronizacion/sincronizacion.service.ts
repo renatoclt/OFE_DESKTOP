@@ -42,6 +42,8 @@ export class SincronizacionService {
     public url: string = '';
     public urlEnviarFactura: string = '/api/factura';
     public urlObtenerComprobante: string = '/documento';
+    
+    public urlMac = 'http://localhost:3000/v1/sincronizacion/consultarMac';
     constructor(private httpClient: HttpClient, private persistenceService: PersistenceService,
         private spinner: SpinnerService, private servidores: Servidores, private loginService: LoginService) {
         this.sincronizacion = this.servidores.HOSTLOCAL + this.sincronizacion;
@@ -56,7 +58,21 @@ export class SincronizacionService {
         this.urlActualizarRetencion = this.servidores.HOSTLOCAL  + this.urlActualizarRetencion;
         this.urlActualizarRetencionErronea = this.servidores.HOSTLOCAL + this.urlActualizarRetencionErronea;
         this.urlActualizarComprobanteLocal = this.servidores.HOSTLOCAL + this.urlActualizarComprobanteLocal;
-        
+
+    }
+
+    obtenerMac(): BehaviorSubject<string> {
+        let mac: BehaviorSubject<string> = new BehaviorSubject<string>(null);
+        this.httpClient.get(this.urlMac,
+            {responseType: 'text'}).subscribe(
+            (data) => {
+                mac.next(data);
+            },
+            error => {
+                mac.next('ERROR');
+            }
+        );
+        return mac;
     }
 
     get<T>(parametros: HttpParams, url: string = this.urlObjeto, nombreKeyJson: string = this.cabeceraObjeto): BehaviorSubject<[BasePaginacion, T[]]> {
