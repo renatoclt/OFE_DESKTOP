@@ -110,6 +110,8 @@ export class LoginService {
             .catch(this.handleError);
     }
 
+
+
     public obtenerIdEntidad(ruc: string) {
         const usuario = JSON.parse(localStorage.getItem('usuarioActual'));
         const access_token = localStorage.getItem('access_token');

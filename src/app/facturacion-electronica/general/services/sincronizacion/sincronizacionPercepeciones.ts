@@ -101,7 +101,7 @@ export class SincronizacionPercepciones {
     obtenerPercepcion(id):Observable<any>{
         const parametroGetDocumento = new HttpParams().set('id', id);
         this.url = this.servidores.DOCUQRY + this.urlObtenerComprobante;
-        return this.httpClient.get(this.url,{ params: parametroGetDocumento, headers: this.getCabezera() })
+        return this.httpClient.get(this.url,{ params: parametroGetDocumento, responseType: "text/plain" , headers: this.getCabezera() })
     }
 
     guardarPercepcionPendientes(documento):Observable<any>{

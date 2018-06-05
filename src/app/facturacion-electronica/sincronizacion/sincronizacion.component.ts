@@ -93,8 +93,9 @@ export class SincronizacionComponent implements OnInit {
 
     async actualizarParametros(){
         this.spinner.set(true);
-        this.sincronizacionParametros.actualizarToken(await this.sincronizacionParametros.tokenNuevo().toPromise().then(
+        await this.sincronizacionParametros.tokenNuevo().toPromise().then(
             async resolve =>{
+                this.sincronizacionParametros.actualizarToken(resolve);
                 await this.sincronizacionParametros.eliminarIdioma().toPromise();
                 await this.sincronizacionParametros.guardarIdioma().toPromise();
                 await this.sincronizacionParametros.eliminarIdiomaQuery().toPromise();
@@ -181,13 +182,14 @@ export class SincronizacionComponent implements OnInit {
                     confirmButtonText: 'CONTINUAR',
                 });
             }
-        ));
+        );
     }
     
     async actualizarRetenciones(fecha){
         this.spinner.set(true);
-        this.sincronizacionRetenciones.actualizarToken(await this.sincronizacionRetenciones.tokenNuevo().toPromise().then(
+        await this.sincronizacionRetenciones.tokenNuevo().toPromise().then(
             async resolve =>{
+                this.sincronizacionPercepciones.actualizarToken(resolve);
                 for (let retencion of await this.sincronizacionRetenciones.obtenerRetencionesCreadas().toPromise()){
                     await this.sincronizacionRetenciones.enviarRetencionesCreadas(retencion).toPromise().then(
                         async resolve => {
@@ -236,13 +238,14 @@ export class SincronizacionComponent implements OnInit {
                     confirmButtonText: 'CONTINUAR',
                 });
             }
-        ));
+        );
     }
     
     async actualizarPercepciones(fecha){
         this.spinner.set(true);
-        this.sincronizacionPercepciones.actualizarToken(await this.sincronizacionPercepciones.tokenNuevo().toPromise().then(
+       await this.sincronizacionPercepciones.tokenNuevo().toPromise().then(
             async resolve =>{
+                this.sincronizacionPercepciones.actualizarToken(resolve);
                 for (let percepcion of await this.sincronizacionPercepciones.obtenerPercepcionesCreadas().toPromise()){
                     await this.sincronizacionPercepciones.enviarPercepcionesCreadas(percepcion).toPromise().then(
                         async resolve => {
@@ -301,12 +304,13 @@ export class SincronizacionComponent implements OnInit {
                     confirmButtonText: 'CONTINUAR',
                 });
             }
-        ));
+        );
     }
     async actualizarBoletas(fecha){
         this.spinner.set(true);
-        this.sincronizacionBoletas.actualizarToken(await this.sincronizacionBoletas.tokenNuevo().toPromise().then(
+        await this.sincronizacionBoletas.tokenNuevo().toPromise().then(
             async resolve =>{
+                this.sincronizacionBoletas.actualizarToken(resolve);
                 for (let boleta of await this.sincronizacionBoletas.obtenerBoletasCreadas().toPromise()){
                     console.log(boleta)
                     await this.sincronizacionBoletas.enviarBoletasCreadas(boleta).toPromise().then(
@@ -355,12 +359,13 @@ export class SincronizacionComponent implements OnInit {
                     confirmButtonText: 'CONTINUAR',
                 });
             }
-        ));
+        );
     }
     async actualizarFacturas(fecha){
         this.spinner.set(true);
-        this.sincronizacionFacturas.actualizarToken(await this.sincronizacionFacturas.tokenNuevo().toPromise().then(
+        await this.sincronizacionFacturas.tokenNuevo().toPromise().then(
             async resolve =>{
+                this.sincronizacionFacturas.actualizarToken(resolve);
                 for (let factura of await this.sincronizacionFacturas.obtenerFacturasCreadas().toPromise()){
                     await this.sincronizacionFacturas.enviarFacturasCreadas(factura).toPromise().then(
                         async resolve => {
@@ -383,16 +388,16 @@ export class SincronizacionComponent implements OnInit {
                     )).toPromise();
                 }
         
-                // for (let factura of await this.sincronizacionFacturas.obtenerFacturaBajas().toPromise().then( async resolve => { return resolve} , reject => {return null})){
-                //     await this.sincronizacionFacturas.enviarFacturaBaja(factura).toPromise().then(
-                //     async resolve => {
-                //         await this.sincronizacionFacturas.actualizarFacturaBaja(factura.idComprobanteOffline, resolve.numeroComprobante).toPromise();
-                //     } , 
-                //     async reject => {
-                //         console.log(factura);
-                //         await this.sincronizacionFacturas.actualizarErrorFacturaBaja(factura.idComprobanteOffline).toPromise();
-                //     });
-                // }
+                for (let factura of await this.sincronizacionFacturas.obtenerFacturaBajas().toPromise().then( async resolve => { return resolve} , reject => {return null})){
+                    await this.sincronizacionFacturas.enviarFacturaBaja(factura).toPromise().then(
+                    async resolve => {
+                        await this.sincronizacionFacturas.actualizarFacturaBaja(factura.idComprobanteOffline, resolve.numeroComprobante).toPromise();
+                    } , 
+                    async reject => {
+                        console.log(factura);
+                        await this.sincronizacionFacturas.actualizarErrorFacturaBaja(factura.idComprobanteOffline).toPromise();
+                    });
+                }
                 let facturasDescargadas = await this.sincronizacionFacturas.descargarFacturas(fecha).toPromise();
                 if(facturasDescargadas.totalElements){
                     for(let i=0; i * 10 < facturasDescargadas.totalElements; i++){
@@ -419,6 +424,6 @@ export class SincronizacionComponent implements OnInit {
                     confirmButtonText: 'CONTINUAR',
                 });
             }
-        ));
+        );
     }
 }

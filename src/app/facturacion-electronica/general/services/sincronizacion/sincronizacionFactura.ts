@@ -25,7 +25,6 @@ export class SincronizacionFacturas {
     private urlActualizarErrorFacturaBaja: string = '/sincronizacionFacturas/actualizarErrorBaja';
     private urlActualizarFacturaBaja: string = '/sincronizacionFacturas/actualizarBaja'
     constructor(private loginService: LoginService, private servidores: Servidores,private httpClient: HttpClient){
-
     }
 
     tokenNuevo():Observable<any[]>{ 
@@ -61,7 +60,7 @@ export class SincronizacionFacturas {
                                         .set("Ocp-Apim-Subscription-Key", localStorage.getItem('Ocp_Apim_Subscription_Key'));
         const parametros = new HttpParams();
         this.url = this.servidores.DOCUCMD + this.urlEnviarFactura;
-        return this.httpClient.post<FacturaErpDTO>(this.url, factura , {headers:headers } );
+        return this.httpClient.post<FacturaErpDTO>(this.url, factura , {headers: this.getCabezera() } );
     }
 
     private convertirSincronizacionLongToDate(item){
@@ -93,14 +92,15 @@ export class SincronizacionFacturas {
     obtenerFacturasPendientes():Observable<any>{
         const parametros = new HttpParams();
         this.url = this.hostLocal + this.urlActualizarEstadoComprobante;
-        return this.httpClient.get(this.url, {params: parametros});
+        return this.httpClient.get(this.url, {params: parametros });
 
     }
+
 
     obtenerFactura(id):Observable<any>{
         const parametroGetDocumento = new HttpParams().set('id', id);
         this.url = this.servidores.DOCUQRY + this.urlObtenerComprobante;
-        return this.httpClient.get(this.url,{ params: parametroGetDocumento })
+        return this.httpClient.get(this.url,{ params: parametroGetDocumento , headers: this.getCabezera() })
     }
 
     guardarFacturaPendientes(documento):Observable<any>{
@@ -219,7 +219,7 @@ export class SincronizacionFacturas {
                                         .set("Ocp-Apim-Subscription-Key", localStorage.getItem('Ocp_Apim_Subscription_Key'));
         const parametros = new HttpParams();
         this.url = this.servidores.DOCUCMD + this.urlEnviarFacturasBaja;
-        return this.httpClient.post<any>(this.url, facturaBaja , {headers:headers } );
+        return this.httpClient.post<any>(this.url, facturaBaja , {headers: this.getCabezera() } );
     }
 
     actualizarErrorFacturaBaja(_id):Observable<any>{
