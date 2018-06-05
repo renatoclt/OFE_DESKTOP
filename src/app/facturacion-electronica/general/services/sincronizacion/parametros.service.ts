@@ -10,11 +10,14 @@ export class ParametrosService {
 
     private urlParametros: string;
     private urlTiposCalculo: string;
+    private urlMac: string;
 
     constructor(private httpClient: HttpClient, private persistenceService: PersistenceService,
         private servidores: Servidores) {
         this.urlParametros = servidores.PARMQRY;
-        this.urlTiposCalculo = "http://localhost:3000/v1/sincronizacion/tipoCalcIsc";;
+        this.urlTiposCalculo = "http://localhost:3000/v1/sincronizacion/tipoCalcIsc";
+        this.urlMac = 'http://localhost:3000/v1/sincronizacion/consultarMac';
+
     }
 
     buscarParametros(): BehaviorSubject<{}> {
