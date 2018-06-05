@@ -242,6 +242,11 @@ export class SincronizacionComponent implements OnInit {
     }
     
     async actualizarPercepciones(fecha){
+        var percepcionEnviadaError = 0;
+        var percepcionEnviadaCorrecta = 0;
+        var percepcionDescargadasN = 0;
+        var percepcionBajaError = 0;
+        var percepcionBajaCorrectas = 0;
         this.spinner.set(true);
        await this.sincronizacionPercepciones.tokenNuevo().toPromise().then(
             async resolve =>{
@@ -249,10 +254,12 @@ export class SincronizacionComponent implements OnInit {
                 for (let percepcion of await this.sincronizacionPercepciones.obtenerPercepcionesCreadas().toPromise()){
                     await this.sincronizacionPercepciones.enviarPercepcionesCreadas(percepcion).toPromise().then(
                         async resolve => {
+                        percepcionEnviadaCorrecta++;
                         await this.sincronizacionPercepciones.actualizarEstadoSincronizacionPercepcion(percepcion.idComprobanteOffline).toPromise().then( async resolve => { return resolve} , reject => {return null});
                         return resolve;
                     }, async reject =>
                     {
+                        percepcionEnviadaError++;
                         await this.sincronizacionPercepciones.actualizarErrorPercepcion(percepcion.idComprobanteOffline, reject).toPromise().then( async resolve => { return resolve} , reject => {return null});
                         return reject;
                     });
@@ -271,9 +278,11 @@ export class SincronizacionComponent implements OnInit {
                 for (let percepcion of await this.sincronizacionPercepciones.obtenerPercepcionBajas().toPromise().then( async resolve => { return resolve} , reject => {return null})){
                     await this.sincronizacionPercepciones.enviarPercepcionBaja(percepcion).toPromise().then(
                     async resolve => {
+                        percepcionBajaCorrectas++;
                         await this.sincronizacionPercepciones.actualizarPercepcionBaja(percepcion.idComprobanteOffline, resolve.numeroComprobante).toPromise();
                     } , 
                     async reject => {
+                        percepcionBajaError++;
                         console.log(percepcion);
                         await this.sincronizacionPercepciones.actualizarErrorPercepcionBaja(percepcion.idComprobanteOffline).toPromise();
                     });
@@ -284,6 +293,7 @@ export class SincronizacionComponent implements OnInit {
                         let percepciones = await this.sincronizacionPercepciones.descargarPercepcionesPagina(i, fecha).toPromise();
                         let fechaDescarga = '';
                         for (let percepcion of  percepciones.content){
+                            percepcionDescargadasN++;
                             await this.sincronizacionPercepciones.guardarPercepcionDescargada(percepcion).toPromise();
                             fechaDescarga = percepcion.tsFechaemision;
                         }
@@ -292,6 +302,19 @@ export class SincronizacionComponent implements OnInit {
                 }
                 await this.sincronizacionPercepciones.actualizarFechaDescarga(Number(new Date())).toPromise();
                 this.spinner.set(false);
+                swal({
+                    text : "Sincronizacion Correcta",
+                    html: "<p>Percepcion enviadas Correctamente: "+ percepcionEnviadaCorrecta +"</p> "+
+                          "<p>Percepcion con errores: "+ percepcionEnviadaError +"</p> " +
+                          "<p>Resumen de bajas Correctas: "+ percepcionBajaCorrectas +"</p> " +
+                          "<p>Resumen de bajas con Errores: "+ percepcionBajaError +"</p> "  +
+                          "<p>Percepcion Actualizadas:" + percepcionDescargadasN + "</p>",
+
+                    type : 'success',
+                    buttonsStyling: false,
+                    confirmButtonClass: "btn btn-error",
+                    confirmButtonText: 'CONTINUAR',
+                })
                 return resolve;
             },
             reject => {
@@ -307,6 +330,11 @@ export class SincronizacionComponent implements OnInit {
         );
     }
     async actualizarBoletas(fecha){
+        var boletaEnviadaError = 0;
+        var boletaEnviadaCorrecta = 0;
+        var boletaDescargadasN = 0;
+        var boletaBajaError = 0;
+        var boletaBajaCorrectas = 0;
         this.spinner.set(true);
         await this.sincronizacionBoletas.tokenNuevo().toPromise().then(
             async resolve =>{
@@ -315,9 +343,11 @@ export class SincronizacionComponent implements OnInit {
                     console.log(boleta)
                     await this.sincronizacionBoletas.enviarBoletasCreadas(boleta).toPromise().then(
                         async resolve => {
+                            boletaEnviadaCorrecta++;
                         await this.sincronizacionBoletas.actualizarEstadoSincronizacionBoleta(boleta.idComprobanteOffline).toPromise().then( async resolve => { return resolve} , reject => {return null});
                     }, async reject =>
                         {
+                            boletaEnviadaError++;
                             await this.sincronizacionBoletas.actualizarErrorBoleta(boleta.idComprobanteOffline, reject).toPromise().then( async resolve => { return resolve} , reject => {return null});
                         });
                 }
@@ -328,9 +358,11 @@ export class SincronizacionComponent implements OnInit {
                 for (let boleta of await this.sincronizacionBoletas.obtenerBoletaBajas().toPromise().then( async resolve => { return resolve} , reject => {return null})){
                     await this.sincronizacionBoletas.enviarBoletaBaja(boleta).toPromise().then(
                     async resolve => {
+                        boletaBajaCorrectas++;
                         await this.sincronizacionBoletas.actualizarBoletaBaja(boleta.idComprobanteOffline, resolve.numeroComprobante).toPromise();
                     } , 
                     async reject => {
+                        boletaBajaError++;
                         await this.sincronizacionBoletas.actualizarErrorBoletaBaja(boleta.idComprobanteOffline).toPromise();
                     });
                 }
@@ -340,6 +372,7 @@ export class SincronizacionComponent implements OnInit {
                         let rercepciones = await this.sincronizacionBoletas.descargarBoletasPagina(i, fecha).toPromise();
                         let fechaDescarga = '';
                         for (let boleta of  rercepciones.content){
+                            boletaDescargadasN++;
                             await this.sincronizacionBoletas.guardarBoletaDescargada(boleta).toPromise();
                             fechaDescarga = boleta.tsFechaemision;
                         }
@@ -348,6 +381,19 @@ export class SincronizacionComponent implements OnInit {
                 }
                 await this.sincronizacionBoletas.actualizarFechaDescarga(Number(new Date())).toPromise();
                 this.spinner.set(false);
+                swal({
+                    text : "Sincronizacion Correcta",
+                    html: "<p>Boletas enviadas Correctamente: "+ boletaEnviadaCorrecta +"</p> "+
+                          "<p>Boletas con errores: "+ boletaEnviadaError +"</p> " +
+                          "<p>Resumen de bajas Correctas: "+ boletaBajaCorrectas +"</p> " +
+                          "<p>Resumen de bajas con Errores: "+ boletaBajaError +"</p> "  +
+                          "<p>Boletas Actualizadas:" + boletaDescargadasN + "</p>",
+
+                    type : 'success',
+                    buttonsStyling: false,
+                    confirmButtonClass: "btn btn-error",
+                    confirmButtonText: 'CONTINUAR',
+                })
             },
             reject => {
                 this.spinner.set(false);
@@ -362,6 +408,11 @@ export class SincronizacionComponent implements OnInit {
         );
     }
     async actualizarFacturas(fecha){
+        var facturaEnviadaError = 0;
+        var facturaEnviadaCorrecta = 0;
+        var facturasDescargadasN = 0;
+        var facturasBajaError = 0;
+        var facturaBajaCorrectas = 0;
         this.spinner.set(true);
         await this.sincronizacionFacturas.tokenNuevo().toPromise().then(
             async resolve =>{
@@ -369,7 +420,12 @@ export class SincronizacionComponent implements OnInit {
                 for (let factura of await this.sincronizacionFacturas.obtenerFacturasCreadas().toPromise()){
                     await this.sincronizacionFacturas.enviarFacturasCreadas(factura).toPromise().then(
                         async resolve => {
-                        await this.sincronizacionFacturas.actualizarEstadoSincronizacionFactura(factura.idComprobanteOffline).toPromise().then( async resolve => { return resolve} , reject => {return null});
+                        await this.sincronizacionFacturas.actualizarEstadoSincronizacionFactura(factura.idComprobanteOffline).toPromise().then( async resolve => { 
+                            facturaEnviadaCorrecta++;
+                            return resolve
+                        } , reject => {
+                            return null
+                        });
                         return resolve;
                     }, async reject =>
                     {
@@ -391,10 +447,12 @@ export class SincronizacionComponent implements OnInit {
                 for (let factura of await this.sincronizacionFacturas.obtenerFacturaBajas().toPromise().then( async resolve => { return resolve} , reject => {return null})){
                     await this.sincronizacionFacturas.enviarFacturaBaja(factura).toPromise().then(
                     async resolve => {
+                        facturaBajaCorrectas++;
                         await this.sincronizacionFacturas.actualizarFacturaBaja(factura.idComprobanteOffline, resolve.numeroComprobante).toPromise();
                     } , 
                     async reject => {
                         console.log(factura);
+                        facturasBajaError++;
                         await this.sincronizacionFacturas.actualizarErrorFacturaBaja(factura.idComprobanteOffline).toPromise();
                     });
                 }
@@ -405,6 +463,7 @@ export class SincronizacionComponent implements OnInit {
                         let fechaDescarga = '';
                         for (let factura of  facturas.content){
                             await this.sincronizacionFacturas.guardarFacturaDescargada(factura).toPromise();
+                            facturasDescargadasN++;
                             fechaDescarga = factura.tsFechaemision;
                         }
                         await this.sincronizacionFacturas.actualizarFechaDescarga(fechaDescarga).toPromise();
@@ -412,6 +471,19 @@ export class SincronizacionComponent implements OnInit {
                 }
                 await this.sincronizacionFacturas.actualizarFechaDescarga(Number(new Date())).toPromise();
                 this.spinner.set(false);
+                swal({
+                    text : "Sincronizacion Correcta",
+                    html: "<p>Facturas enviadas Correctamente: "+ facturaEnviadaCorrecta +"</p> "+
+                          "<p>Facturas con errores: "+ facturaEnviadaError +"</p> " +
+                          "<p>Resumen de bajas Correctas: "+ facturaBajaCorrectas +"</p> " +
+                          "<p>Resumen de bajas con Error: "+ facturasBajaError +"</p> "  +
+                          "<p>Facturas Actualizadas:" + facturasDescargadasN + "</p>",
+
+                    type : 'success',
+                    buttonsStyling: false,
+                    confirmButtonClass: "btn btn-error",
+                    confirmButtonText: 'CONTINUAR',
+                })
                 return resolve;
             },
             reject => {
