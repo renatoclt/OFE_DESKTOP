@@ -1,6 +1,6 @@
 <div class="logo">
     <div class="logo-normal">
-        <a href="javascript:void(0)" class="simple-text" style="height: 45px;color:#1f246a !important">
+        <a class="simple-text" style="height: 45px;color:#1f246a !important">
             <!--<img src="assets/img/b2mining.png"/>-->
             <div style="  width: 180px;  
     height: 35px;
@@ -118,12 +118,12 @@
                         </a>
                     </li>
                     <li routerLinkActive="active" *ngIf="PermitirCambiarOrganizacion">
-                        <a href="javascript:void(0);" (click)="cambiarOrganizacion($event)">
+                        <a (click)="cambiarOrganizacion($event)">
                                 Cambiar Organización
                             </a>
                     </li>
                     <li>
-                        <a href="javascript:void(0);" (click)="logout($event)">
+                        <a (click)="logout($event)">
                             Cerrar Sesión
                         </a>
                     </li>

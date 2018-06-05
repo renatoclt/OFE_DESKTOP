@@ -186,6 +186,12 @@ export class SincronizacionComponent implements OnInit {
     }
     
     async actualizarRetenciones(fecha){
+        var retencionEnviadaError = 0;
+        var retencionEnviadaCorrecta = 0;
+        var retencionDescargadasN = 0;
+        var retencionBajaError = 0;
+        var retencionBajaCorrectas = 0;
+        this.spinner.set(true);
         this.spinner.set(true);
         await this.sincronizacionRetenciones.tokenNuevo().toPromise().then(
             async resolve =>{
@@ -193,9 +199,11 @@ export class SincronizacionComponent implements OnInit {
                 for (let retencion of await this.sincronizacionRetenciones.obtenerRetencionesCreadas().toPromise()){
                     await this.sincronizacionRetenciones.enviarRetencionesCreadas(retencion).toPromise().then(
                         async resolve => {
+                            retencionEnviadaCorrecta++;
                         await this.sincronizacionRetenciones.actualizarEstadoSincronizacionRetencion(retencion.idComprobanteOffline).toPromise().then( async resolve => { return resolve} , reject => {return null});
                     }, async reject =>
                         {
+                            retencionEnviadaError++;
                             await this.sincronizacionRetenciones.actualizarErrorRetencion(retencion.idComprobanteOffline, reject).toPromise().then( async resolve => { return resolve} , reject => {return null});
                         });
                 }
@@ -206,9 +214,11 @@ export class SincronizacionComponent implements OnInit {
                 for (let retencion of await this.sincronizacionRetenciones.obtenerRetencionBajas().toPromise().then( async resolve => { return resolve} , reject => {return null})){
                     await this.sincronizacionRetenciones.enviarRetencionBaja(retencion).toPromise().then(
                     async resolve => {
+                        retencionBajaCorrectas++;
                         await this.sincronizacionRetenciones.actualizarRetencionBaja(retencion.idComprobanteOffline, resolve.numeroComprobante).toPromise();
                     } , 
                     async reject => {
+                        retencionBajaError++;
                         console.log(retencion);
                         await this.sincronizacionRetenciones.actualizarErrorRetencionBaja(retencion.idComprobanteOffline).toPromise();
                     });
@@ -219,6 +229,7 @@ export class SincronizacionComponent implements OnInit {
                         let retenciones = await this.sincronizacionRetenciones.descargarRetencionesPagina(i, fecha).toPromise();
                         let fechaDescarga = '';
                         for (let retencion of  retenciones.content){
+                            retencionDescargadasN++;
                             await this.sincronizacionRetenciones.guardarRetencionDescargada(retencion).toPromise();
                             fechaDescarga = retencion.tsFechaemision;
                         }
@@ -226,6 +237,19 @@ export class SincronizacionComponent implements OnInit {
                     }
                 }
                 await this.sincronizacionRetenciones.actualizarFechaDescarga(Number(new Date())).toPromise();
+                swal({
+                    text : "Sincronizacion Correcta",
+                    html: "<p>Percepcion enviadas Correctamente: "+ retencionEnviadaCorrecta +"</p> "+
+                          "<p>Percepcion con errores: "+ retencionEnviadaError +"</p> " +
+                          "<p>Resumen de bajas Correctas: "+ retencionBajaCorrectas +"</p> " +
+                          "<p>Resumen de bajas con Errores: "+ retencionBajaError +"</p> "  +
+                          "<p>Percepcion Actualizadas:" + retencionDescargadasN + "</p>",
+
+                    type : 'success',
+                    buttonsStyling: false,
+                    confirmButtonClass: "btn btn-error",
+                    confirmButtonText: 'CONTINUAR',
+                })
                 this.spinner.set(false);
             },
             reject => {

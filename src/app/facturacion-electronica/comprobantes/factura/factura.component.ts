@@ -399,8 +399,8 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
     this.setFacturaCabeceraDetalle();
     this._route.navigateByUrl(this._rutas.URL_COMPROBANTE_FACTURA_BIEN_AGREGAR);
   }
-  public irVistaPrevia() {
-    this.guardarOrganizacion();
+  public async irVistaPrevia() {
+    await this.guardarOrganizacion();
     this.validacionComprobanteMontos();
   }
   /**
