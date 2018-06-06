@@ -157,6 +157,13 @@ export class SincronizacionComponent implements OnInit {
                     let ruc = localStorage.getItem('org_ruc');
                     await this.sincronizacionParametros.guardarUsuariosOffline(await this.sincronizacionParametros.obtenerUsuariosOffline(ruc).toPromise()).toPromise();
                     this.spinner.set(false);
+                    swal({
+                        text : "Sincronizacion Correcta",
+                        type : 'success',
+                        buttonsStyling: false,
+                        confirmButtonClass: "btn btn-error",
+                        confirmButtonText: 'CONTINUAR',
+                    })
                 }
                 catch(e){
                     this.spinner.set(false);

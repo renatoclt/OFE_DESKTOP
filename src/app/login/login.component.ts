@@ -125,7 +125,7 @@ export class LoginComponent extends BaseComponent implements OnInit {
             }
             catch(e){
                 swal({
-                    text: "No se pudo obtener informacion de la organización.",
+                    text: "Error al intentar sincronizar.",
                     type: 'error',
                     buttonsStyling: false,
                     confirmButtonClass: "btn btn-error",
@@ -143,7 +143,7 @@ export class LoginComponent extends BaseComponent implements OnInit {
             }
             catch(e){
                 swal({
-                    text: "No se pudo obtener informacion de los tablas maestras.",
+                    text: "Error al intentar sincronizar.",
                     type: 'error',
                     buttonsStyling: false,
                     confirmButtonClass: "btn btn-error",

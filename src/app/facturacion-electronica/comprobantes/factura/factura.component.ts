@@ -400,7 +400,7 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
     this._route.navigateByUrl(this._rutas.URL_COMPROBANTE_FACTURA_BIEN_AGREGAR);
   }
   public async irVistaPrevia() {
-    await this.guardarOrganizacion();
+    await this.guardarOrganizacion().toPromise();
     this.validacionComprobanteMontos();
   }
   /**
@@ -1317,7 +1317,7 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
     }, 200);
   }
 
-  guardarOrganizacion(){
+  guardarOrganizacion(): OBSER{
     let organizacion:  OrganizacionDTO = new OrganizacionDTO;
     organizacion.correo = this.facturaFormGroup.controls['txtCorreo'].value;
     organizacion.direccion = this.facturaFormGroup.controls['txtDireccionFiscal'].value;
