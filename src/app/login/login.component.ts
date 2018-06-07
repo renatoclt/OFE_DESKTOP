@@ -303,8 +303,8 @@ export class LoginComponent extends BaseComponent implements OnInit {
         this.loading = true;
         this.uiUtils.showOrHideLoadingScreen(this.loading);
         //let usuario = this.usuarios.find(a=> a.nombreusuario===$("#txtUsuario").val()&& a.contrasenha===$("#txtClave").val());
-
-        this.loginService.login(this.loginModel.username, this.loginModel.password)
+        
+        this.loginService.login(this.loginModel.username.toUpperCase(), this.loginModel.password)
             // this.loginService.login(usuario.nombreusuario, usuario.contrasenha)
             .subscribe(
                 response => {
@@ -319,7 +319,7 @@ export class LoginComponent extends BaseComponent implements OnInit {
                 },
                 error => {
                     /* empieza login offline*/
-                    this.loginService.loginOffline(this.loginModel.username, this.loginModel.password).subscribe(
+                    this.loginService.loginOffline(this.loginModel.username.toUpperCase(), this.loginModel.password).subscribe(
                         data => {
                             if (data !== null) {
                                 //token login
@@ -416,7 +416,7 @@ export class LoginComponent extends BaseComponent implements OnInit {
         let usuario_: any = {};
 
         usuario_.id = user.id;
-        usuario_.nombreusuario = user.nombreusuario;
+        usuario_.nombreusuario = user.nombreusuario.toUpperCase();
         usuario_.nombrecompleto = user.nombrecompleto;
         usuario_.perfil = user.perfil;
         usuario_.url_image = user.url_image;
