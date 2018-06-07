@@ -555,9 +555,9 @@ export class LoginService {
         return this.httpClient.post<DtoTipoEntidad[]>(url, this.tipoEntidadDTO);
     }
     public obtenerSerie(): Observable<any>{
-        let url = this._servidores.PARMQRY + '/seriess';
-        const parametros = new HttpParams();
-        return this.httpClient.get(url, { params: parametros , headers: this.getCabezera()  });
+        let url = this._servidores.ORGAQRY + '/seriesCmd/search/correlativos';
+        const parametros = new HttpParams().set('id_entidad', localStorage.getItem('id_entidad')); ;
+        return this.httpClient.get(url, { params: parametros, headers: this.getCabezera() });
     }
     public guardarSerie(data): Observable<any>{
         this.serieDTO = [];

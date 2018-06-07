@@ -337,11 +337,7 @@ export class SincronizacionParametros {
         return this.httpClient.get(url, { params: parametros, responseType: "text/plain", headers: this.getCabezera() });
     }
 
-    public obtenerSerie(): Observable<any>{
-        let url = this.servidores.ORGAQRY + '/seriesCmd/search/correlativos';
-        const parametros = new HttpParams().set('id_entidad', localStorage.getItem('id_entidad')); ;
-        return this.httpClient.get(url, { params: parametros, headers: this.getCabezera() });
-    }
+    
 
     public obtenerTipoPrecioVenta(): Observable<any>{
         let url = this.servidores.PARMQRY + '/tipoprecioventa';

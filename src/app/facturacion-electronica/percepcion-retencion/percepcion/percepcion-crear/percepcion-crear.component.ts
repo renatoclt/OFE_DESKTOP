@@ -357,8 +357,8 @@ export class PercepcionCrearComponent implements OnInit {
     }
     return true;
   }
-  agregarItem(agrego: boolean) {
-    // this.guardarOrganizacion();
+  async agregarItem(agrego: boolean) {
+    this.guardarOrganizacion();
     if (agrego) {
       if (this.percepcionFormGroup.controls['cmbPorcentajePercepcion'].value) {
         this.agregarPersistencia();
@@ -372,7 +372,7 @@ export class PercepcionCrearComponent implements OnInit {
     }
   }
 
-  guardarOrganizacion(){
+  async guardarOrganizacion(){
     let organizacion:  OrganizacionDTO = new OrganizacionDTO;
     organizacion.correo = this.percepcionFormGroup.controls['txtcorreo'].value;
     organizacion.direccion = this.percepcionFormGroup.controls['txtdireccionfiscal'].value;
@@ -454,7 +454,6 @@ export class PercepcionCrearComponent implements OnInit {
       const nuevoMontoPercepcion = this.verificarMontoPorcentajePercepcion(detalle.tipoPorcentajePercepcion);
       detalle.porcentajePercepcion = nuevoMontoPercepcion;
       detalle.montoPercepcion = (Number(detalle.importeSolesComprobante) * nuevoMontoPercepcion / 100).toFixed(2);
-      console.log('////////////////////');
       console.log(detalle);
       console.log(detalle.montoPercepcion);
     }

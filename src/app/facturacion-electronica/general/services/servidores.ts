@@ -51,8 +51,8 @@ export class Servidores {
   public NOTIFIC    = this.server1 + '/fe/ms-notificaciones/v1';
   public FILEQRY    = this.server1 + '/fe/ms-archivos-query/v1';
   public INVEQRY    = this.server1 + '/fe/ms-inveqry/v1';
-  // public DOCUCMD    = this.server1 + '/fe/ms-documentos-command/v1';
-  public DOCUCMD    = 'http://192.168.70.29:8083/api/fe/ms-documentos-command/v1';
+  public DOCUCMD    = this.server1 + '/fe/ms-documentos-command/v1';
+  // public DOCUCMD    = 'http://192.168.70.29:8083/api/fe/ms-documentos-command/v1';
 
   //  SERVER 2
   public AFEDOCUQRY = this.server2 + '/fe/ms-parametro-query/v1';
