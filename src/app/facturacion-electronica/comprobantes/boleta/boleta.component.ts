@@ -597,6 +597,7 @@ export class BoletaComponent implements OnInit, AfterViewInit {
     this.boleta.documentoEntidad[0].idTipoEntidad = this._tipos.TIPO_ENTIDAD_EMISOR;
     this.boleta.documentoEntidad[0].descripcionTipoEntidad = this._tipos.DESCRIPCION_TIPO_ENTIDAD_EMISOR;
     this.boleta.documentoEntidad[0].idEntidad = localStorage.getItem('id_entidad');
+    // this.boleta.documentoEntidad[0].idEntidad = idReceptor;
     this.boleta.documentoEntidad[0].tipoDocumento = '6'; // this._cataloDocumentos.TIPO_DOCUMENTO_IDENTIDAD_RUC;
     this.boleta.documentoEntidad[0].documento = localStorage.getItem('org_ruc');
     this.boleta.documentoEntidad[0].denominacion = localStorage.getItem('org_nombre');
@@ -607,11 +608,25 @@ export class BoletaComponent implements OnInit, AfterViewInit {
     this.boleta.documentoEntidad[0].correo = localStorage.getItem('org_email');
     this.boleta.documentoEntidad[0].notifica = this._tipos.NOTIFICACION_DOCUMENTO_ENTIDAD;
     //  Receptor
+    const ruc = this.boletaFormGroup.controls['txtNumeroDocumento'].value;
+    let idReceptor: string;
+    // const entidad = this._entidadServices.buscarPorRuc(ruc);
+    const entidad = this._entidadServices.buscarPorRuc(this.boletaFormGroup.get('txtNumeroDocumento').value
+    + '?idTipoDocumento=' + (Number(this.boletaFormGroup.get('cmbTipoDocumento').value)).toString());
+    if (entidad) {
+      entidad.subscribe(
+        data => {
+          if (data) {
+            idReceptor = data.id;
+          }
+      });
+    }
     // this.org_busqueda = this._entidadPersistenciaService.getEntidad();
     this.boleta.documentoEntidad[1].idTipoEntidad = this._tipos.TIPO_ENTIDAD_RECEPTOR;
     this.boleta.documentoEntidad[1].descripcionTipoEntidad = this._tipos.DESCRIPCION_TIPO_ENTIDAD_RECEPTOR;
     if (this.flagTipoDocumento) {
-      this.boleta.documentoEntidad[1].idEntidad = this.idEntidadCliente;
+      // this.boleta.documentoEntidad[1].idEntidad = this.idEntidadCliente;
+      this.boleta.documentoEntidad[1].idEntidad = idReceptor;
       this.boleta.documentoEntidad[1].ubigeo = this.ubigeoCliente;
     } else {
       this.boleta.documentoEntidad[1].idEntidad = null;

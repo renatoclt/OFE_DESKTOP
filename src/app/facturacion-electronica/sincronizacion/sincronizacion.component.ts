@@ -158,7 +158,9 @@ export class SincronizacionComponent implements OnInit {
                     await this.sincronizacionParametros.guardarUsuariosOffline(await this.sincronizacionParametros.obtenerUsuariosOffline(ruc).toPromise()).toPromise();
                     this.spinner.set(false);
                     swal({
-                        text : "Sincronizacion Correcta",
+                        // text : "Sincronizacion Correcta",
+                        html:
+                        '<div class="text-center"> Sincronizacion Correcta. </div>',
                         type : 'success',
                         buttonsStyling: false,
                         confirmButtonClass: "btn btn-error",
@@ -246,11 +248,11 @@ export class SincronizacionComponent implements OnInit {
                 await this.sincronizacionRetenciones.actualizarFechaDescarga(Number(new Date())).toPromise();
                 swal({
                     text : "Sincronizacion Correcta",
-                    html: "<p>Percepcion enviadas Correctamente: "+ retencionEnviadaCorrecta +"</p> "+
-                          "<p>Percepcion con errores: "+ retencionEnviadaError +"</p> " +
-                          "<p>Resumen de bajas Correctas: "+ retencionBajaCorrectas +"</p> " +
-                          "<p>Resumen de bajas con Errores: "+ retencionBajaError +"</p> "  +
-                          "<p>Percepcion Actualizadas:" + retencionDescargadasN + "</p>",
+                    html: '<p class="text-center">Percepcion enviadas Correctamente: '+ retencionEnviadaCorrecta + '</p>'+
+                          '<p class="text-center">Percepcion con errores: '+ retencionEnviadaError + '</p> ' +
+                          '<p class="text-center">Resumen de bajas Correctas:'+ retencionBajaCorrectas +'</p> ' +
+                          '<p class="text-center">Resumen de bajas con Errores: '+ retencionBajaError +'</p> '  +
+                          '<p class="text-center">Percepcion Actualizadas:' + retencionDescargadasN + '</p>',
 
                     type : 'success',
                     buttonsStyling: false,
@@ -335,11 +337,11 @@ export class SincronizacionComponent implements OnInit {
                 this.spinner.set(false);
                 swal({
                     text : "Sincronizacion Correcta",
-                    html: "<p>Percepcion enviadas Correctamente: "+ percepcionEnviadaCorrecta +"</p> "+
-                          "<p>Percepcion con errores: "+ percepcionEnviadaError +"</p> " +
-                          "<p>Resumen de bajas Correctas: "+ percepcionBajaCorrectas +"</p> " +
-                          "<p>Resumen de bajas con Errores: "+ percepcionBajaError +"</p> "  +
-                          "<p>Percepcion Actualizadas:" + percepcionDescargadasN + "</p>",
+                    html: '<p class="text-center">Percepcion enviadas Correctamente: '+ percepcionEnviadaCorrecta +'</p> '+
+                          '<p class="text-center">Percepcion con errores: '+ percepcionEnviadaError + '</p> ' +
+                          '<p class="text-center">Resumen de bajas Correctas: '+ percepcionBajaCorrectas +'</p> ' +
+                          '<p class="text-center">Resumen de bajas con Errores: '+ percepcionBajaError +'</p> '  +
+                          '<p class="text-center">Percepcion Actualizadas:' + percepcionDescargadasN + '</p>',
 
                     type : 'success',
                     buttonsStyling: false,
@@ -414,11 +416,11 @@ export class SincronizacionComponent implements OnInit {
                 this.spinner.set(false);
                 swal({
                     text : "Sincronizacion Correcta",
-                    html: "<p>Boletas enviadas Correctamente: "+ boletaEnviadaCorrecta +"</p> "+
-                          "<p>Boletas con errores: "+ boletaEnviadaError +"</p> " +
-                          "<p>Resumen de bajas Correctas: "+ boletaBajaCorrectas +"</p> " +
-                          "<p>Resumen de bajas con Errores: "+ boletaBajaError +"</p> "  +
-                          "<p>Boletas Actualizadas:" + boletaDescargadasN + "</p>",
+                    html: '<p class="text-center">Boletas enviadas Correctamente: '+ boletaEnviadaCorrecta +'</p> '+
+                          '<p class="text-center">Boletas con errores: '+ boletaEnviadaError +'</p> ' +
+                          '<p class="text-center">Resumen de bajas Correctas: '+ boletaBajaCorrectas +'</p> ' +
+                          '<p class="text-center">Resumen de bajas con Errores: '+ boletaBajaError +'</p> '  +
+                          '<p class="text-center">Boletas Actualizadas:' + boletaDescargadasN + '</p>',
 
                     type : 'success',
                     buttonsStyling: false,
@@ -504,11 +506,11 @@ export class SincronizacionComponent implements OnInit {
                 this.spinner.set(false);
                 swal({
                     text : "Sincronizacion Correcta",
-                    html: "<p>Facturas enviadas Correctamente: "+ facturaEnviadaCorrecta +"</p> "+
-                          "<p>Facturas con errores: "+ facturaEnviadaError +"</p> " +
-                          "<p>Resumen de bajas Correctas: "+ facturaBajaCorrectas +"</p> " +
-                          "<p>Resumen de bajas con Error: "+ facturasBajaError +"</p> "  +
-                          "<p>Facturas Actualizadas:" + facturasDescargadasN + "</p>",
+                    html: '<p class="text-center">Facturas enviadas Correctamente: '+ facturaEnviadaCorrecta +'</p> '+
+                          '<p class="text-center">Facturas con errores: '+ facturaEnviadaError +'</p> ' +
+                          '<p class="text-center">Resumen de bajas Correctas: '+ facturaBajaCorrectas +'</p> ' +
+                          '<p class="text-center">Resumen de bajas con Error: '+ facturasBajaError +'</p> '  +
+                          '<p class="text-center">Facturas Actualizadas:' + facturasDescargadasN + '</p>',
 
                     type : 'success',
                     buttonsStyling: false,

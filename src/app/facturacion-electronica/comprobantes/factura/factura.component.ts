@@ -400,7 +400,7 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
     this._route.navigateByUrl(this._rutas.URL_COMPROBANTE_FACTURA_BIEN_AGREGAR);
   }
   public async irVistaPrevia() {
-    await this.guardarOrganizacion().toPromise();
+    await this.guardarOrganizacion();
     this.validacionComprobanteMontos();
   }
   /**
@@ -523,7 +523,19 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
     //  Receptor
     this.factura.documentoEntidad[1].idTipoEntidad = this._tipos.TIPO_ENTIDAD_RECEPTOR;
     this.factura.documentoEntidad[1].descripcionTipoEntidad = this._tipos.DESCRIPCION_TIPO_ENTIDAD_RECEPTOR;
-    this.factura.documentoEntidad[1].idEntidad = this.org_busqueda.id.toString();
+    const ruc = this.facturaFormGroup.controls['txtRuc'].value;
+    let idReceptor: string;
+    const entidad = this._entidadServices.buscarPorRuc(ruc);
+    if (entidad) {
+      entidad.subscribe(
+        data => {
+          if (data) {
+            idReceptor = data.id;
+          }
+      });
+    }
+    // this.factura.documentoEntidad[1].idEntidad = this.org_busqueda.id.toString();
+    this.factura.documentoEntidad[1].idEntidad = idReceptor;
     this.factura.documentoEntidad[1].tipoDocumento = '6'; // this._cataloDocumentos.TIPO_DOCUMENTO_IDENTIDAD_RUC;
     this.factura.documentoEntidad[1].documento = this.facturaFormGroup.controls['txtRuc'].value;
     this.factura.documentoEntidad[1].denominacion = this.facturaFormGroup.controls['txtRazonSocial'].value;
@@ -1317,7 +1329,7 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
     }, 200);
   }
 
-  guardarOrganizacion(): OBSER{
+  guardarOrganizacion(){
     let organizacion:  OrganizacionDTO = new OrganizacionDTO;
     organizacion.correo = this.facturaFormGroup.controls['txtCorreo'].value;
     organizacion.direccion = this.facturaFormGroup.controls['txtDireccionFiscal'].value;
@@ -1327,6 +1339,7 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
       this._conceptoDocumentoService.guardarOrganizacion(organizacion).subscribe(data =>{
         console.log('**************************************************');
         console.log(data);
+        
       });
   }
 }
