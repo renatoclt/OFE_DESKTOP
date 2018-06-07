@@ -143,7 +143,7 @@ export class LoginComponent extends BaseComponent implements OnInit {
             }
             catch(e){
                 swal({
-                    text: "Error al intentar sincronizar.",
+                    text: "Error al intentar sincronizarN.",
                     type: 'error',
                     buttonsStyling: false,
                     confirmButtonClass: "btn btn-error",
