@@ -101,8 +101,7 @@ export class retencionesService {
 
     headers.append('org_id', sessionStorage.getItem('org_id'));
     headers.append('Authorization', 'Bearer ' + sessionStorage.getItem('token_oc'));
-    // headers.append('Access-Control-Allow-Origin', '*');
-
+    headers.append('Access-Control-Allow-Origin', '*');
     headers.append("Ocp-Apim-Subscription-Key", sessionStorage.getItem('Ocp_Apim_Subscription_Key'));
     return headers;
   }

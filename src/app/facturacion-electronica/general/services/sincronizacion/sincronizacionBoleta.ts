@@ -209,6 +209,7 @@ export class SincronizacionBoletas {
                         .set('Accept', 'application/json')
                         .set('Ocp-Apim-Subscription-Key', '07a12d074c714f62ab037bb2f88e30d3')
                         .set('origen_datos', 'PEB2M')
+                        .set('origin', 'http://localhost:4200')
                         .set('tipo_empresa', tipo_empresa)
                         .set('org_id', org_id);
         return headers;

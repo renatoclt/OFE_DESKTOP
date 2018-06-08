@@ -69,7 +69,7 @@ export class SincronizacionComponent implements OnInit {
                 await this.actualizarFacturas(item.fechaSincronizacion);
                 break;
             case this.tipos.TIPO_DOCUMENTO_RETENCION:
-                item.fechaSincronizacion = '20/04/2018';
+                //item.fechaSincronizacion = '20/04/2018';
                 await this.actualizarRetenciones(item.fechaSincronizacion);
                 break;
             case this.tipos.TIPO_DOCUMENTO_PERCEPCION:
@@ -248,11 +248,11 @@ export class SincronizacionComponent implements OnInit {
                 await this.sincronizacionRetenciones.actualizarFechaDescarga(Number(new Date())).toPromise();
                 swal({
                     text : "Sincronizacion Correcta",
-                    html: '<p class="text-center">Percepcion enviadas Correctamente: '+ retencionEnviadaCorrecta + '</p>'+
-                          '<p class="text-center">Percepcion con errores: '+ retencionEnviadaError + '</p> ' +
+                    html: '<p class="text-center">Retenciones enviadas Correctamente: '+ retencionEnviadaCorrecta + '</p>'+
+                          '<p class="text-center">Retenciones con errores: '+ retencionEnviadaError + '</p> ' +
                           '<p class="text-center">Resumen de bajas Correctas:'+ retencionBajaCorrectas +'</p> ' +
                           '<p class="text-center">Resumen de bajas con Errores: '+ retencionBajaError +'</p> '  +
-                          '<p class="text-center">Percepcion Actualizadas:' + retencionDescargadasN + '</p>',
+                          '<p class="text-center">Retenciones Actualizadas:' + retencionDescargadasN + '</p>',
 
                     type : 'success',
                     buttonsStyling: false,
