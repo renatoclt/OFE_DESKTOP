@@ -358,7 +358,7 @@ export class PercepcionCrearComponent implements OnInit {
     return true;
   }
   agregarItem(agrego: boolean) {
-    // this.guardarOrganizacion();
+    this.guardarOrganizacion();
     if (agrego) {
       if (this.percepcionFormGroup.controls['cmbPorcentajePercepcion'].value) {
         this.agregarPersistencia();

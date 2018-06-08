@@ -32,7 +32,7 @@ setup(false);
 function startTimer() {
     // wait 2 seconds before calling goInactive
     timeoutID = window.setTimeout(goInactive, TIME_INACTIVE);
-    timeoutID2 = window.setTimeout(goMessage, TIME_INACTIVE - MSG_TIME_INACTIVE);
+    // timeoutID2 = window.setTimeout(goMessage, TIME_INACTIVE - MSG_TIME_INACTIVE);
 }
 
 function goTimeLeft() {
