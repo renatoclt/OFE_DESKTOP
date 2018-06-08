@@ -104,7 +104,11 @@ export class SincronizacionService {
                         }else{
                             retencion.estadoSincronizado = 'No Sincronizado';
                         }
-                    }));  
+                        
+                        const horaFecha = retencion.fechaCreacion.split(' ');
+                        retencion.fechaCreacionFecha = horaFecha[0];
+                        retencion.fechaCreacionHora = horaFecha[1];
+                    }));
                 }
                 if(item['_embedded'].hasOwnProperty('percepciones')){
                     nombreKeyJson = 'percepciones'

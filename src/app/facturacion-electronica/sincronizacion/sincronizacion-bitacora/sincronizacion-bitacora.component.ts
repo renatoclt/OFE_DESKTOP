@@ -58,7 +58,7 @@ export class BitacoraComponent implements OnInit {
 
     ngOnInit() {
         this.initForm();
-        this.columna = [new ColumnaDataTable('Fecha','fechaCreacion'), new ColumnaDataTable('Hora','fechaCreacion'), new ColumnaDataTable('Usuario', 'idUsuarioCreacion'),
+        this.columna = [new ColumnaDataTable('Fecha','fechaCreacionFecha'), new ColumnaDataTable('Hora','fechaCreacionHora'), new ColumnaDataTable('Usuario', 'idUsuarioCreacion'),
                         new ColumnaDataTable('NroComprobante', 'numeroComprobante'), new ColumnaDataTable('Generado','generado'), 
                         new ColumnaDataTable('Estado Sincronización','estadoSincronizado'), new ColumnaDataTable('Estado Documento','estadoComprobante')];
         
@@ -111,6 +111,7 @@ export class BitacoraComponent implements OnInit {
         
         this.tabla.setParametros(this.parametros);
         this.tabla.cargarData();
+        // this.buscar();
     }
     private initForm() {
         const fecha = new Date();
