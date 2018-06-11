@@ -408,7 +408,7 @@ export class ComprobantesService {
   public buscarPorUuid(uuid: string): BehaviorSubject<DocumentoQuery> {
     const parametros = new HttpParams()
       .set('id', uuid);
-    const urlDefecto = this.servidores.DOCUQRY + this.url_documento;
+    const urlDefecto = this.servidores.HOSTLOCAL + this.url_documento;
     const comprobantes: BehaviorSubject<DocumentoQuery> = new BehaviorSubject<DocumentoQuery>(null);
     this.httpClient.get<DocumentoQuery>(urlDefecto, {
       params: parametros
