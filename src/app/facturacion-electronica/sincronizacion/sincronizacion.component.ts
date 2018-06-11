@@ -64,21 +64,27 @@ export class SincronizacionComponent implements OnInit {
         switch(item.tipoComprobante){
             case this.tipos.TIPO_DOCUMENTO_BOLETA :
                 await this.actualizarBoletas(item.fechaSincronizacion);
+                this.obtenerSincronizaciones();
                 break;
             case this.tipos.TIPO_DOCUMENTO_FACTURA:
                 await this.actualizarFacturas(item.fechaSincronizacion);
+                this.obtenerSincronizaciones();
                 break;
             case this.tipos.TIPO_DOCUMENTO_RETENCION:
                 //item.fechaSincronizacion = '20/04/2018';
                 await this.actualizarRetenciones(item.fechaSincronizacion);
+                this.obtenerSincronizaciones();
                 break;
             case this.tipos.TIPO_DOCUMENTO_PERCEPCION:
                 await this.actualizarPercepciones(item.fechaSincronizacion);
+                this.obtenerSincronizaciones();
                 break;
             case this.tipos.PARAMETRO_TIPO_PARAMETROS:
                 await this.actualizarParametros();
+                this.obtenerSincronizaciones();
                 break;
             case this.tipos.PARAMETRO_TIPO_CLIENTES:
+                this.obtenerSincronizaciones();
                 console.log('Clientes');
                 break;
         }
@@ -156,6 +162,7 @@ export class SincronizacionComponent implements OnInit {
                     await this.sincronizacionParametros.eliminarUsuarios().toPromise();
                     let ruc = localStorage.getItem('org_ruc');
                     await this.sincronizacionParametros.guardarUsuariosOffline(await this.sincronizacionParametros.obtenerUsuariosOffline(ruc).toPromise()).toPromise();
+                    await this.sincronizacionParametros.actualizarFechaDescarga(Number(new Date())).toPromise();
                     this.spinner.set(false);
                     swal({
                         // text : "Sincronizacion Correcta",
@@ -233,6 +240,7 @@ export class SincronizacionComponent implements OnInit {
                     });
                 }
                 let retencionesDescargadas = await this.sincronizacionRetenciones.descargarRetenciones(fecha).toPromise();
+                console.log(fecha);
                 if(retencionesDescargadas.totalElements){
                     for(let i=0; i * 10 < retencionesDescargadas.totalElements; i++){
                         let retenciones = await this.sincronizacionRetenciones.descargarRetencionesPagina(i, fecha).toPromise();

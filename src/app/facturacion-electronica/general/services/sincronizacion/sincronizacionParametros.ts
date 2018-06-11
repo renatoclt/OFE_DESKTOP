@@ -272,6 +272,12 @@ export class SincronizacionParametros {
         return this.httpClient.post<any>(url,{});
     }
 
+    public obtenerSerie(): Observable<any>{
+        let url = this.servidores.ORGAQRY + '/seriesCmd/search/correlativos';
+        const parametros = new HttpParams().set('id_entidad', localStorage.getItem('id_entidad')); ;
+        return this.httpClient.get(url, { params: parametros, headers: this.getCabezera() });
+    }
+
     public eliminarParametro(): Observable<any>{
         let url = this.servidores.HOSTLOCAL + '/sincronizacion/eliminarParametro';
         const salida = new BehaviorSubject<any>(null);
@@ -447,5 +453,11 @@ export class SincronizacionParametros {
                                         .set("Ocp-Apim-Subscription-Key", localStorage.getItem('Ocp_Apim_Subscription_Key'))
                                         .set("origen_datos", 'OFFLINE');
         return this.httpClient.get(url, { params: parametros, headers: headers} );
+    }
+
+    actualizarFechaDescarga(fecha):Observable<any>{
+        let urlActualizarFecha: string = '/sincronizacion/actualizarFecha';
+        this.url = this.hostLocal + urlActualizarFecha;
+        return this.httpClient.post<any>(this.url, {'fecha': fecha});
     }
 }

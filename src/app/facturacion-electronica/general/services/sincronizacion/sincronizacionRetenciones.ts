@@ -125,7 +125,7 @@ export class SincronizacionRetenciones {
 
     descargarRetenciones(fecha):Observable<any>{
         console.log(fecha);
-        var parts = fecha.split("/");
+        var parts = fecha.split("-");
         let fechaDe = Number(new Date(new Date(parts[2], parts[1] - 1, parts[0])));
         console.log(fechaDe);
         const fechaAl = Number(new Date());
@@ -155,7 +155,7 @@ export class SincronizacionRetenciones {
     }
 
     descargarRetencionesPagina(pagina, fecha):Observable<any>{
-        var parts = fecha.split("/");
+        var parts = fecha.split("-");
         let fechaDe = Number(new Date(new Date(parts[2], parts[1] - 1, parts[0])));
         const fechaAl = Number(new Date());
         let parametrosFinal = new HttpParams().set('idEntidadEmisora',localStorage.getItem('id_entidad'))

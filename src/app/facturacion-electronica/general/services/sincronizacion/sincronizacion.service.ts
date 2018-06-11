@@ -105,9 +105,9 @@ export class SincronizacionService {
                             retencion.estadoSincronizado = 'No Sincronizado';
                         }
                         
-                        const horaFecha = retencion.fechaCreacion.split(' ');
-                        retencion.fechaCreacionFecha = horaFecha[0];
-                        retencion.fechaCreacionHora = horaFecha[1];
+                        const horaFecha = retencion.fecSincronizado.split(' ');
+                        retencion.fecSincronizadoFecha = horaFecha[0];
+                        retencion.fechaSincronizadoHora = horaFecha[1];
                     }));
                 }
                 if(item['_embedded'].hasOwnProperty('percepciones')){
@@ -123,6 +123,9 @@ export class SincronizacionService {
                         }else{
                             percepcion.estadoSincronizado = 'No Sincronizado';
                         }
+                        const horaFecha = percepcion.fecSincronizado.split(' ');
+                        percepcion.fecSincronizadoFecha = horaFecha[0];
+                        percepcion.fechaSincronizadoHora = horaFecha[1];
                     }));  
                 }
                 if(item['_embedded'].hasOwnProperty('facturas')){
@@ -139,6 +142,9 @@ export class SincronizacionService {
                         }else{
                             percepcion.estadoSincronizado = 'No Sincronizado';
                         }
+                        const horaFecha = percepcion.fecSincronizado.split(' ');
+                        percepcion.fecSincronizadoFecha = horaFecha[0];
+                        percepcion.fechaSincronizadoHora = horaFecha[1];
                     }));  
                 }
                 if(item['_embedded'].hasOwnProperty('boletas')){
@@ -154,6 +160,9 @@ export class SincronizacionService {
                         }else{
                             percepcion.estadoSincronizado = 'No Sincronizado';
                         }
+                        const horaFecha = percepcion.fecSincronizado.split(' ');
+                        percepcion.fecSincronizadoFecha = horaFecha[0];
+                        percepcion.fechaSincronizadoHora = horaFecha[1];
                     }));  
                 }
             }

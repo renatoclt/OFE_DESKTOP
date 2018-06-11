@@ -11,6 +11,7 @@ import { SincronizacionService } from '../../general/services/sincronizacion/sin
 import { TiposService } from '../../general/utils/tipos.service';
 import {HttpParams} from '@angular/common/http';
 import { ColumnaDataTable } from '../../general/data-table/utils/columna-data-table';
+import { ConstantesLoginService } from '../../../service/loginConstantes';
 
 @Component({
     selector: 'app-bitacora',
@@ -34,6 +35,7 @@ export class BitacoraComponent implements OnInit {
     public noSincronizado: EstadoSincronizacion = new EstadoSincronizacion();
     public onLine: TipoSincronizacion = new TipoSincronizacion();
     public offLine: TipoSincronizacion = new TipoSincronizacion();
+    public urlBase : String = "";
     public bitacoraFormGroup: FormGroup;
     public parametros: HttpParams;
 
@@ -58,7 +60,7 @@ export class BitacoraComponent implements OnInit {
 
     ngOnInit() {
         this.initForm();
-        this.columna = [new ColumnaDataTable('Fecha','fechaCreacionFecha'), new ColumnaDataTable('Hora','fechaCreacionHora'), new ColumnaDataTable('Usuario', 'idUsuarioCreacion'),
+        this.columna = [new ColumnaDataTable('Fecha','fecSincronizadoFecha'), new ColumnaDataTable('Hora','fechaSincronizadoHora'), new ColumnaDataTable('Usuario', 'idUsuarioCreacion'),
                         new ColumnaDataTable('NroComprobante', 'numeroComprobante'), new ColumnaDataTable('Generado','generado'), 
                         new ColumnaDataTable('Estado Sincronización','estadoSincronizado'), new ColumnaDataTable('Estado Documento','estadoComprobante')];
         
@@ -70,21 +72,21 @@ export class BitacoraComponent implements OnInit {
         if (this.bitacoraSincronizado == this.tipos.TIPO_DOCUMENTO_RETENCION) {
             this.tipoAtributos = this.tipos.CABECERA_RETENCIONES;
             this.urlSincronizado =  this.sincronizacionService.getUrlObjeto();
-            this.tabla.urlServicio = 'http://localhost:3000/v1/retenciones';
+            this.urlBase = 'http://localhost:3000/v1/retenciones';
             console.log(this.urlSincronizado);
         }
         if(this.bitacoraSincronizado == this.tipos.TIPO_DOCUMENTO_PERCEPCION){
             this.urlSincronizado =  this.sincronizacionService.getUrlObjeto();
-            this.tabla.urlServicio = 'http://localhost:3000/v1/percepcion';
+            this.urlBase = 'http://localhost:3000/v1/percepcion';
         }
         if(this.bitacoraSincronizado == this.tipos.TIPO_DOCUMENTO_FACTURA){
             console.log('ingreseeeee');
             this.urlSincronizado =  this.sincronizacionService.getUrlObjeto();
-            this.tabla.urlServicio = 'http://localhost:3000/v1/factura';
+            this.urlBase = 'http://localhost:3000/v1/factura';
         }
         if(this.bitacoraSincronizado == this.tipos.TIPO_DOCUMENTO_BOLETA){
             this.urlSincronizado =  this.sincronizacionService.getUrlObjeto();
-            this.tabla.urlServicio = 'http://localhost:3000/v1/boleta';
+            this.urlBase = 'http://localhost:3000/v1/boleta';
         }
     }
     private iniciarData(){
@@ -174,7 +176,7 @@ export class BitacoraComponent implements OnInit {
                     .set('fechaInicio', fechaInicio)
                     .set('fechaFin', fechaFin);
 
-                this.tabla.urlServicio = 'http://localhost:3000/v1/retenciones/search/buscar';    
+                this.tabla.urlServicio = this.urlBase + '/search/buscar';    
                 //this.tabla.limpiarDataTemporal();
                 this.tabla.setParametros(this.parametros);
                 this.tabla.cargarData();
