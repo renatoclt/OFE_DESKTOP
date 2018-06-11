@@ -60,7 +60,7 @@ export class BitacoraComponent implements OnInit {
 
     ngOnInit() {
         this.initForm();
-        this.columna = [new ColumnaDataTable('Fecha','fecSincronizadoFecha'), new ColumnaDataTable('Hora','fechaSincronizadoHora'), new ColumnaDataTable('Usuario', 'idUsuarioCreacion'),
+        this.columna = [new ColumnaDataTable('Fecha','fechaCreacionFecha'), new ColumnaDataTable('Hora','fechaCreacionHora'), new ColumnaDataTable('Usuario', 'idUsuarioCreacion'),
                         new ColumnaDataTable('NroComprobante', 'numeroComprobante'), new ColumnaDataTable('Generado','generado'), 
                         new ColumnaDataTable('Estado Sincronización','estadoSincronizado'), new ColumnaDataTable('Estado Documento','estadoComprobante')];
         
@@ -117,7 +117,7 @@ export class BitacoraComponent implements OnInit {
     }
     private initForm() {
         const fecha = new Date();
-        const fecha_actual = fecha.getDate().toString() + '/' + fecha.getMonth().toString() + '/' + fecha.getFullYear().toString();
+        const fecha_actual = fecha.getDate().toString() + '/' + (fecha.getMonth() + 1).toString() + '/' + fecha.getFullYear().toString();
         this.bitacoraFormGroup = new FormGroup({
             'txtComprobante': new FormControl('', [Validators.required]),
             'cmbGenerado': new FormControl('', [Validators.required]),

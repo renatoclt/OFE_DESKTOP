@@ -105,7 +105,7 @@ export class SincronizacionService {
                             retencion.estadoSincronizado = 'No Sincronizado';
                         }
                         
-                        const horaFecha = retencion.fechaCreacion.split(' ');
+                        const horaFecha = retencion.fecSincronizado.split(' ');
                         retencion.fechaCreacionFecha = horaFecha[0];
                         retencion.fechaCreacionHora = horaFecha[1];
                     }));
@@ -123,7 +123,7 @@ export class SincronizacionService {
                         }else{
                             percepcion.estadoSincronizado = 'No Sincronizado';
                         }
-                        const horaFecha = percepcion.fechaCreacion.split(' ');
+                        const horaFecha = percepcion.fecSincronizado.split(' ');
                         percepcion.fechaCreacionFecha = horaFecha[0];
                         percepcion.fechaCreacionHora = horaFecha[1];
                     }));  
@@ -142,7 +142,7 @@ export class SincronizacionService {
                         }else{
                             percepcion.estadoSincronizado = 'No Sincronizado';
                         }
-                        const horaFecha = percepcion.fechaCreacion.split(' ');
+                        const horaFecha = percepcion.fecSincronizado.split(' ');
                         percepcion.fechaCreacionFecha = horaFecha[0];
                         percepcion.fechaCreacionHora = horaFecha[1];
                     }));  
@@ -160,7 +160,7 @@ export class SincronizacionService {
                         }else{
                             percepcion.estadoSincronizado = 'No Sincronizado';
                         }
-                        const horaFecha = percepcion.fechaCreacion.split(' ');
+                        const horaFecha = percepcion.fecSincronizado.split(' ');
                         percepcion.fechaCreacionFecha = horaFecha[0];
                         percepcion.fechaCreacionHora = horaFecha[1];
                     }));  
