@@ -123,6 +123,9 @@ export class SincronizacionService {
                         }else{
                             percepcion.estadoSincronizado = 'No Sincronizado';
                         }
+                        const horaFecha = percepcion.fechaCreacion.split(' ');
+                        percepcion.fechaCreacionFecha = horaFecha[0];
+                        percepcion.fechaCreacionHora = horaFecha[1];
                     }));  
                 }
                 if(item['_embedded'].hasOwnProperty('facturas')){
@@ -139,6 +142,9 @@ export class SincronizacionService {
                         }else{
                             percepcion.estadoSincronizado = 'No Sincronizado';
                         }
+                        const horaFecha = percepcion.fechaCreacion.split(' ');
+                        percepcion.fechaCreacionFecha = horaFecha[0];
+                        percepcion.fechaCreacionHora = horaFecha[1];
                     }));  
                 }
                 if(item['_embedded'].hasOwnProperty('boletas')){
@@ -154,6 +160,9 @@ export class SincronizacionService {
                         }else{
                             percepcion.estadoSincronizado = 'No Sincronizado';
                         }
+                        const horaFecha = percepcion.fechaCreacion.split(' ');
+                        percepcion.fechaCreacionFecha = horaFecha[0];
+                        percepcion.fechaCreacionHora = horaFecha[1];
                     }));  
                 }
             }
