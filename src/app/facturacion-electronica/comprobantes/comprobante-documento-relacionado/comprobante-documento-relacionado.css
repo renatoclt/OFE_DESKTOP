@@ -1,0 +1,17 @@
+.blue {
+  background: #2399e5;
+}
+.input-group-addon {
+  background: transparent;
+  border: 0;
+  padding: 0;
+}
+.card .card-header.card-header-icon{
+  width: 60px;
+}
+.navbar.navbar-info {
+  margin: 0 15px;
+}
+.dt-buttons.pull-right {
+  margin-right: 15px;
+}

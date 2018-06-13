@@ -1,0 +1,53 @@
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="card">
+          <div  class="card-content">
+            <div class="row">
+              <div class="col-sm-12 col-md-4">
+                <a [routerLink]="['has/buscar']" class="btn btn-default">
+                  <i class="material-icons">assignment</i>
+                  Reporte de HAS
+                </a>
+              </div>
+              <div class="col-sm-12 col-md-4">
+                <a [routerLink]="['guias/buscar']" class="btn btn-default">
+                  <i class="material-icons">assignment</i>
+                  Reporte de Guías
+                </a>
+              </div>
+              <div class="col-sm-12 col-md-4">
+                <a [routerLink]="['oc/buscar']" class="btn btn-default">
+                  <i class="material-icons">assignment</i>
+                  Reporte de Orden de Compra
+                </a>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12 col-md-4">
+                <a [routerLink]="['factura/buscar']" class="btn btn-default">
+                  <i class="material-icons">assignment</i>
+                  Reporte de Pre Registro de Facturas
+                </a>
+              </div>
+              <div class="col-sm-12 col-md-4">
+                <a [routerLink]="['preguias/buscar']" class="btn btn-default">
+                  <i class="material-icons">assignment</i>
+                  Reporte de Pre Registro de Guías
+                </a>
+              </div>
+              <div class="col-sm-12 col-md-4">
+                <a [routerLink]="['rfqs/buscar']" class="btn btn-default">
+                  <i class="material-icons">assignment</i>
+                  Reporte de RFQ's
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<router-outlet></router-outlet>

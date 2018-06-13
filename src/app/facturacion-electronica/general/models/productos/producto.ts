@@ -4,8 +4,8 @@ export class ProductoQry {
   idTipoCalc: number;
   codigo: string;
   descripcion: string;
-  precioUnitario: any;
-  montoIsc: any;
+  precioUnitario: number;
+  montoIsc: number;
   unidadMedida: string;
   afectaDetraccion: string;
   tipoProducto: string;

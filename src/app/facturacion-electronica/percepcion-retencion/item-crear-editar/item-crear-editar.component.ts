@@ -13,6 +13,7 @@ import {Validadortabla} from '../services/validadortabla';
 import {ValidadorPersonalizado} from '../../general/services/utils/validadorPersonalizado';
 import {RefreshService} from '../../general/services/refresh.service';
 import {PadreRetencionPercepcionService} from '../services/padre-retencion-percepcion.service';
+import {ManejoMensajes} from '../../general/utils/manejo-mensajes';
 declare var swal: any;
 
 @Component({
@@ -47,6 +48,7 @@ export class ItemCrearEditarComponent implements OnInit {
   constructor(private route: ActivatedRoute, private router: Router,
               private persistenciaService: PersistenciaServiceRetencion,
               private _tipos: TiposService,
+              private manejoMensajes: ManejoMensajes,
               private _tablaMaestraService: TablaMaestraService,
               private Refresh: RefreshService,
               private _padreRetencionPerpcionService: PadreRetencionPercepcionService) {
@@ -74,8 +76,8 @@ export class ItemCrearEditarComponent implements OnInit {
     let codigosComprobantes: string[] = [];
         codigosComprobantes = [
           this._tipos.TIPO_DOCUMENTO_FACTURA,
-          //this._tipos.TIPO_DOCUMENTO_NOTA_CREDITO,
-          //this._tipos.TIPO_DOCUMENTO_NOTA_DEBITO
+          this._tipos.TIPO_DOCUMENTO_NOTA_CREDITO,
+          this._tipos.TIPO_DOCUMENTO_NOTA_DEBITO
         ];
     this.tiposComprobantes = this._tablaMaestraService.obtenerPorCodigosDeTablaMaestra(this.todosTiposComprobantes, codigosComprobantes);
   }
@@ -218,8 +220,6 @@ export class ItemCrearEditarComponent implements OnInit {
         confirmButtonClass: 'btn btn-success'
       });
       this.grabar();
-      this.router.navigateByUrl('percepcion-retencion/retencion/crear/individual');
-
     } else {
       swal({
           title: 'Alerta',
@@ -425,7 +425,8 @@ export class ItemCrearEditarComponent implements OnInit {
         this.retencionEbiz.auxiliar1 = this.itemFormGroup.get('txtTipoCambio').value;
         this.retencionEbiz.totalImporteDestino = this.itemFormGroup.get('txtImporteSoles').value;
       }
-    this.retencionEbiz.auxiliar2 = (Number(this.retencionEbiz.totalMonedaDestino) - Number(this.retencionEbiz.totalImporteAuxiliarDestino)).toString();
+    this.retencionEbiz.auxiliar2 = ((Number(this.retencionEbiz.totalMonedaDestino) * Number(this.retencionEbiz.auxiliar1))
+        - Number(this.retencionEbiz.totalImporteAuxiliarDestino)).toString();
   }
 
   public grabar() {
@@ -433,7 +434,27 @@ export class ItemCrearEditarComponent implements OnInit {
     console.log('this.Refresh.CargarPersistencia - EDITAR ');
     console.log(this.Refresh.CargarPersistencia);
     this.fillProducto();
-    this.persistenciaService.agregarProducto( this.retencionEbiz );
+    if (this.verificarExistenciaItem()) {
+      this.manejoMensajes.mostrarMensajeAdvertencia('itemRegistrado', 'verificarItemRetencionPercepcion');
+    } else {
+      this.persistenciaService.agregarProducto(this.retencionEbiz);
+      this.router.navigateByUrl('percepcion-retencion/retencion/crear/individual');
+    }
+  }
+
+  verificarExistenciaItem() {
+    for (const detalle of this.persistenciaService.getListaProductos()) {
+      if (
+        detalle.tipoDocumentoDestino === this.retencionEbiz.tipoDocumentoDestino &&
+        detalle.serieDocumentoDestino === this.retencionEbiz.serieDocumentoDestino &&
+        detalle.correlativoDocumentoDestino === this.retencionEbiz.correlativoDocumentoDestino
+        // && detalle.fechaEmisionDestino === this.retencionEbiz.fechaEmisionDestino
+      ) {
+        return true;
+      }
+      return false;
+    }
+
   }
 
 

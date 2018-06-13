@@ -1,6 +1,11 @@
+<style type="text/css" style="display: none">
+
+</style>
+
+
 <div class="logo">
     <div class="logo-normal">
-        <a class="simple-text" style="height: 45px;color:#1f246a !important">
+        <a href="javascript:void(0)" class="simple-text" style="height: 45px;color:#1f246a !important">
             <!--<img src="assets/img/b2mining.png"/>-->
             <div style="  width: 180px;  
     height: 35px;
@@ -12,8 +17,8 @@
     z-index: 5;
     box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.42), 0 4px 25px 0px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.2);
    ">
-                <img style="height:35px" src="{{usuarioActual.org_url_image}}" *ngIf="usuarioActual.org_url_image!=null"
-                /> &nbsp;{{usuarioActual.org_url_image != null ? "" : usuarioActual.isopais_org + usuarioActual.ruc_org}}
+                <img style="height:35px" src="{{usuarioSesion.org_url_image}}" *ngIf="usuarioSesion.org_url_image!=null"
+                /> &nbsp;{{usuarioSesion.org_url_image != null ? "" : usuarioSesion.isopais_org + usuarioSesion.ruc_org}}
             </div>
 
         </a>
@@ -24,17 +29,18 @@
 </div>
 
 <div class="sidebar-wrapper">
-    <div class="user">
+    <div class="user" >
         <div class="photo">
-            <img src="{{usuarioActual.url_image}}" *ngIf="usuarioActual.url_image!=null" />
+            <img src="{{usuarioSesion.url_image}}" *ngIf="usuarioSesion.url_image!=null" />
         </div>
-        <div class="info">
-            <a data-toggle="collapse" href="#collapseExample" class="collapsed">
-                <span>
-                    {{ usuarioActual.nombrecompleto}}
-                    <!--<b class="caret"></b>-->
-                </span>
+        <div class="info"     >
+
+            <a data-toggle="collapse" href="#collapseExample" class="collapsed">                
+                <span [innerHTML]="nombreUsuarioConCambioDeLinea" ></span><br *ngIf="nombreOrgActivaConCambioDeLinea" /><br *ngIf="nombreOrgActivaConCambioDeLinea" />
+                <span [innerHTML]="nombreOrgActivaConCambioDeLinea" ></span>
+                <!--<b class="caret"></b>-->
             </a>
+          
             <!--
             <div class="collapse" id="collapseExample">
                 <ul class="nav">
@@ -70,7 +76,7 @@
                             <i class="material-icons">dashboard</i>
                             <p class="hidden-lg hidden-md">Dashboard</p>
                         <div class="ripple-container"></div></a>
-            </li>
+            </li>w
 
             <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
@@ -118,12 +124,22 @@
                         </a>
                     </li>
                     <li routerLinkActive="active" *ngIf="PermitirCambiarOrganizacion">
-                        <a (click)="cambiarOrganizacion($event)">
-                                Cambiar Organización
-                            </a>
-                    </li>
+                        <a href="javascript:void(0);" (click)="cambiarOrganizacion($event)">
+                            Cambiar Organización
+                        </a>
+                    </li> 
+                    <li routerLinkActive="active" *ngIf="PermitirCambiarTipoOrganizacion&&usuarioSesion.tipo_empresa=='C'">
+                        <a href="javascript:void(0);" (click)="cambiarTipoOrganizacion($event)">
+                            Cambiar a Modo Proveedor
+                        </a>
+                    </li>   
+                    <li routerLinkActive="active" *ngIf="PermitirCambiarTipoOrganizacion&&usuarioSesion.tipo_empresa=='P'">
+                        <a href="javascript:void(0);" (click)="cambiarTipoOrganizacion($event)">
+                            Cambiar a Modo Comprador
+                        </a>
+                    </li>                      
                     <li>
-                        <a (click)="logout($event)">
+                        <a href="javascript:void(0);" (click)="logout($event)">
                             Cerrar Sesión
                         </a>
                     </li>

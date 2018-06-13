@@ -14,38 +14,37 @@ declare var DatatableFunctions: any;
 @Injectable()
 export class OrdenCompraService {
 
-
-
   private urlGet: string = URL_DETALLE_OC;
-  //private urlCambioEstado: string = BASE_URL + 'api/msproductor/v1/comandos/oc?accion=cambioestado';
+  // private urlCambioEstado: string = BASE_URL + 'api/msproductor/v1/comandos/oc?accion=cambioestado';
   private urlCambioEstado: string = URL_CAMBIO_ESTADO_OC;
-  //http://40.76.86.5:8080/api/msproductor/v1/comandos/cp/ comprobante de pago
-  //http://40.76.86.5:8080/api/msproductor/v1/comandos/guias/ guias
-  //http://40.76.86.5:8080/api/msproductor/v1/comandos/has/ aceptacion de servicio
+  // http://40.76.86.5:8080/api/msproductor/v1/comandos/cp/ comprobante de pago
+  // http://40.76.86.5:8080/api/msproductor/v1/comandos/guias/ guias
+  // http://40.76.86.5:8080/api/msproductor/v1/comandos/has/ aceptacion de servicio
   util: AppUtils;
-  constructor(private http: Http) {
 
+  constructor(private http: Http) {
   }
+
   convertStringToDate(strDate: string): Date {
     return new Date(strDate);
   }
 
   obtener(id: string, tipo_empresa: string, origen_guia: boolean = false): Observable<OrdenCompra> {
     let items$ = this.http
-      .get(this.urlGet + id + (origen_guia ? "/?cabecera=1&solo_productos=1" : ""), { headers: this.getHeaders(tipo_empresa) })
+      .get(this.urlGet + id + (origen_guia ? "/?cabecera=1&solo_productos=2" : ""), { headers: this.getHeaders(tipo_empresa) })
       .map(this.mapOC)
       .catch(this.handleError);
     return items$;
   }
 
   cambioEstado(id: string, org_id: string, item: CambioEstado): Observable<any> {
-    let headers = this.getHeadersCambioEstado(org_id);
-    let options = new RequestOptions({ headers: headers });
+    const headers = this.getHeadersCambioEstado(org_id);
+    const options = new RequestOptions({ headers: headers });
     options.withCredentials = true;
     ////return this.http.put(this.urlCambioEstado, item, options)
 
     return this.http.put(this.urlCambioEstado, item, options)
-      //.map(this.extractData)
+      // .map(this.extractData)
       .catch(this.handleError);
   }
 
@@ -65,7 +64,7 @@ export class OrdenCompraService {
 
 
   private mapOC(res: Response): OrdenCompra {
-   
+
     let respuesta = {
       status: res ? res.status : -1,
       statusText: res ? res.statusText : "ERROR",
@@ -80,13 +79,12 @@ export class OrdenCompraService {
     var matches;
     oc.terminos = [];
     var id = 1;
-    if (oc_json.data.Terminos && oc_json.data.Terminos != '') {
+    if (oc_json.data.Terminos && oc_json.data.Terminos !== '') {
       while (matches = myRegexp.exec(oc_json.data.Terminos)) {
-        let a = {
+        const a = {
           id: id++,
           nombre: DatatableFunctions.ConvertToText(DatatableFunctions.ReplaceToken(matches[1])),
           valor: matches[2],
-
         }
         oc.terminos.push(a);
 
@@ -94,20 +92,23 @@ export class OrdenCompraService {
     }
     oc.tiene_condiciones = oc.terminos.length <= 0 ? false : true;
 
+
+
     oc.comprador = oc_json.data.RazonSocialComprador ? oc_json.data.RazonSocialComprador : '';
-    if (oc.comprador.toLowerCase().includes('wong'))
+    if (oc.comprador.toLowerCase().includes('wong')) {
       oc.idorgcompradora = 'wong';
-    else  if (oc.comprador.toLowerCase().includes('centenario'))
+    } else if (oc.comprador.toLowerCase().includes('centenario')) {
       oc.idorgcompradora = 'centenario';
-    else
-      oc.idorgcompradora = 'abinbev.png';    
-    oc.ruccomprador = oc_json.data.NITComprador;//DatatableFunctions.ConvertStringToRUC( oc_json.data.NITComprador);
+    } else {
+      oc.idorgcompradora = 'abinbev.png';
+    }
+    oc.ruccomprador = oc_json.data.NITComprador; // DatatableFunctions.ConvertStringToRUC( oc_json.data.NITComprador);
     oc.tipo = oc_json.data.TipoOrden;
     oc.nroordencompra = oc_json.data.NumeroOrden;
-    oc.proveedor = oc_json.data.NombreVendedor;//falta
-    oc.rucproveedor = oc_json.data.NITVendedor;// DatatableFunctions.ConvertStringToRUC(oc_json.data.NITVendedor);//falta
+    oc.proveedor = oc_json.data.NombreVendedor; // falta
+    oc.rucproveedor = oc_json.data.NITVendedor; // DatatableFunctions.ConvertStringToRUC(oc_json.data.NITVendedor);//falta
     oc.fecharegistro = DatatableFunctions.ConvertStringToDatetimeLong(oc_json.data.FechaCreacion);
-    oc.codigoproveedor = oc_json.data.OrgIDVendedor;//falta
+    oc.codigoproveedor = oc_json.data.OrgIDVendedor; // falta
 
     oc.version = oc_json.data.Version;
     oc.moneda = oc_json.data.MonedaOrden;
@@ -131,8 +132,8 @@ export class OrdenCompraService {
     oc.estadocomprador = oc_json.data.EstadoComprador;
     oc.estadoproveedor = oc_json.data.EstadoProveedor;
 
-    //oc.estadocomprador = 'OEMIT';
-    //oc.estadoproveedor = 'ONVIS';
+    // oc.estadocomprador = 'OEMIT';
+    // oc.estadoproveedor = 'ONVIS';
 
 
 
@@ -160,46 +161,43 @@ export class OrdenCompraService {
     myRegexp = /Nivel(.*?):(.*?)%/ig;
     matches;
 
+
     while (matches = myRegexp.exec(oc_json.data.AprobadoPor)) {
       let a = {
         id: matches[1],
         nombre: matches[2],
-
       }
       oc.aprobadopor.push(a);
-
     }
 
     if (oc.aprobadopor.length <= 0) {
-
-
-
       oc.autorizadopor_html = DatatableFunctions.ReplaceToken(oc_json.data.AprobadoPor);
       oc.autorizadopor = DatatableFunctions.ConvertToText(oc.autorizadopor_html);
-
     }
 
     oc.comentarioproveedor = oc_json.data.ComentarioProveedor;
     oc.subtotal = DatatableFunctions.FormatNumber(oc_json.data.ValorVentaNeto);//falta
-    //oc.utilidades = DatatableFunctions.FormatNumber(oc_json.data.Utilidades);//falta
+    // oc.utilidades = DatatableFunctions.FormatNumber(oc_json.data.Utilidades);//falta
     oc.valorventa = DatatableFunctions.FormatNumber(oc_json.data.ValorVenta);
-    //oc.gastosgenerales = DatatableFunctions.FormatNumber(oc_json.data.GastosGen);//falta
+    // oc.gastosgenerales = DatatableFunctions.FormatNumber(oc_json.data.GastosGen);//falta
     oc.impuestos = DatatableFunctions.FormatNumber(oc_json.data.Impuestos);
 
-    //oc.porcentaje_impuestos =oc_json.data.PorcentajeImpuestos? oc_json.data.PorcentajeImpuestos: '18.0000%';
+    // oc.porcentaje_impuestos =oc_json.data.PorcentajeImpuestos? oc_json.data.PorcentajeImpuestos: '18.0000%';
 
     let porcentaje_impuestos = oc_json.data.PorcentajeImpuestos ? oc_json.data.PorcentajeImpuestos * 100 : 18;
     oc.porcentaje_impuestos = DatatableFunctions.FormatNumber(porcentaje_impuestos) + '%';
 
 
     oc.valortotal = DatatableFunctions.FormatNumber(oc_json.data.MontoAPagar);
-    //oc.condiciones= oc_json.data.condicionpago;
+    // oc.condiciones= oc_json.data.condicionpago;
     oc.direccionfactura = oc_json.data.DireccionFactura;
 
     oc.productos = [];
     let index = 1;
-    for (let item of oc_json.data.ProductosOrden) {
-      let p = new Producto();
+
+    for (const item of oc_json.data.ProductosOrden) {
+
+      const p = new Producto();
       p.parentid = 0;
       p.id = index++;
       p.posicion = item.PosicionProducto;
@@ -207,25 +205,24 @@ export class OrdenCompraService {
       p.IdProductoOrden = item.IdProductoxOc;
       p.desccorta = item.DescripcionProducto ? item.DescripcionProducto : '';
       p.nombre = item.DescripcionProducto ? item.DescripcionProducto : '';
-      if (item.DescripcionLarga && item.DescripcionLarga != '')
+      if (item.DescripcionLarga && item.DescripcionLarga != '') {
         p.nombre = p.nombre + ' <br\>' + DatatableFunctions.ReplaceToken(item.DescripcionLarga);
+      }
       p.descripcion = DatatableFunctions.ConvertToText(p.nombre);
 
       p.estado = item.EstadoProducto ? item.EstadoProducto : '';
       p.atributos = new Array();
-      
-      if("AtributosProducto" in item){
-        for (let atributo of item.AtributosProducto) {
+
+      if ('AtributosProducto' in item && item.AtributosProducto != null) {
+
+        for (const atributo of item.AtributosProducto) {
 
           if (atributo.NombreAtributoOrden === 'Centro') {
-
             p.centro = atributo.ValorAtributoProducto ? atributo.ValorAtributoProducto : ' ';
           }
           if (atributo.NombreAtributoOrden === 'Solicitud de pedido') {
-
             p.solicitudpedido = atributo.ValorAtributoProducto ? atributo.ValorAtributoProducto : ' ';
           }
-
 
           let atr = {
             nombre: atributo.NombreAtributoOrden,
@@ -239,7 +236,14 @@ export class OrdenCompraService {
       }
 
       p.cantidad = item.CantidadProducto ? item.CantidadProducto : '';
+
+      p.cantidadRecibida = item.CantidadRecibida ? item.CantidadRecibida : 0;
+      p.cantidadDespachada = item.CantidadDespachada ? item.CantidadDespachada : 0;
+
       p.unidad = item.UnidadProducto ? item.UnidadProducto : '';
+      p.IdTablaUnidadMedida = item.IdTablaunidadMedida;
+      p.IdRegistroUnidadMedida = item.IdRegistroUnidadMedida;
+
       p.preciounitario = DatatableFunctions.FormatNumber(item.PrecioUnitarioProducto);
       p.total = DatatableFunctions.FormatNumber(item.PrecioProducto);
 
@@ -251,14 +255,15 @@ export class OrdenCompraService {
 
       oc.productos.push(p);
 
-      if("SubItemsProducto" in item){
-        for (let subitem of item.SubItemsProducto) {
-          p.cantidad = "";
-          p.preciounitario = "";
-          p.unidad = "";
-          p.fechaentrega = "";
+      if ('SubItemsProducto' in item && item.SubItemsProducto != null) {
+
+        for (const subitem of item.SubItemsProducto) {
+          p.cantidad = '';
+          p.preciounitario = '';
+          p.unidad = '';
+          p.fechaentrega = '';
           p.tienesubitem = true;
-          let subproducto = new Producto();
+          const subproducto = new Producto();
           subproducto.parentid = p.id;
           subproducto.id = index++;
           subproducto.posicion = subitem.Posicion;
@@ -267,23 +272,24 @@ export class OrdenCompraService {
 
           subproducto.atributos = new Array();
           subproducto.estado = subitem.EstadoProducto ? subitem.EstadoProducto : '';
-          for (let subatributo of subitem.AtributosSubItem) {
 
-            if (subatributo.NombreAtributo === 'Centro')
-              subproducto.centro = subatributo.ValorEnviado ? subatributo.ValorEnviado : ' ';
-            if (subatributo.NombreAtributo === 'Solicitud de pedido')
-              subproducto.solicitudpedido = subatributo.ValorEnviado ? subatributo.ValorEnviado : ' ';
+          for (const subatributo of subitem.AtributosSubItem) {
+              if (subatributo.NombreAtributo === 'Centro') {
+                subproducto.centro = subatributo.ValorEnviado ? subatributo.ValorEnviado : ' ';
+              }
+              if (subatributo.NombreAtributo === 'Solicitud de pedido') {
+                subproducto.solicitudpedido = subatributo.ValorEnviado ? subatributo.ValorEnviado : ' ';
+              }
 
-
-            let atr = {
-              nombre: subatributo.NombreAtributo ? subatributo.NombreAtributo : null,
-              operador: subatributo.OperadorAtributoSubProducto ? subatributo.OperadorAtributoSubProducto : null,
-              valor: subatributo.ValorEnviado ? subatributo.ValorEnviado : null,
-              unidad: subatributo.NombreUnidad ? subatributo.NombreUnidad : null,
-
-            }
-            subproducto.atributos.push(atr);
+              const atr = {
+                nombre: subatributo.NombreAtributo ? subatributo.NombreAtributo : null,
+                operador: subatributo.OperadorAtributoSubProducto ? subatributo.OperadorAtributoSubProducto : null,
+                valor: subatributo.ValorEnviado ? subatributo.ValorEnviado : null,
+                unidad: subatributo.NombreUnidad ? subatributo.NombreUnidad : null,
+              }
+              subproducto.atributos.push(atr);
           }
+
           subproducto.cantidad = subitem.Cantidad ? subitem.Cantidad : '';
           subproducto.unidad = subitem.UnidadSubProducto ? subitem.UnidadSubProducto : '';
           subproducto.preciounitario = DatatableFunctions.FormatNumber(subitem.Precio);
@@ -293,14 +299,14 @@ export class OrdenCompraService {
           subproducto.es_subitem = true;
           oc.productos.push(subproducto);
 
-
         }
-      }      
+      }
     }
 
     return oc;
-    //return body.data || {};
+    // return body.data || {};
   }
+
   private extractData(res: Response) {
 
     let respuesta = {
@@ -309,15 +315,17 @@ export class OrdenCompraService {
       data: res ? res.json() || {} : {},
     }
     return respuesta;
-    //return body.data || {};
+    // return body.data || {};
   }
+
   private handleError(error: Response | any) {
     // console.error('handleError',error);
     console.error('handleError', error.message || error);
     let  data= error ? error.json() || {} : {};     
-    if (data && data.error && data.error === "invalid_token")
+    if (data && data.error && data.error === "invalid_token") {
       DatatableFunctions.logout();
-    
+    }
+
     return Observable.throw(error.message || error);
   }
 
@@ -329,8 +337,8 @@ export class OrdenCompraService {
     headers.append('Accept', 'application/json');
     headers.append('origen_datos', 'PEB2M');
     headers.append('tipo_empresa', tipo_empresa);
-    headers.append("Authorization", 'Bearer ' + localStorage.getItem('access_token'));
-    headers.append("Ocp-Apim-Subscription-Key", localStorage.getItem('Ocp_Apim_Subscription_Key'));
+    headers.append('Authorization', 'Bearer ' + localStorage.getItem('access_token'));
+    headers.append('Ocp-Apim-Subscription-Key', localStorage.getItem('Ocp_Apim_Subscription_Key'));
     // headers.append('Access-Control-Allow-Origin', '*');
     return headers;
   }
@@ -340,18 +348,16 @@ export class OrdenCompraService {
     // will request text/html
     let headers = new Headers();
 
-
-
     headers.append('Content-Type', 'application/json');
     headers.append('Accept', 'application/json');
-    //headers.append('Access-Control-Request-Method', 'PUT');
-
+    // headers.append('Access-Control-Request-Method', 'PUT');
 
     headers.append('origen_datos', 'PEB2M');
     headers.append('tipo_empresa', 'P');
     headers.append('org_id', org_id);
-    headers.append("Authorization", 'Bearer ' + localStorage.getItem('access_token'));
-    headers.append("Ocp-Apim-Subscription-Key", localStorage.getItem('Ocp_Apim_Subscription_Key'));
+    headers.append('Authorization', 'Bearer ' + localStorage.getItem('access_token'));
+    headers.append('Ocp-Apim-Subscription-Key', localStorage.getItem('Ocp_Apim_Subscription_Key'));
     return headers;
   }
+
 }

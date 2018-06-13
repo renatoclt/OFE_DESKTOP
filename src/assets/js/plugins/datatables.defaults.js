@@ -1,46 +1,49 @@
 var timeoutID;
 var timeoutID2;
-var timeoutID2;
-var TIME_INACTIVE = new Number(300000);
+var timeoutID_WS;
+var me = this;
+//var timeoutID2;
+
+var TIME_INACTIVE = new Number(600000);
 var MSG_TIME_INACTIVE = new Number(20000);
+var URL_CONSUMER = '';
+
 //var TIME_INACTIVE = new Number(20000);
 //var MSG_TIME_INACTIVE = new Number(5000);
 var TIME_LEFT = new Number(MSG_TIME_INACTIVE / 1000);
 var notice;
 var oNavbarComponent, oSidebarComponent;
-function setup(forceActivate) {
-    //debugger;
-    var baseUrlInactive = window.location.protocol + "//" + window.location.host + $('#baseurl').attr('href');
-    var currentUrl = window.location.toString();
 
-    if (!forceActivate && (baseUrlInactive == currentUrl || baseUrlInactive + "login" == currentUrl)) {
-        return;
-    }
-
-    this.addEventListener("mousemove", resetTimer, false);
-    this.addEventListener("mousedown", resetTimer, false);
-    this.addEventListener("keypress", resetTimer, false);
-    this.addEventListener("DOMMouseScroll", resetTimer, false);
-    this.addEventListener("mousewheel", resetTimer, false);
-    this.addEventListener("touchmove", resetTimer, false);
-    this.addEventListener("MSPointerMove", resetTimer, false);
-
-    startTimer();
-}
-setup(false);
 
 function startTimer() {
     // wait 2 seconds before calling goInactive
     timeoutID = window.setTimeout(goInactive, TIME_INACTIVE);
-    // timeoutID2 = window.setTimeout(goMessage, TIME_INACTIVE - MSG_TIME_INACTIVE);
+    timeoutID2 = window.setTimeout(goMessage, TIME_INACTIVE - MSG_TIME_INACTIVE);
 }
 
-function goTimeLeft() {
-    console.log("TIME_LEFT: " + TIME_LEFT);
-    TIME_LEFT = TIME_LEFT - 1;
-    if (TIME_LEFT < 0)
-        TIME_LEFT = 0;
-    // $("#lblTimeLeft").html("Su sesión expirará en " + TIME_LEFT + " segundos.");
+function stopTimer() {
+    window.clearTimeout(timeoutID);
+    window.clearTimeout(timeoutID2);
+    window.clearInterval(timeoutID2);
+}
+
+function resetTimer(e) {
+    stopTimer();    
+    TIME_LEFT = new Number(MSG_TIME_INACTIVE / 1000);
+    if (notice != null) {
+        notice.close();
+    }
+    goActive();
+}
+
+function goActive() {
+    startTimer();
+}
+
+
+function goInactive() {
+    //alert("salir de session.");
+    logout();
 }
 
 function goMessage() {
@@ -60,28 +63,102 @@ function goMessage() {
         });
 }
 
-function resetTimer(e) {
-    window.clearTimeout(timeoutID);
-    window.clearTimeout(timeoutID2);
-    window.clearInterval(timeoutID2);
-    TIME_LEFT = new Number(MSG_TIME_INACTIVE / 1000);
-    if (notice != null) {
-        notice.close();
+function goTimeLeft() {
+    console.log("TIME_LEFT: " + TIME_LEFT);
+    TIME_LEFT = TIME_LEFT - 1;
+    if (TIME_LEFT < 0)
+        TIME_LEFT = 0;
+    $("#lblTimeLeft").html("Su sesión expirará en " + TIME_LEFT + " segundos.");
+}
+
+function setTimeInactive(timeInactive){
+    if(timeInactive>=11000){
+        me.TIME_INACTIVE = timeInactive;
     }
-    goActive();
+    else{
+        if(timeInactive>=3000){
+            me.TIME_INACTIVE = timeInactive;
+            me.MSG_TIME_INACTIVE = timeInactive-2000;
+        }
+        else{
+            me.TIME_INACTIVE = 3000;
+            me.MSG_TIME_INACTIVE = 2000;
+        }
+    }
+    me.TIME_LEFT = new Number(me.MSG_TIME_INACTIVE / 1000);
 }
 
-function goInactive() {
-    //alert("salir de session.");
-    logout();
-}
+var GlobalFunctions = new function () {
 
-function goActive() {
-    startTimer();
-}
+   /* this.SetSidebarComponent = function (object) {
+        oSidebarComponent = object;
+    };*/
+
+
+    this.AplicarCambioDeLinea = function (cadena, maxCar) {
+
+        if( (typeof cadena == 'undefined') || (cadena == null) || (cadena.trim()=='') )
+            return '';
+
+        let array=cadena.trim().replace('  ',' ').split(/\s+/);
+        let numCar=0, cad='';
+
+        for (var i=0; i < array.length; i++) {
+            if (cad==''){
+                cad=array[i];
+                numCar=array[i].length;
+            }
+            else{
+                if( (numCar+1+array[i].length) > maxCar ){
+                    cad=cad+'<br/>'+array[i];
+                    numCar=0;
+                }
+                else{
+                    cad=cad+'&nbsp;'+array[i];
+                    numCar=numCar+array[i].length+1;
+                }
+            }
+         }
+         return cad;
+    };
+
+
+    this.setup = function (forceActivate, timeInactive) {
+        me.setTimeInactive(timeInactive);
+
+        //debugger;
+        var baseUrlInactive = window.location.protocol + "//" + window.location.host + $('#baseurl').attr('href');
+        var currentUrl = window.location.toString();
+    
+        if (!forceActivate && (baseUrlInactive == currentUrl || baseUrlInactive + "login" == currentUrl)) {
+            return;
+        }
+    
+        me.addEventListener("mousemove", resetTimer, false);
+        me.addEventListener("mousedown", resetTimer, false);
+        me.addEventListener("keypress", resetTimer, false);
+        me.addEventListener("DOMMouseScroll", resetTimer, false);
+        me.addEventListener("mousewheel", resetTimer, false);
+        me.addEventListener("touchmove", resetTimer, false);
+        me.addEventListener("MSPointerMove", resetTimer, false);
+    
+        startTimer();
+    };
+    //setup(false);
+    
+
+    this.StopTimer = function () {
+        window.clearTimeout(timeoutID);
+        window.clearTimeout(timeoutID2);
+        window.clearInterval(timeoutID2);
+    };
+    
+};
+
+
 
 function logout() {
-    //oNavbarComponent.logout();
+    oNavbarComponent.logout();
     /*localStorage.clear();
     let baseurl=$('#baseurl').attr('href');
     window.location.href = baseurl;*/
@@ -91,13 +168,15 @@ $.fn.dataTable.ext.errMode = 'throw';
 $.extend(true, $.fn.dataTable.defaults, {
     pagingType: "full_numbers",
     lengthMenu: [[10, 25, 50/*, -1*/], [10, 25, 50/*, "Todos"*/]],
-    /* responsive: {
+    /*
+    responsive: {
          details: {
              display: $.fn.dataTable.Responsive.display.childRowImmediate,
              type: ''
          }
-     },*/
-     processing:true,
+    },
+    */
+    processing:true,
     responsive: true,
     pageLength: 10,
     language: {
@@ -192,6 +271,9 @@ function responsive_resize_datatable() {
 }
 
 
+
+
+
 var DatatableFunctions = new function () {
     this.SetNavbarComponent = function (object) {
         oNavbarComponent = object;
@@ -206,7 +288,7 @@ var DatatableFunctions = new function () {
     };
 
     this.logout = function () {
-        // oNavbarComponent.logout();
+        oNavbarComponent.logout();
     };
 
     this.initDatatable = function (e, settings, json, datatable) {
@@ -256,6 +338,7 @@ var DatatableFunctions = new function () {
         s[8] = s[13] = s[18] = s[23] = "-";
         return s.join("");
     };
+
     this.ModalSettings = function () {
 
         $(function () {
@@ -282,14 +365,17 @@ var DatatableFunctions = new function () {
         });
 
     };
+
     this.ConvertStringToDatetimeLong = function (fecha) {
 
         return (fecha && fecha != '') ? new Date(fecha) : null;
     };
+
     this.ConvertStringToRUC = function (ruc) {
 
         return (ruc && ruc != '') ? ruc.replace("PE", "") : '';
     };
+
     this.ConvertStringToDatetime = function (fecha) {
         //var fecha = '16/12/2017';
         if (fecha) {
@@ -304,12 +390,14 @@ var DatatableFunctions = new function () {
         }
         return null;
     };
+
     this.ConvertStringToDatetime2 = function (fecha) {
         //var fecha = '16/12/2017';
         if (fecha && fecha != '')
             return moment(fecha);
         else return null;
     };
+
     this.FormatDatetimeForMicroService = function (fecha) {
         return moment(fecha).format('YYYY-MM-DD');
         //return moment(fecha).format('YYYY-MM-DD HH:mm:ss');
@@ -326,7 +414,6 @@ var DatatableFunctions = new function () {
     };
 
     this.AddDayEndDatetime = function (fecha) {
-
         fecha.setDate(fecha.getDate() + 0);
         //fecha.setMilliseconds(fecha.getMilliseconds() - 1);
 
@@ -460,20 +547,13 @@ var DatatableFunctions = new function () {
             { TOKEN_ENTRADA: 'ylt', TOKEN_SALIDA: '<' },
             { TOKEN_ENTRADA: '%BTRC%', TOKEN_SALIDA: '<tr BGCOLOR' },
 
-
-
-
         ];
         if (texto) {
-
             var output = this.ParseFieldHtml(texto);
-
 
             for (index = 0; index < tokens.length; ++index) {
                 var token = tokens[index];
-
                 output = output.replace(new RegExp(token.TOKEN_ENTRADA, 'g'), token.TOKEN_SALIDA);
-
             }
 
             output = output.replace(/^\<br\\?>/ig, "");
@@ -483,10 +563,17 @@ var DatatableFunctions = new function () {
         return null;
     }
 
-    this.ConnectWebsockets = function () {
-
-        connect();
+    this.ConnectWebsockets = function (/*urlProducer,*/urlConsumer) {
+        connect(/*urlProducer,*/urlConsumer);
     };
+
+    this.DisconnectWebsockets = function () {
+        disconnect();
+    };   
+    
+    this.IsWebsocketsConnectionOpen = function () {
+        return isOpenConnection();
+    }; 
 }
 
 $(window).bind('resize', function () {
@@ -500,6 +587,54 @@ var stompClientConsumer = null;
 var subscriptionHeaders = {
     id: ""
 };
+
+
+function connect(/*urlProducer,*/urlConsumer) {
+    disconnect();
+    me.URL_CONSUMER = urlConsumer;
+    if (localStorage.getItem('access_token')) {
+        openConnection()
+        timeoutID_WS = window.setInterval(checkConnection, 1000);
+    }
+}
+
+function checkConnection() {
+    if(stompClientConsumer == null)
+        openConnection();
+}
+
+function openConnection() {
+    /*   
+    var socket1 = new SockJS(urlProducer);
+    stompClientProducer = Stomp.over(socket1);
+    stompClientProducer.connect({}, connectCallbackProducer, errorCallbackProducer);
+    */
+    //stompClient.debug = null;  //para eliminar los mensajes en la consola del navegador
+
+    var socket2 = new SockJS(me.URL_CONSUMER);
+    stompClientConsumer = Stomp.over(socket2);
+    stompClientConsumer.connect({}, connectCallbackConsumer, errorCallbackConsumer);
+}
+
+function isOpenConnection() {
+    return stompClientConsumer?true:false;
+}
+
+
+function disconnect() {
+
+    if (stompClientProducer != null) {
+        stompClientProducer.disconnect();
+    }
+
+    if (stompClientConsumer != null) {
+        stompClientConsumer.disconnect();
+    }
+    window.clearInterval(timeoutID_WS);
+    console.log("WS Disconnected");
+}
+
+
 
 function connectCallbackProducer(frame) {
     console.log('access_token', localStorage.getItem('access_token'))
@@ -528,26 +663,16 @@ function connectCallbackConsumer(frame) {
 
 function errorCallbackConsumer(error) {
     console.log('errorCallbackConsumer: ', error);
-
     stompClientConsumer = null;
-}
-
-function connect() {
-    disconnect();
-    if (localStorage.getItem('access_token')) {
-        var socket1 = new SockJS('https://52.170.84.241:8080/api/msproductor/v1/envio_kafka');
-        var socket2 = new SockJS('https://52.170.232.83:8080/api/msconsumidor/v1/respuestas');
-        stompClientProducer = Stomp.over(socket1);
-        stompClientConsumer = Stomp.over(socket2);
-        //stompClient.debug = null;  //para eliminar los mensajes en la consola del navegador
-        stompClientProducer.connect({}, connectCallbackProducer, errorCallbackProducer);
-        stompClientConsumer.connect({}, connectCallbackConsumer, errorCallbackConsumer);
-    }
 }
 
 function respuestaHandler(msg) {
 
     var respuesta = JSON.parse(msg.body);
+
+    //console.log('*****RESPUESTA-----');
+    //console.log(respuesta)
+
     //alert(respuesta.message);
     /*$("#status").val(respuesta.statuscode);
     $("#message").val(respuesta.message);
@@ -557,7 +682,6 @@ function respuestaHandler(msg) {
     $.notify({
         icon: "notifications",
         message: respuesta.message + ". " + (respuesta.num_doc != null && respuesta.num_doc != "" ? "<b><u><a href=\"javascript:alert(\'Navegar\')\">Ir al documento " + respuesta.num_doc + " .</a></u></b>" : "")
-
     }, {
             type: "info",
             timer: 3000,
@@ -568,21 +692,18 @@ function respuestaHandler(msg) {
         });
 }
 
-function disconnect() {
-    if (stompClientProducer != null) {
-        stompClientProducer.disconnect();
-    }
 
-    if (stompClientConsumer != null) {
-        stompClientConsumer.disconnect();
-    }
-    console.log("Disconnected");
-}
 
 $(function () {
+    /*
+    alert('Se inicia jquery');
     connect();
+    */
 });
 
+
+
 window.onbeforeunload = function () {
-    disconnect();
+    //disconnect();
 };
+

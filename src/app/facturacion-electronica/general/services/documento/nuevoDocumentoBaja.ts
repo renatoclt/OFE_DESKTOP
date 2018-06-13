@@ -15,7 +15,7 @@ export class NuevoDocumentoBajaService {
   constructor(private httpClient: HttpClient,
               private servidores: Servidores,
               private _spinner: SpinnerService) {
-    this.url = 'http://localhost:3000/v1/baja' + this.url;
+    this.url = this.servidores.DOCUCMD + this.url;
   }
 
   subir(documento: ComunicacionDeBaja): BehaviorSubject<boolean> {

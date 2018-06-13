@@ -11,25 +11,21 @@
                             <div class="row">
                                 <div class="col-sm-4">
                                     <div class="form-group label-floating">
-                                        <label class="control-label">Número de Guía
-                                        </label>
-                                        <input name="nroguia" [(ngModel)]="filtro.nroguia" type="text" class="form-control">
+                                        <label class="control-label">Número de Guía</label>
+                                        <input name="nroguia" maxlength="15" [(ngModel)]="filtro.nroguia" type="text" class="form-control" pattern="[0-9]+">
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="form-group label-floating">
-                                        <label class="control-label">Número de Orden de Compra
-                                        </label>
-                                        <input name="nrooc" [(ngModel)]="filtro.nrooc" type="text" class="form-control">
+                                        <label class="control-label">Número de Orden de Compra</label>
+                                        <input name="nrooc" maxlength="15" [(ngModel)]="filtro.nrooc" type="text" class="form-control" pattern="[0-9]+">
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="form-group">
-
                                         <div class="togglebutton">
-
                                             <label>
-                                                <input type="checkbox" [checked]="!filtro.publicada" (change)="filtro.publicada = !filtro.publicada; filtro.estado='NONE';"> Borrador
+                                                <input type="checkbox"  [checked]="!filtro.publicada" (change)="filtro.publicada = !filtro.publicada; filtro.estado='NONE';"> Borrador
                                             </label>
                                         </div>
                                     </div>
@@ -40,7 +36,7 @@
                                     <div class="form-group label-floating">
                                         <label class="control-label">Número de ERP
                                         </label>
-                                        <input name="nroerp" [(ngModel)]="filtro.nroerp" type="text" class="form-control">
+                                        <input name="nroerp" maxlength="14" [(ngModel)]="filtro.nroerp" type="text" class="form-control" pattern="[0-9]+">
                                     </div>
                                 </div>
                                 <div class="col-sm-4" *ngIf="filtro.publicada">
@@ -49,7 +45,6 @@
                                         <select [(ngModel)]="filtro.estado" name="estado" class="form-control">
                                             <option value="NONE" selected>TODOS</option>
                                             <option *ngFor="let opt of listEstadoCombo" value="{{opt.valor}}"> {{opt.desc}} </option>
-
                                         </select>
                                     </div>
                                 </div>

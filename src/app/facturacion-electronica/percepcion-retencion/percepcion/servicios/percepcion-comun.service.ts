@@ -12,7 +12,6 @@ import {PercepcionCrearDocumentoParametroJson} from '../modelos/percepcion-crear
 import {PercepcionCrearDocumentoReferencia} from '../modelos/percepcion-crear-documento-referencia';
 import {PercepcionCrearAuxiliar} from '../modelos/percepcion-crear-auxiliar';
 import {UtilsService} from '../../../general/utils/utils.service';
-import {DatePipe} from '@angular/common';
 
 @Injectable()
 export class PercepcionComunService {
@@ -49,8 +48,6 @@ export class PercepcionComunService {
       this.percepcionAuxiliar.value.cabecera.tipoMoneda,
       this.percepcionAuxiliar.value.cabecera.observacion);
       this.calcularDatosDetalle();
-      console.log('JSON PERCEPCION');
-      console.log(this.percepcionAuxiliar);
   }
 
   cargarDatosEnCabeceraNoDependeDetalle(serie: Serie, fecha: string, moneda: string, observacion: string) {
@@ -84,18 +81,24 @@ export class PercepcionComunService {
     documentoEntidadEmisor.idTipoEntidad = 1;
     documentoEntidadEmisor.tipoDocumento = Number(this._catalogoDocumentoEntidadService.TIPO_DOCUMENTO_IDENTIDAD_RUC).toString();
     documentoEntidadEmisor.documento = this.percepcionAuxiliar.value.entidadEmisora.documento;
-    documentoEntidadEmisor.direccionFiscal = this.percepcionAuxiliar.value.entidadEmisora.direccionFiscal;
     documentoEntidadEmisor.denominacion = this.percepcionAuxiliar.value.entidadEmisora.denominacion;
+    documentoEntidadEmisor.nombreComercial = this.percepcionAuxiliar.value.entidadEmisora.nombreComercial;
+    documentoEntidadEmisor.direccionFiscal = this.percepcionAuxiliar.value.entidadEmisora.direccionFiscal;
+    documentoEntidadEmisor.ubigeo = this.percepcionAuxiliar.value.entidadEmisora.ubigeo;
+    documentoEntidadEmisor.correo = this.percepcionAuxiliar.value.entidadEmisora.correoElectronico;
+    documentoEntidadEmisor.notifica = 'S';
 
-    documentoEntidadEmisor.correoElectronico = this.percepcionAuxiliar.value.entidadEmisora.correoElectronico;
     const documentoEntidadReceptor = new PercepcionCrearDocumentoEntidad();
     documentoEntidadReceptor.idTipoEntidad = 2;
     documentoEntidadReceptor.tipoDocumento = this.percepcionAuxiliar.value.entidadReceptora.idTipoDocumento;
     documentoEntidadReceptor.documento = this.percepcionAuxiliar.value.entidadReceptora.documento;
-    documentoEntidadReceptor.direccionFiscal = this.percepcionAuxiliar.value.entidadReceptora.direccionFiscal;
     documentoEntidadReceptor.denominacion = this.percepcionAuxiliar.value.entidadReceptora.denominacion;
+    documentoEntidadReceptor.nombreComercial = this.percepcionAuxiliar.value.entidadReceptora.nombreComercial;
+    documentoEntidadReceptor.direccionFiscal = this.percepcionAuxiliar.value.entidadReceptora.direccionFiscal;
+    documentoEntidadReceptor.ubigeo = this.percepcionAuxiliar.value.entidadReceptora.ubigeo;
+    documentoEntidadReceptor.correo = this.percepcionAuxiliar.value.entidadReceptora.correoElectronico;
+    documentoEntidadReceptor.notifica = 'S';
 
-    documentoEntidadReceptor.correoElectronico = this.percepcionAuxiliar.value.entidadReceptora.correoElectronico;
     this.percepcion.value.documentoEntidad = [
       documentoEntidadEmisor,
       documentoEntidadReceptor
@@ -108,7 +111,7 @@ export class PercepcionComunService {
     let montoDescuento = 0;
     for (const detalle of this.percepcionAuxiliar.value.detalle) {
       const documentoReferencia = this.cargarDatosReferencia(detalle);
-      totalComprobante += Number(detalle.importeTotalComprobante);
+      totalComprobante += Number(detalle.importeSolesComprobante);
       montoDescuento += Number(detalle.montoPercepcion);
       porcentajeImpuesto += Number(detalle.porcentajePercepcion);
       this.percepcion.value.documentoReferencia.push(documentoReferencia);
@@ -147,11 +150,11 @@ export class PercepcionComunService {
     documentoReferencia.serieDocumentoDestino = detalle.serieComprobante;
     documentoReferencia.correlativoDocumentoDestino = detalle.correlativoComprobante;
     documentoReferencia.fechaEmisionDestino = this._utilsService.convertirFechaStringATimestamp(detalle.fechaEmisionComprobante);
-    documentoReferencia.totalImporteDestino = detalle.importeTotalComprobante;
+    documentoReferencia.totalImporteDestino = detalle.importeSolesComprobante;
     documentoReferencia.totalImporteAuxiliarDestino = detalle.montoPercepcion;
     documentoReferencia.totalPorcentajeAuxiliarDestino = detalle.porcentajePercepcion.toFixed(2);
     documentoReferencia.monedaDestino = detalle.monedaComprobante.descripcionCorta;
-    documentoReferencia.totalMonedaDestino = detalle.importeSolesComprobante;
+    documentoReferencia.totalMonedaDestino = detalle.importeTotalComprobante;
 
     documentoReferencia.auxiliar1 = detalle.tipoCambioComprobante;
     documentoReferencia.auxiliar2 = (Number(detalle.importeSolesComprobante) - Number(detalle.montoPercepcion)).toFixed(2);

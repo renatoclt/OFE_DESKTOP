@@ -22,7 +22,6 @@ import { SeriesService } from '../../general/services/configuracionDocumento/ser
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { EstadoDocumento } from '../../general/models/documento/estadoDocumento';
 import { EstadoDocumentoService } from '../../general/services/documento/estadoDocumento.service';
-import { ComprobanteDocumentoRelacionadoComponent } from '../../comprobantes/comprobante-documento-relacionado/comprobante-documento-relacionado.component';
 import {HttpParams} from '@angular/common/http';
 import {ConsultaDocumentoQuery} from '../../general/models/consultaDocumentoQuery';
 import {ConsultaPercepcionRetencion} from '../../comprobantes/models/consultaPercepcionRecepcion';
@@ -36,6 +35,7 @@ import {PersistenciaService} from '../../comprobantes/services/persistencia.serv
 import {Comprobante} from '../../general/models/comprobantes/comprobante';
 import {ValidadorPersonalizado} from '../../general/services/utils/validadorPersonalizado';
 import {ColumnaDataTable} from '../../general/data-table/utils/columna-data-table';
+import {EstilosServices} from '../../general/utils/estilos.services';
 declare var $: any;
 declare var swal: any;
 
@@ -112,6 +112,7 @@ export class ResumenBajasCrearComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    private _estilosService: EstilosServices,
     private _tipos: TiposService,
     private _comprobantes: ComprobantesService,
     private _estadoDocumentoService: EstadoDocumentoService,
@@ -151,9 +152,11 @@ export class ResumenBajasCrearComponent implements OnInit {
     this.initFormPost();
     const codigosComprobantes = [
         this._tipos.TIPO_DOCUMENTO_RETENCION,
-        this._tipos.TIPO_DOCUMENTO_BOLETA,
         this._tipos.TIPO_DOCUMENTO_PERCEPCION,
-        this._tipos.TIPO_DOCUMENTO_FACTURA
+        this._tipos.TIPO_DOCUMENTO_BOLETA,
+        this._tipos.TIPO_DOCUMENTO_FACTURA,
+        this._tipos.TIPO_DOCUMENTO_NOTA_CREDITO,
+        this._tipos.TIPO_DOCUMENTO_NOTA_DEBITO,
     ];
     this.todosTiposComprobantes = this._tablaMaestraService.obtenerPorIdTabla(TABLA_MAESTRA_TIPO_COMPROBANTE);
     this.tipoDocumento = this._tablaMaestraService.obtenerPorCodigosDeTablaMaestra(this.todosTiposComprobantes, codigosComprobantes);
@@ -209,7 +212,10 @@ export class ResumenBajasCrearComponent implements OnInit {
         fechaActual, [
           Validators.required
         ])
-    }, ValidadorPersonalizado.fechaDeberiaSerMenor('fechaemisioninicio', 'fechaemisionfin', 'errorFecha'));
+    }, Validators.compose([
+      ValidadorPersonalizado.fechaDeberiaSerMenor('fechaemisioninicio', 'fechaemisionfin', 'errorFecha'),
+      ValidadorPersonalizado.validarCorrelativos('cmbserie', 'correlativoinicio', 'correlativofinal')
+    ]));
   }
 
   initFormPost() {
@@ -236,7 +242,7 @@ export class ResumenBajasCrearComponent implements OnInit {
   public filtroRetencion() {
     this.flagNumeroDocumento = true;
     const estado = this.productFormGroup.get('cmbEstado').value;
-    const serie = this.productFormGroup.get('cmbserie').value;
+    const serie = this.productFormGroup.get('cmbserie').value ? this.productFormGroup.get('cmbserie').value : '';
     const correlativoini = this.productFormGroup.get('correlativoinicio').value;
     const correlativofin = this.productFormGroup.get('correlativofinal').value;
     const fecha_del = this.productFormGroup.get('fechaemisioninicio').value;
@@ -438,6 +444,8 @@ export class ResumenBajasCrearComponent implements OnInit {
       .subscribe(
         valor => {
           this.series = valor;
+          this.productFormGroup.controls['cmbserie'].reset();
+          this._estilosService.agregarEstiloInput('cmbserie', 'is-empty');
         });
   }
 
@@ -532,9 +540,8 @@ export class ResumenBajasCrearComponent implements OnInit {
     this.comunicacionBaja.razonSocialProveedor = localStorage.getItem('org_nombre');
     this.comunicacionBaja.fechaEmisionDocumentoBaja = fecha;
     this.comunicacionBaja.correo = localStorage.getItem('org_email');
-    this.comunicacionBaja.tipoSerie = 0;
+    this.comunicacionBaja.tipoSerie = 1;
     this.comunicacionBaja.detalleBaja = this.detalleBajalist;
-    this.comunicacionBaja.usuarioCreacion = localStorage.getItem('username');
   }
 
   eliminarEstiloInput(idHtml: string, estilo: string) {

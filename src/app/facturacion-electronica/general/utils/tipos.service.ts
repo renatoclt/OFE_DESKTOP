@@ -63,9 +63,8 @@ export class TiposService {
     public TIPO_ESTADO_ERROR = 99;
 
     public TIPO_SERIE_ONLINE = 1;
-    public TIPO_SERIE_OFFLINE = 0;
+    public TIPO_SERIE_OFFLINE = 2;
 
-    public CABECERA_RETENCIONES = "retenciones";
     public PARAMETRO_TIPO_TRIBUTO = 1;
     public PARAMETRO_TIPO_NOTA_CREDITO_ELECTRONICA = 2;
     public PARAMETRO_TIPO_NOTA_DEBITO_ELECTRONICA = 3;
@@ -75,9 +74,6 @@ export class TiposService {
     public PARAMETRO_TIPO_PRECIO_VENTA_UNITARIO = 7;
     public PARAMETRO_TIPO_OPERACION = 8;
     public PARAMETRO_REGIMENES_PERCEPCION = 19;
-    public PARAMETRO_TIPO_CLIENTES = '06';
-    public PARAMETRO_TIPO_PARAMETROS = '05';
-
 
     public TIPO_NOTA_CREDITO_ANULACION_DE_OPERACION = '01';
     public TIPO_NOTA_CREDITO_ANULACION_POR_ERROR_RUC = '02';
@@ -150,7 +146,7 @@ export class TiposService {
     public BOLETA_ANTICIPO_DESCRIPCION_TIPO_IGV = 'Gravado - Operación Onerosa';
     public BOLETA_ANTICIPO_ID_PARAMETRO = '5';
     public BOLETA_ANTICIPO_DESCRIPCION_PARAMETRO = 'Anticipo';
-    public BOLETA_ANTICIPO_CODIGO_SUNAT = '02';
+    public BOLETA_ANTICIPO_CODIGO_SUNAT = '03';
     public BOLETA_ANTICIPO_ID_DOMINIO = 26;
     public BOLETA_ANTICIPO_TIPO_PARAMETRO = 3;
     public BOLETA_ANTICIPO_TIPO_PARAMETRO_VALOR = 'Anticipos';

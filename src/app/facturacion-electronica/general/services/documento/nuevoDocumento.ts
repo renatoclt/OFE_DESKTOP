@@ -14,7 +14,7 @@ declare var swal: any;
 export class NuevoDocumentoService {
   //  private url = '/documentos';
   private urlFactura = '/factura';
-  private url = '/guardarRetencion';
+  private url = '/retencion';
   public labelRespuesta: string;
   public labelRespuestaSecundaria: string;
   public labelBotonRespuesta: string;
@@ -24,8 +24,7 @@ export class NuevoDocumentoService {
               private servidores: Servidores,
               private _postpersisservice: PersistenciaPost,
               private _spinner: SpinnerService) {
-    //this.url = this.servidores.DOCUCMD + this.url;
-    this.url = this.servidores.HOSTLOCAL + '/documentos' + this.url;
+    this.url = this.servidores.DOCUCMD + this.url;
     this.urlFactura = 'http://192.168.70.22:8020/api/fe/ms-documentos-command/v1/factura';
   }
 
@@ -40,7 +39,7 @@ export class NuevoDocumentoService {
           // this._translate.get('comprobanteGuardadoPendienteEnvio').subscribe(dataTranslate => that.labelRespuesta = dataTranslate);
           // this._translate.get('verificarEstadoConsultaComprobante').subscribe(dataTranslate => that.labelRespuestaSecundaria = dataTranslate);
           // this._translate.get('verRetencion').subscribe(dataTranslate => that.labelBotonRespuesta = dataTranslate);
-          that.labelRespuesta = 'El comprobante ha sido guardado localmente.';
+          that.labelRespuesta = 'El comprobante ha sido guardado y está pendiente de envío a SUNAT.';
           that.labelRespuestaSecundaria = 'Para verificar el estado del comprobante, por favor, ir al menú y seleccionar la opción Consulta de Comprobante.';
           that.labelBotonRespuesta = 'VER RETENCIÓN';
           this._spinner.set(false);

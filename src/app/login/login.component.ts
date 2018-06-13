@@ -1,79 +1,552 @@
-import { Component, HostListener, Injector, OnInit } from '@angular/core';
-import { BASE_URL } from 'app/utils/app.constants';
-import { ActivatedRoute, Router } from "@angular/router";
-import { Organizacion, Usuario } from 'app/model/usuario';
+import { Component, OnInit, Injector, HostListener, AfterViewInit } from '@angular/core';
+import { BASE_URL, OCP_APIM_SUBSCRIPTION_KEY, URL_CONSUMER, TIME_INACTIVE } from 'app/utils/app.constants';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Usuario, Organizacion } from 'app/model/usuario';
 import { Archivo } from 'app/model/archivo';
 
-import { BaseComponent } from '../base/base.component';
+import { BaseComponent } from 'app/base/base.component';
 import { LoginService } from 'app/service/login.service';
 import { AdjuntoService } from 'app/service/adjuntoservice';
 
 import { Login } from 'app/model/login';
-import { ConstantesService } from '../facturacion-electronica/general/utils/constantes.service';
-import { TiposService } from '../facturacion-electronica/general/utils/tipos.service';
-import { ConstantesLoginService } from '../service/loginConstantes';
-import { SincronizacionService } from '../facturacion-electronica/general/services/sincronizacion/sincronizacion.service';
-import { BehaviorSubject } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
-
-declare var $, DatatableFunctions: any;
+import { EntidadService } from 'app/facturacion-electronica/general/services/organizacion/entidad.service';
+declare var $, DatatableFunctions: any, GlobalFunctions: any;
 declare var swal: any;
 var oLoginComponent: LoginComponent;
 
 @Component({
     moduleId: module.id,
     selector: 'login-cmp',
-    templateUrl: 'login.component.html',
-    styleUrls: ['./login.component.css'],
-    providers: [LoginService, AdjuntoService, ConstantesLoginService, SincronizacionService, HttpClient]
+    templateUrl: './login.component.html',
+    providers: [LoginService, AdjuntoService]
 })
 
-export class LoginComponent extends BaseComponent implements OnInit {
-    test: Date = new Date();
+export class LoginComponent extends BaseComponent implements OnInit, AfterViewInit {
+    test: Date;
     public base_url: string;
     public usuarios: Usuario[];
     public organizaciones: Organizacion[];
     public usuario: Usuario;
-    public myVar:false;
-    
-    loading: boolean = false;
-    loginModel: Login = new Login();
-    
-    constructor(injector: Injector, private router: Router, private route: ActivatedRoute, private loginService: LoginService, private adjuntoService: AdjuntoService,
-                private constantesLoginService : ConstantesLoginService, private sincronizacionService: SincronizacionService,
-                private httpClient: HttpClient) {
+    loading: boolean;
+    loginModel: Login;
+
+    id: number;
+    private sub: any;
+    public logoOrganizacion: string;
+    public fondoOrganizacion: string;
+    public enabledBtnIniciarSesion: boolean;
+    public nombreportal: string;
+
+
+    constructor(injector: Injector, private router: Router, private route: ActivatedRoute,
+               private loginService: LoginService, private adjuntoService: AdjuntoService) {
         super(injector);
+
+        this.loading = false;
+
+        this.test = new Date();
         this.organizaciones = [];
         this.usuario = new Usuario();
         loginService.logout();
         this.base_url = BASE_URL;
         oLoginComponent = this;
+        this.enabledBtnIniciarSesion = true;
+
+        this.loginModel = new Login();
+        this.loginModel.username = '';
+        this.loginModel.password = '';
+
+        // this.nombreportal = 'e-GP';
+        this.nombreportal = 'B2MINING 3.0';
+        //  this.fondoOrganizacion= './assets/img/logos/default/login.jpg';
     }
 
-    AceptarOrganizacion(event) {
-        if (event)
-            event.preventDefault();
 
-        //this.GuardarSession();
+    iniciarSesion() {
+
+        if (this.loginModel.username === '') {
+            swal({
+                text: 'El usuario es un campo requerido.',
+                type: 'warning',
+                buttonsStyling: false,
+                confirmButtonClass: 'btn btn-warning'
+            });
+            return false;
+        }
+        if (this.loginModel.password === '') {
+            swal({
+                text: 'El password es un campo requerido.',
+                type: 'warning',
+                buttonsStyling: false,
+                confirmButtonClass: 'btn btn-warning'
+            });
+            return false;
+        }
+        this.loading = true;
+        this.uiUtils.showOrHideLoadingScreen(this.loading);
+        // let usuario = this.usuarios.find(a=> a.nombreusuario===$("#txtUsuario").val()&& a.contrasenha===$("#txtClave").val());
+
+        this.loginService.login(this.loginModel.username, this.loginModel.password)
+            // this.loginService.login(usuario.nombreusuario, usuario.contrasenha)
+            .subscribe(
+            response => {
+                localStorage.setItem('access_token', response.access_token);
+                localStorage.setItem('refresh_token', response.refresh_token);
+                var expireDate = new Date(new Date().getTime() + (1000 * response.expires_in));
+                localStorage.setItem('expires', expireDate.getTime().toString());
+                localStorage.setItem('expires_in', response.expires_in);
+
+                // window.setup(true);
+                // GlobalFunctions.setup(true , TIME_INACTIVE);
+                this.loginService.RefreshToken()
+                    .subscribe(
+                            response => {
+                                const obj_response = JSON.parse(response._body);
+                                localStorage.setItem('access_token', obj_response.access_token);
+                                localStorage.setItem('refresh_token', obj_response.refresh_token);
+                                var expireDate = new Date(new Date().getTime() + (1000 * obj_response.expires_in));
+                                localStorage.setItem('expires', expireDate.getTime().toString());
+                                localStorage.setItem('expires_in', obj_response.expires_in);
+
+                                console.log('response  en REFRESH TOKEN', response);
+
+                                this.ObtenerUsuario();
+                            },
+                            error => {
+                                console.error('error en REFRESH TOKEN', error);
+                            },
+                            () => { }
+                    );
+
+               // this.ObtenerUsuario();
+                // this.appUtils.redirect('/home');
+            },
+            error => {
+                this.finishLoading();
+                this.messageUtils.showError(error);
+                swal({
+                    text: 'El usuario o contraseña ingresados no son correctos.',
+                    type: 'warning',
+                    buttonsStyling: false,
+                    confirmButtonClass: 'btn btn-warning'
+                });
+                console.log('El usuario o contraseña ingresados no son correctos.');
+            },
+            () => { }
+            );
+
+    }
+
+
+
+    async ObtenerUsuario() {
+        this.usuario = await this.loginService.obtenerUser().toPromise();
+        if (this.usuario.url_image && this.usuario.url_image !== '') {
+            const archivo = new Archivo();
+            archivo.url = this.usuario.url_image;
+            this.usuario.avatar_blob = this.adjuntoService.DescargarArchivo(archivo).toPromise();
+        }
+
+        const orgComp = this.usuario.dameOrgComp();
+        const orgProv = this.usuario.dameOrgProv();
+        const orgFinan = this.usuario.dameOrgFinan();
+
+
+        if ( orgComp.length > 0 && orgProv.length > 0 && orgFinan.length > 0 ) {
+            this.finishLoading();
+            $('#mdlTipoOrganizacion').modal('show');
+        } else if ( orgComp.length > 0 ) {
+            this.organizaciones = orgComp;
+            this.usuario.tipo_empresa = 'C';
+
+            if (this.organizaciones.length  == 1) {
+                let org = this.organizaciones[0];
+                this.usuario.org_id = org.id;
+                this.usuario.isopais_org = org.isoPais;
+                this.usuario.org_url_image = org.url_image;
+
+                this.usuario.keySuscripcion = org.keySuscripcion;
+                this.usuario.nombreOrgActiva = org.nombre;
+                this.usuario.ruc_org = org.ruc;
+
+                setTimeout(function () { oLoginComponent.GuardarSession(); }, 100);
+
+            }else {
+                this.finishLoading();
+                $('#mdlOrganizacion').modal('show');
+            }
+
+        } else if ( orgProv.length > 0 ) {
+            this.organizaciones = orgProv;
+            this.usuario.tipo_empresa = 'P';
+            if (this.organizaciones.length == 1) {
+                let org = this.organizaciones[0];
+                this.usuario.org_id = org.id;
+                this.usuario.isopais_org = org.isoPais;
+                this.usuario.org_url_image = org.url_image;
+
+                this.usuario.keySuscripcion = org.keySuscripcion;
+                this.usuario.nombreOrgActiva = org.nombre;
+                this.usuario.ruc_org = org.ruc;
+
+                setTimeout(function () { oLoginComponent.GuardarSession(); }, 100);
+
+            }else {
+                this.finishLoading();
+                $('#mdlOrganizacion').modal('show');
+            }
+
+        } else if ( orgFinan.length > 0 ) {
+            this.organizaciones = orgFinan;
+            this.usuario.tipo_empresa = 'F';
+            if (this.organizaciones.length == 1) {
+                let org = this.organizaciones[0];
+                this.usuario.org_id = org.id;
+                this.usuario.isopais_org = org.isoPais;
+                this.usuario.org_url_image = org.url_image;
+
+                this.usuario.keySuscripcion = org.keySuscripcion;
+                this.usuario.nombreOrgActiva = org.nombre;
+                this.usuario.ruc_org = org.ruc;
+
+                setTimeout(function () { oLoginComponent.GuardarSession(); }, 100);
+
+            }else {
+                this.finishLoading();
+                $('#mdlOrganizacion').modal('show');
+            }
+
+
+/*
+            let org = this.organizaciones[0];
+
+            this.usuario.org_id = org.id;
+            this.usuario.isopais_org = org.isoPais;
+            this.usuario.org_url_image = org.url_image;
+
+            this.usuario.keySuscripcion = org.keySuscripcion;
+            this.usuario.nombreOrgActiva = org.nombre;
+            this.usuario.ruc_org = org.ruc;
+
+            if(org.tipo_empresa.split(',').length>1){
+                this.finishLoading();
+                $('#mdlTipoOrganizacion').modal('show');
+            }else{
+                this.usuario.tipo_empresa = org.tipo_empresa;
+                setTimeout(function () { oLoginComponent.GuardarSession(); }, 100);
+            }
+*/
+
+
+        } else {
+            this.finishLoading();
+            swal({
+                text: 'El usuario o contraseña ingresados no son correctos.',
+                type: 'warning',
+                buttonsStyling: false,
+                confirmButtonClass: 'btn btn-warning'
+            });
+            console.log('El usuario debe tener al menos una organización asignada');
+            return false;
+        }
+
+        return false;
+
+        this.organizaciones = this.usuario.organizaciones;
+
+        if (this.organizaciones.length <= 0) {
+            this.finishLoading();
+            swal({
+                text: 'El usuario o contraseña ingresados no son correctos.',
+                type: 'warning',
+                buttonsStyling: false,
+                confirmButtonClass: 'btn btn-warning'
+            });
+            console.log('El usuario debe tener al menos una organización asignada');
+            return false;
+        }
+        if (this.organizaciones.length > 1) {
+            /*setTimeout(function () {
+                $("select").each(function () {
+                    $(this).keydown();
+                    if (!$(this).val() && $(this).val() == '')
+                        $(this.parentElement).addClass("is-empty");
+                });
+            }, 100);*/
+
+            // alert();
+            this.finishLoading();
+            $('#mdlOrganizacion').modal('show');
+        } else {
+            let org = this.organizaciones[0];
+
+            /*if (org.nombre.toLowerCase().indexOf("wong") > -1) {
+                org.url_image = "wong.png";
+            } else if (org.nombre.toLowerCase().indexOf("centenario") > -1) {
+                org.url_image = "centenario.png";
+            } else if (org.nombre.toLowerCase().indexOf("abinbev") > -1) {
+                org.url_image = "abinbev.png";
+            }*/
+
+            this.usuario.org_id = org.id;
+            this.usuario.isopais_org = org.isoPais;
+            this.usuario.org_url_image = org.url_image;
+
+            this.usuario.keySuscripcion = org.keySuscripcion;
+            this.usuario.nombreOrgActiva = org.nombre;
+            this.usuario.ruc_org = org.ruc;
+
+            /*
+            this.usuario.tipo_empresa = 'C';
+            this.GuardarSession();
+            this.finishLoading();
+            */
+
+            if(org.tipo_empresa.split(',').length > 1) {
+                this.finishLoading();
+                $('#mdlTipoOrganizacion').modal('show');
+            }else {
+                this.usuario.tipo_empresa = org.tipo_empresa;
+               // this.GuardarSession();
+                 setTimeout(function () { oLoginComponent.GuardarSession(); }, 100);
+
+            //    this.finishLoading();
+            }
+        }
+        /*
+        if (usuario.perfil == "comprador")
+            this.router.navigate(["/ordencompra/comprador/buscar"], { relativeTo: this.route });
+        else
+            this.router.navigate(["/ordencompra/proveedor/buscar"], { relativeTo: this.route });
+
+        this.finishLoading();
+        */
+    }
+
+
+
+    AceptarOrganizacion(event) {
+        this.enabledBtnIniciarSesion= false;
+
+        if (event) {
+            event.preventDefault();
+        }
+
+        // this.GuardarSession();
         $('#mdlOrganizacion').modal('toggle');
+        this.uiUtils.showOrHideLoadingScreen(true);
 
         let org = this.usuario.organizaciones.find(a => a.id == this.usuario.org_id) as Organizacion;
 
+        /*
         if (org.nombre.toLowerCase().indexOf("wong") > -1) {
-            org.url_image = "wong.png";
-        } else if (org.nombre.toLowerCase().indexOf("centenario") > -1) {
-            org.url_image = "centenario.png";
-        } else if (org.nombre.toLowerCase().indexOf("abinbev") > -1) {
-            org.url_image = "abinbev.png";
-        }
+             org.url_image = "wong.png";
+         } else if (org.nombre.toLowerCase().indexOf("centenario") > -1) {
+             org.url_image = "centenario.png";
+         } else if (org.nombre.toLowerCase().indexOf("abinbev") > -1) {
+             org.url_image = "abinbev.png";
+         }
+        */
 
-        this.usuario.org_url_image = org.url_image;
-        this.usuario.tipo_empresa = org.tipo_empresa;
-        this.usuario.ruc_org = org.ruc;
         this.usuario.isopais_org = org.isoPais;
+        this.usuario.org_url_image = org.url_image;
+
+        this.usuario.keySuscripcion = org.keySuscripcion;
+        this.usuario.nombreOrgActiva = org.nombre;
+        this.usuario.ruc_org = org.ruc;
+
         setTimeout(function () { oLoginComponent.GuardarSession(); }, 100);
 
+        return null;
+
+        //    this.usuario.tipo_empresa = org.tipo_empresa;   
+
+        if (org.tipo_empresa.split(',').length > 1) {
+            /// this.finishLoading();
+            $('#mdlTipoOrganizacion').modal('show');
+        }else {
+            this.usuario.tipo_empresa = org.tipo_empresa;
+            // this.GuardarSession();
+            setTimeout(function () { oLoginComponent.GuardarSession(); }, 100);
+
+            //    this.finishLoading();
+        }
+
+       // setTimeout(function () { oLoginComponent.GuardarSession(); }, 100);
     }
+
+    AceptarTipoOrganizacion(event) {
+
+        if (event) {
+            event.preventDefault();
+        }
+
+        console.log('AceptarTipoOrganizacion');
+
+       // this.GuardarSession();
+            // let org = this.usuario.organizaciones.find(a => a.id == this.usuario.org_id) as Organizacion;
+            // this.usuario.tipo_empresa = org.tipo_empresa;
+            // console.log(org);
+
+        $('#mdlTipoOrganizacion').modal('toggle');
+        if (this.usuario.tipo_empresa === 'C') {
+            this.organizaciones = this.usuario.dameOrgComp();
+            if (this.organizaciones.length == 1) {
+                let org = this.organizaciones[0];
+                this.usuario.org_id = org.id;
+                this.usuario.isopais_org = org.isoPais;
+                this.usuario.org_url_image = org.url_image;
+
+                this.usuario.keySuscripcion = org.keySuscripcion;
+                this.usuario.nombreOrgActiva = org.nombre;
+                this.usuario.ruc_org = org.ruc;
+
+                this.usuario.tipo_empresa = 'C';
+                setTimeout(function () { oLoginComponent.GuardarSession(); }, 100);
+
+            }else {
+               // this.finishLoading();
+                $('#mdlOrganizacion').modal('show');
+            }
+
+        } else if (this.usuario.tipo_empresa === 'P') {
+            this.organizaciones = this.usuario.dameOrgProv();
+            if (this.organizaciones.length == 1) {
+                let org = this.organizaciones[0];
+                this.usuario.org_id = org.id;
+                this.usuario.isopais_org = org.isoPais;
+                this.usuario.org_url_image = org.url_image;
+
+                this.usuario.keySuscripcion = org.keySuscripcion;
+                this.usuario.nombreOrgActiva = org.nombre;
+                this.usuario.ruc_org = org.ruc;
+
+                this.usuario.tipo_empresa = 'P';
+                setTimeout(function () { oLoginComponent.GuardarSession(); }, 100);
+
+            }else {
+                //   this.finishLoading();
+                $('#mdlOrganizacion').modal('show');
+            }
+        }
+
+        // if (this.usuario.organizaciones.length){}
+        // setTimeout(function () { oLoginComponent.GuardarSession(); }, 100);
+
+    }
+
+
+
+    GuardarSession() {
+
+        localStorage.setItem('usuarioActual', JSON.stringify(this.usuario));
+
+        localStorage.setItem('username', this.usuario.nombreusuario);
+        localStorage.setItem('org_id', this.usuario.org_id);        
+
+        /*
+        let org = this.usuario.organizaciones.find(a => a.id == this.usuario.org_id);
+        localStorage.setItem('Ocp_Apim_Subscription_Key', org.keySuscripcion);
+        localStorage.setItem('org_nombre', org.nombre);
+        localStorage.setItem('org_ruc', org.ruc);
+        localStorage.setItem('tipo_empresa', this.usuario.tipo_empresa);
+        */
+
+        localStorage.setItem('Ocp_Apim_Subscription_Key', this.usuario.keySuscripcion);
+        localStorage.setItem('org_nombre', this.usuario.nombreOrgActiva);
+        localStorage.setItem('org_ruc', this.usuario.ruc_org);
+        localStorage.setItem('tipo_empresa', this.usuario.tipo_empresa);
+
+
+        // DatatableFunctions.ConnectWebsockets(); // No Borrar se  usara cuando se habilite websocket
+        console.log('--------consume------');
+        this.loginService.obtenerIdEntidad(localStorage.getItem('org_ruc'));
+
+
+        /******* INICIO Usuarios en duro *******/
+
+            const usuarioAutenticado = this.usuario.nombreusuario.trim().toUpperCase();
+
+            if(usuarioAutenticado === 'CEGP'){
+                let menuLateral = '[{"front":"PEB2M","logoFront":"https://sab2md.blob.core.windows.net/public-dev/org/logos/b2mining-ico.png","icon":"assignment","title":"Comprador","modulos":[{"idModulo":"03797780-2568-4da5-92a1-0ef545bf8290","moduloUri":"/egp-requerimiento/comprador/buscar","moduloDesc":"Requerimiento","mini":"RFQ","default":true,"botones":[{"habilitado":true,"visible":true,"idBoton":"43fee381-4cd8-4a57-b5d8-ae074f3cec0a","nombre":"registrarguia","Desc":"Botón de registro de guia","Titulo":"REGISTRAR GUÍA"},{"habilitado":true,"visible":true,"idBoton":"5a5e3e43-73db-457e-aaa1-9cb1989c7654","nombre":"imprimir","Desc":"Botón de impresión","Titulo":"IMPRIMIR"},{"habilitado":true,"visible":true,"idBoton":"5a5e3e43-73db-457e-aaa2-9cb1989c7654","nombre":"detalle","Desc":"Botón de ver detalle","Titulo":"DETALLE"},{"habilitado":true,"visible":true,"idBoton":"5a5e3e43-73db-457e-aaa5-9cb1989c7654","nombre":"habilitaredicion","Desc":"Botón de edición","Titulo":"HABILITAR EDICIÓN"},{"habilitado":true,"visible":true,"idBoton":"5a5e3e43-73db-457e-aaa6-9cb1989c7654","nombre":"guardar","Desc":"Botón de guardado","Titulo":"GUARDAR"},{"habilitado":true,"visible":true,"idBoton":"5a5e3e43-73db-457e-aaa7-9cb1989c7654","nombre":"enviar","Desc":"Botón de envío","Titulo":"ENVIAR"},{"habilitado":true,"visible":true,"idBoton":"5a5e3e43-73db-457e-aaa8-9cb1989c7654","nombre":"descartarborrador","Desc":"Botón de descarte de borrador","Titulo":"DESCARTAR BORRADOR"},{"habilitado":true,"visible":true,"idBoton":"5a5e3e43-73db-457e-aaaa-9cb1989c7654","nombre":"buscar","Desc":"Botón de búsqueda","Titulo":"BUSCAR"}]},{"idModulo":"5f57907e-d343-415b-820b-18219986219f","moduloUri":"/egp-ordencompra/comprador/buscar","moduloDesc":"Orden de Compra","mini":"OC","default":false},{"idModulo":"080a018f-b407-40cd-91ab-408f5d0fc069","moduloUri":"/egp-calificacion/proveedor/buscar","moduloDesc":"Calificación","mini":"CA","default":false}]}]';
+                let moduloUriDefault = '/egp-requerimiento/comprador/buscar';
+                console.log('************************* Comprador e-GP ***************');
+                localStorage.setItem('menuLateral', menuLateral);
+                this.router.navigate([moduloUriDefault], { relativeTo: this.route });
+                //   this.uiUtils.showOrHideLoadingScreen(false);
+            } else
+
+            if(usuarioAutenticado === 'PEGP'){
+                let menuLateral = '[{"front":"PEB2M","logoFront":"https://sab2md.blob.core.windows.net/public-dev/org/logos/b2mining-ico.png","icon":"assignment","title":"Proveedor","modulos":[{"idModulo":"080a018f-b407-40cd-91ab-408f5d0fc069","moduloUri":"/egp-requerimiento/proveedor/buscar","moduloDesc":"Requerimiento","mini":"RFQ","default":true,"botones":[{"habilitado":true,"visible":true,"idBoton":"43fee381-4cd8-4a57-b5d8-ae074f3cec0a","nombre":"registrarguia","Desc":"Botón de registro de guia","Titulo":"REGISTRAR GUÍA"},{"habilitado":true,"visible":true,"idBoton":"5a5e3e43-73db-457e-aaa1-9cb1989c7654","nombre":"imprimir","Desc":"Botón de impresión","Titulo":"IMPRIMIR"},{"habilitado":true,"visible":true,"idBoton":"5a5e3e43-73db-457e-aaa2-9cb1989c7654","nombre":"detalle","Desc":"Botón de ver detalle","Titulo":"DETALLE"},{"habilitado":true,"visible":true,"idBoton":"5a5e3e43-73db-457e-aaa5-9cb1989c7654","nombre":"habilitaredicion","Desc":"Botón de edición","Titulo":"HABILITAR EDICIÓN"},{"habilitado":true,"visible":true,"idBoton":"5a5e3e43-73db-457e-aaa6-9cb1989c7654","nombre":"guardar","Desc":"Botón de guardado","Titulo":"GUARDAR"},{"habilitado":true,"visible":true,"idBoton":"5a5e3e43-73db-457e-aaa7-9cb1989c7654","nombre":"enviar","Desc":"Botón de envío","Titulo":"ENVIAR"},{"habilitado":true,"visible":true,"idBoton":"5a5e3e43-73db-457e-aaa8-9cb1989c7654","nombre":"descartarborrador","Desc":"Botón de descarte de borrador","Titulo":"DESCARTAR BORRADOR"},{"habilitado":true,"visible":true,"idBoton":"5a5e3e43-73db-457e-aaaa-9cb1989c7654","nombre":"buscar","Desc":"Botón de búsqueda","Titulo":"BUSCAR"}]},{"idModulo":"03797780-2568-4da5-92a1-0ef545bf8290","moduloUri":"/egp-cotizacion/proveedor/buscar","moduloDesc":"Cotización","mini":"CO","default":false},{"idModulo":"5f57907e-d343-415b-820b-18219986219f","moduloUri":"/egp-ordencompra/proveedor/buscar","moduloDesc":"Orden de Compra","mini":"OC","default":false}]}]';
+                let moduloUriDefault = '/egp-requerimiento/proveedor/buscar';
+                console.log('************************* Proveedor e-GP ***************');                    
+                localStorage.setItem('menuLateral', menuLateral);
+                this.router.navigate([moduloUriDefault], { relativeTo: this.route });
+
+                //    this.uiUtils.showOrHideLoadingScreen(false);
+            } else
+/*
+            if(usuarioAutenticado=='MSANTACRUZC'){
+                //menuLateral = '[{"front":"PEB2M","logoFront":"https://sab2md.blob.core.windows.net/public-dev/org/logos/b2mining-ico.png","icon":"assignment","title":"Proveedor", "modulos" : [] }]';
+                let menuLateral = '[{"front":"PEB2M","logoFront":"https://sab2md.blob.core.windows.net/public-dev/org/logos/b2mining-ico.png","icon":"assignment","title":"Comprador", "modulos" : "modulos" : [  { "idModulo" : "01134ee2-c8e3-4f3d-a4c7-aaabbbccc001", "moduloUri" : "/sm-requerimiento/comprador/buscar", "moduloDesc" : "Solicitud Cotización", "mini" : "S", "default" : true, "botones" : [ { "idBoton" : "43fee381-4cd8-6a57-b5d8-ae074f3cec0a", "nombre" : "registrarsolicitudcotiza", "Desc" : "Botón de registro de solicitud de cotización", "habilitado" : 1, "visible": true, "Titulo" : "REGISTRAR COTIZACIÓN" }, { "idBoton" : "5a5e3e43-73db-457e-aaa2-9cb1989c7654", "nombre" : "detalle", "Desc" : "Botón de ver detalle", "habilitado" : 1, "visible": true, "Titulo" : "DETALLE" }, { "idBoton" : "5a5e3e43-73db-457e-aaaa-9cb1989c7654", "nombre" : "buscar", "Desc" : "Botón de búsqueda", "habilitado" : 1, "visible": true, "Titulo" : "BUSCAR" } ] }, { "idModulo" : "01134ee2-c8e3-4f3d-a4c7-aaabbbccc002", "moduloUri" : "/sm-cotizacion/comprador/buscar", "moduloDesc" : "Cotizaciones", "mini" : "C", "default" : false, "botones" : [ { "idBoton" : "5a5e3e43-73db-457e-aaa2-9cb1989c7654", "nombre" : "detalle", "Desc" : "Botón de ver detalle", "habilitado" : 1, "visible": true, "Titulo" : "DETALLE" }, { "idBoton" : "5a5e3e43-73db-457e-aaaa-9cb1989c7654", "nombre" : "buscar", "Desc" : "Botón de búsqueda", "habilitado" : 1, "visible": true, "Titulo" : "BUSCAR" } ] }, { "idModulo" : "01134ee2-c8e3-4f3d-a4c7-aaabbbccc005", "moduloUri" : "/sm-ordencompra/comprador/buscar", "moduloDesc" : "Orden de Compra", "mini" : "OC", "default" : false, "botones" : [ { "idBoton" : "5a5e3e43-73db-457e-aaa1-9cb1989c7654", "nombre" : "imprimir", "Desc" : "Botón de impresión", "habilitado" : 1, "visible": true, "Titulo" : "IMPRIMIR" }, { "idBoton" : "5a5e3e43-73db-457e-aaa2-9cb1989c7654", "nombre" : "detalle", "Desc" : "Botón de ver detalle", "habilitado" : 1, "visible": true, "Titulo" : "DETALLE" }, { "idBoton" : "5a5e3e43-73db-457e-aaa3-9cb1989c7654", "nombre" : "aceptar", "Desc" : "Botón de aceptación", "habilitado" : 1, "visible": true, "Titulo" : "ACEPTAR" }, { "idBoton" : "5a5e3e43-73db-457e-aaa4-9cb1989c7654", "nombre" : "rechazar", "Desc" : "Botón de rechazo", "habilitado" : 1, "visible": true, "Titulo" : "RECHAZAR" }, { "idBoton" : "5a5e3e43-73db-457e-aaa9-9cb1989c7654", "nombre" : "limpiar", "Desc" : "Botón de limpiar", "habilitado" : 1, "visible": true, "Titulo" : "LIMPIAR" }, { "idBoton" : "5a5e3e43-73db-457e-aaaa-9cb1989c7654", "nombre" : "buscar", "Desc" : "Botón de búsqueda", "habilitado" : 1, "visible": true, "Titulo" : "BUSCAR" } ] }, { "idModulo" : "01134ee2-c8e3-4f3d-a4c7-aaabbbccc006", "moduloUri" : "/sm-guia/comprador/buscar", "moduloDesc" : "Guías", "mini" : "G", "default" : false, "botones" : [ { "idBoton" : "43fee381-4cd8-4a57-b5d8-ae074f3cec0a", "nombre" : "registrarguia", "Desc" : "Botón de registro de guia", "habilitado" : 1, "visible": true, "Titulo" : "REGISTRAR GUÍA" }, { "idBoton" : "5a5e3e43-73db-457e-aaa1-9cb1989c7654", "nombre" : "imprimir", "Desc" : "Botón de impresión", "habilitado" : 1, "visible": true, "Titulo" : "IMPRIMIR" }, { "idBoton" : "5a5e3e43-73db-457e-aaa2-9cb1989c7654", "nombre" : "detalle", "Desc" : "Botón de ver detalle", "habilitado" : 1, "visible": true, "Titulo" : "DETALLE" }, { "idBoton" : "5a5e3e43-73db-457e-aaa5-9cb1989c7654", "nombre" : "habilitaredicion", "Desc" : "Botón de edición", "habilitado" : 1, "visible": true, "Titulo" : "HABILITAR EDICIÓN" }, { "idBoton" : "5a5e3e43-73db-457e-aaa6-9cb1989c7654", "nombre" : "guardar", "Desc" : "Botón de guardado", "habilitado" : 1, "visible": true, "Titulo" : "GUARDAR" }, { "idBoton" : "5a5e3e43-73db-457e-aaa7-9cb1989c7654", "nombre" : "enviar", "Desc" : "Botón de envío", "habilitado" : 1, "visible": true, "Titulo" : "ENVIAR" }, { "idBoton" : "5a5e3e43-73db-457e-aaa8-9cb1989c7654", "nombre" : "descartarborrador", "Desc" : "Botón de descarte de borrador", "habilitado" : 1, "visible": true, "Titulo" : "DESCARTAR BORRADOR" }, { "idBoton" : "5a5e3e43-73db-457e-aaa9-9cb1989c7654", "nombre" : "limpiar", "Desc" : "Botón de limpiar", "habilitado" : 1, "visible": true, "Titulo" : "LIMPIAR" }, { "idBoton" : "5a5e3e43-73db-457e-aaaa-9cb1989c7654", "nombre" : "buscar", "Desc" : "Botón de búsqueda", "habilitado" : 1, "visible": true, "Titulo" : "BUSCAR" } ] }, { "idModulo" : "5f57907e-d343-415b-820b-18219986219f", "moduloUri" : "/conformidadservicio/comprador/buscar", "moduloDesc" : "Hoja de Aceptación", "mini" : "HAS", "default" : false, "botones" : [ { "idBoton" : "5a5e3e43-73db-457e-aaa1-9cb1989c7654", "nombre" : "imprimir", "Desc" : "Botón de impresión", "habilitado" : 1, "visible": true, "Titulo" : "IMPRIMIR" }, { "idBoton" : "5a5e3e43-73db-457e-aaa2-9cb1989c7654", "nombre" : "detalle", "Desc" : "Botón de ver detalle", "habilitado" : 1, "visible": true, "Titulo" : "DETALLE" }, { "idBoton" : "5a5e3e43-73db-457e-aaa9-9cb1989c7654", "nombre" : "limpiar", "Desc" : "Botón de limpiar", "habilitado" : 1, "visible": true, "Titulo" : "LIMPIAR" }, { "idBoton" : "5a5e3e43-73db-457e-aaaa-9cb1989c7654", "nombre" : "buscar", "Desc" : "Botón de búsqueda", "habilitado" : 1, "visible": true, "Titulo" : "BUSCAR" } ] }, { "idModulo" : "01134ee2-c8e3-4f3d-a4c7-aaabbbccc007", "moduloUri" : "/sm-factura/comprador/buscar", "moduloDesc" : "Comprobante de Pago", "mini" : "CP", "default" : false, "botones" : [ { "idBoton" : "5a5e3e43-73db-457e-aaa1-9cb1989c7654", "nombre" : "imprimir", "Desc" : "Botón de impresión", "habilitado" : 1, "visible": true, "Titulo" : "IMPRIMIR" }, { "idBoton" : "5a5e3e43-73db-457e-aaa2-9cb1989c7654", "nombre" : "detalle", "Desc" : "Botón de ver detalle", "habilitado" : 1, "visible": true, "Titulo" : "DETALLE" }, { "idBoton" : "5a5e3e43-73db-457e-aaaa-9cb1989c7654", "nombre" : "buscar", "Desc" : "Botón de búsqueda", "habilitado" : 1, "visible": true, "Titulo" : "BUSCAR" }, { "idBoton" : "d5f78ab9-a8c6-4191-bdee-c4d7f84835b8", "nombre" : "registrarcomprobante", "Desc" : "Botón de registro de comprobante", "habilitado" : 1, "visible": true, "Titulo" : "REGISTRAR COMPROBANTE" } ] },{ "idModulo" : "01134ee2-c8e3-4f3d-a4c7-aaabbbccc003", "moduloUri" : "/sm-retencion/comprador/buscar", "moduloDesc" : "Retenciones", "mini" : "R", "default" : false, "botones" : [ { "idBoton" : "5a5e3e43-73db-457e-aaa2-9cb1989c7654", "nombre" : "detalle", "Desc" : "Botón de ver detalle", "habilitado" : 1, "visible": true, "Titulo" : "DETALLE" }, { "idBoton" : "5a5e3e43-73db-457e-aaaa-9cb1989c7654", "nombre" : "buscar", "Desc" : "Botón de búsqueda", "habilitado" : 1, "visible": true, "Titulo" : "BUSCAR" } ] }, { "idModulo" : "01134ee2-c8e3-4f3d-a4c7-aaabbbccc004", "moduloUri" : "/sm-detraccion/comprador/buscar", "moduloDesc" : "Detracciones", "mini" : "D", "default" : false, "botones" : [ { "idBoton" : "5a5e3e43-73db-457e-aaa2-9cb1989c7654", "nombre" : "detalle", "Desc" : "Botón de ver detalle", "habilitado" : 1, "visible": true, "Titulo" : "DETALLE" }, { "idBoton" : "5a5e3e43-73db-457e-aaaa-9cb1989c7654", "nombre" : "buscar", "Desc" : "Botón de búsqueda", "habilitado" : 1, "visible": true, "Titulo" : "BUSCAR" } ] }] }]';
+                let moduloUriDefault = '/sm-requerimiento/comprador/buscar';
+
+                console.log('************************* Comprador MSANTACRUZ ***************');  
+                localStorage.setItem("RootMenu",'{"menus":'+menuLateral+',"moduloUriDefault":"'+moduloUriDefault+'"}');
+                localStorage.setItem('menuLateral', menuLateral);
+                this.router.navigate([moduloUriDefault], { relativeTo: this.route });
+            } else
+*/
+            if ( usuarioAutenticado === '20268214527' || usuarioAutenticado === '20537358433' ||
+                usuarioAutenticado === '20111740438' || usuarioAutenticado === '20100202396' ||
+                /*usuarioAutenticado === '20100028698' ||*/ usuarioAutenticado === '20100049181') {
+                const menuLateral = '[{"front":"PEB2M","logoFront":"https://sab2md.blob.core.windows.net/public-dev/org/logos/b2mining-ico.png","icon":"assignment","title":"Proveedor", "modulos" : [  { "idModulo" : "01134ee2-c8e3-4f3d-a4c7-aaabbbccc001", "moduloUri" : "/sm-requerimiento/proveedor/buscar", "moduloDesc" : "Solicitud Cotización", "mini" : "S", "default" : true, "botones" : [ { "idBoton" : "43fee381-4cd8-6a57-b5d8-ae074f3cec0a", "nombre" : "registrarsolicitudcotiza", "Desc" : "Botón de registro de solicitud de cotización", "habilitado" : 1, "visible": true, "Titulo" : "REGISTRAR COTIZACIÓN" }, { "idBoton" : "5a5e3e43-73db-457e-aaa2-9cb1989c7654", "nombre" : "detalle", "Desc" : "Botón de ver detalle", "habilitado" : 1, "visible": true, "Titulo" : "DETALLE" }, { "idBoton" : "5a5e3e43-73db-457e-aaaa-9cb1989c7654", "nombre" : "buscar", "Desc" : "Botón de búsqueda", "habilitado" : 1, "visible": true, "Titulo" : "BUSCAR" } ] }, { "idModulo" : "01134ee2-c8e3-4f3d-a4c7-aaabbbccc002", "moduloUri" : "/sm-cotizacion/proveedor/buscar", "moduloDesc" : "Cotizaciones", "mini" : "C", "default" : false, "botones" : [ { "idBoton" : "5a5e3e43-73db-457e-aaa2-9cb1989c7654", "nombre" : "detalle", "Desc" : "Botón de ver detalle", "habilitado" : 1, "visible": true, "Titulo" : "DETALLE" }, { "idBoton" : "5a5e3e43-73db-457e-aaaa-9cb1989c7654", "nombre" : "buscar", "Desc" : "Botón de búsqueda", "habilitado" : 1, "visible": true, "Titulo" : "BUSCAR" } ] }, { "idModulo" : "01134ee2-c8e3-4f3d-a4c7-aaabbbccc005", "moduloUri" : "/sm-ordencompra/proveedor/buscar", "moduloDesc" : "Orden de Compra", "mini" : "OC", "default" : false, "botones" : [ { "idBoton" : "5a5e3e43-73db-457e-aaa1-9cb1989c7654", "nombre" : "imprimir", "Desc" : "Botón de impresión", "habilitado" : 1, "visible": true, "Titulo" : "IMPRIMIR" }, { "idBoton" : "5a5e3e43-73db-457e-aaa2-9cb1989c7654", "nombre" : "detalle", "Desc" : "Botón de ver detalle", "habilitado" : 1, "visible": true, "Titulo" : "DETALLE" }, { "idBoton" : "5a5e3e43-73db-457e-aaa3-9cb1989c7654", "nombre" : "aceptar", "Desc" : "Botón de aceptación", "habilitado" : 1, "visible": true, "Titulo" : "ACEPTAR" }, { "idBoton" : "5a5e3e43-73db-457e-aaa4-9cb1989c7654", "nombre" : "rechazar", "Desc" : "Botón de rechazo", "habilitado" : 1, "visible": true, "Titulo" : "RECHAZAR" }, { "idBoton" : "5a5e3e43-73db-457e-aaa9-9cb1989c7654", "nombre" : "limpiar", "Desc" : "Botón de limpiar", "habilitado" : 1, "visible": true, "Titulo" : "LIMPIAR" }, { "idBoton" : "5a5e3e43-73db-457e-aaaa-9cb1989c7654", "nombre" : "buscar", "Desc" : "Botón de búsqueda", "habilitado" : 1, "visible": true, "Titulo" : "BUSCAR" } ] }, { "idModulo" : "01134ee2-c8e3-4f3d-a4c7-aaabbbccc006", "moduloUri" : "/sm-guia/proveedor/buscar", "moduloDesc" : "Guías", "mini" : "G", "default" : false, "botones" : [ { "idBoton" : "43fee381-4cd8-4a57-b5d8-ae074f3cec0a", "nombre" : "registrarguia", "Desc" : "Botón de registro de guia", "habilitado" : 1, "visible": true, "Titulo" : "REGISTRAR GUÍA" }, { "idBoton" : "5a5e3e43-73db-457e-aaa1-9cb1989c7654", "nombre" : "imprimir", "Desc" : "Botón de impresión", "habilitado" : 1, "visible": true, "Titulo" : "IMPRIMIR" }, { "idBoton" : "5a5e3e43-73db-457e-aaa2-9cb1989c7654", "nombre" : "detalle", "Desc" : "Botón de ver detalle", "habilitado" : 1, "visible": true, "Titulo" : "DETALLE" }, { "idBoton" : "5a5e3e43-73db-457e-aaa5-9cb1989c7654", "nombre" : "habilitaredicion", "Desc" : "Botón de edición", "habilitado" : 1, "visible": true, "Titulo" : "HABILITAR EDICIÓN" }, { "idBoton" : "5a5e3e43-73db-457e-aaa6-9cb1989c7654", "nombre" : "guardar", "Desc" : "Botón de guardado", "habilitado" : 1, "visible": true, "Titulo" : "GUARDAR" }, { "idBoton" : "5a5e3e43-73db-457e-aaa7-9cb1989c7654", "nombre" : "enviar", "Desc" : "Botón de envío", "habilitado" : 1, "visible": true, "Titulo" : "ENVIAR" }, { "idBoton" : "5a5e3e43-73db-457e-aaa8-9cb1989c7654", "nombre" : "descartarborrador", "Desc" : "Botón de descarte de borrador", "habilitado" : 1, "visible": true, "Titulo" : "DESCARTAR BORRADOR" }, { "idBoton" : "5a5e3e43-73db-457e-aaa9-9cb1989c7654", "nombre" : "limpiar", "Desc" : "Botón de limpiar", "habilitado" : 1, "visible": true, "Titulo" : "LIMPIAR" }, { "idBoton" : "5a5e3e43-73db-457e-aaaa-9cb1989c7654", "nombre" : "buscar", "Desc" : "Botón de búsqueda", "habilitado" : 1, "visible": true, "Titulo" : "BUSCAR" } ] }, { "idModulo" : "5f57907e-d343-415b-820b-18219986219f", "moduloUri" : "/conformidadservicio/proveedor/buscar", "moduloDesc" : "Hoja de Aceptación", "mini" : "HAS", "default" : false, "botones" : [ { "idBoton" : "5a5e3e43-73db-457e-aaa1-9cb1989c7654", "nombre" : "imprimir", "Desc" : "Botón de impresión", "habilitado" : 1, "visible": true, "Titulo" : "IMPRIMIR" }, { "idBoton" : "5a5e3e43-73db-457e-aaa2-9cb1989c7654", "nombre" : "detalle", "Desc" : "Botón de ver detalle", "habilitado" : 1, "visible": true, "Titulo" : "DETALLE" }, { "idBoton" : "5a5e3e43-73db-457e-aaa9-9cb1989c7654", "nombre" : "limpiar", "Desc" : "Botón de limpiar", "habilitado" : 1, "visible": true, "Titulo" : "LIMPIAR" }, { "idBoton" : "5a5e3e43-73db-457e-aaaa-9cb1989c7654", "nombre" : "buscar", "Desc" : "Botón de búsqueda", "habilitado" : 1, "visible": true, "Titulo" : "BUSCAR" } ] }, { "idModulo" : "01134ee2-c8e3-4f3d-a4c7-aaabbbccc007", "moduloUri" : "/sm-factura/proveedor/buscar", "moduloDesc" : "Comprobante de Pago", "mini" : "CP", "default" : false, "botones" : [ { "idBoton" : "5a5e3e43-73db-457e-aaa1-9cb1989c7654", "nombre" : "imprimir", "Desc" : "Botón de impresión", "habilitado" : 1, "visible": true, "Titulo" : "IMPRIMIR" }, { "idBoton" : "5a5e3e43-73db-457e-aaa2-9cb1989c7654", "nombre" : "detalle", "Desc" : "Botón de ver detalle", "habilitado" : 1, "visible": true, "Titulo" : "DETALLE" }, { "idBoton" : "5a5e3e43-73db-457e-aaaa-9cb1989c7654", "nombre" : "buscar", "Desc" : "Botón de búsqueda", "habilitado" : 1, "visible": true, "Titulo" : "BUSCAR" }, { "idBoton" : "d5f78ab9-a8c6-4191-bdee-c4d7f84835b8", "nombre" : "registrarcomprobante", "Desc" : "Botón de registro de comprobante", "habilitado" : 1, "visible": true, "Titulo" : "REGISTRAR COMPROBANTE" } ] },{ "idModulo" : "01134ee2-c8e3-4f3d-a4c7-aaabbbccc003", "moduloUri" : "/sm-retencion/proveedor/buscar", "moduloDesc" : "Retenciones", "mini" : "R", "default" : false, "botones" : [ { "idBoton" : "5a5e3e43-73db-457e-aaa2-9cb1989c7654", "nombre" : "detalle", "Desc" : "Botón de ver detalle", "habilitado" : 1, "visible": true, "Titulo" : "DETALLE" }, { "idBoton" : "5a5e3e43-73db-457e-aaaa-9cb1989c7654", "nombre" : "buscar", "Desc" : "Botón de búsqueda", "habilitado" : 1, "visible": true, "Titulo" : "BUSCAR" } ] }, { "idModulo" : "01134ee2-c8e3-4f3d-a4c7-aaabbbccc004", "moduloUri" : "/sm-detraccion/proveedor/buscar", "moduloDesc" : "Detracciones", "mini" : "D", "default" : false, "botones" : [ { "idBoton" : "5a5e3e43-73db-457e-aaa2-9cb1989c7654", "nombre" : "detalle", "Desc" : "Botón de ver detalle", "habilitado" : 1, "visible": true, "Titulo" : "DETALLE" }, { "idBoton" : "5a5e3e43-73db-457e-aaaa-9cb1989c7654", "nombre" : "buscar", "Desc" : "Botón de búsqueda", "habilitado" : 1, "visible": true, "Titulo" : "BUSCAR" } ] }]  }]';
+                const moduloUriDefault = '/sm-requerimiento/proveedor/buscar';
+
+                console.log('************************* Proveedor '+usuarioAutenticado+' ***************');
+                localStorage.setItem('RootMenu', '{"menus":' + menuLateral + ',"moduloUriDefault":"' + moduloUriDefault + '"}');   
+                localStorage.setItem('menuLateral', menuLateral);
+                this.router.navigate([moduloUriDefault], { relativeTo: this.route });
+         //       this.uiUtils.showOrHideLoadingScreen(false);
+            } else {
+
+        /******* FIN Usuarios en duro *******/
+
+
+                this.loginService.obtenerMenu()
+                // this.loginService.login(usuario.nombreusuario, usuario.contrasenha)
+                .subscribe(
+                data => {
+
+                    if ( usuarioAutenticado === 'ADMINEBIZ' ) {
+                        data.menus[0].title = 'Admin. del Sistema';
+                    }
+
+                    GlobalFunctions.setup(true, TIME_INACTIVE);
+                    DatatableFunctions.ConnectWebsockets(URL_CONSUMER);
+
+                    const menuLateral = JSON.stringify(data.menus);
+                    const moduloUriDefault = data.moduloUriDefault;
+
+                    localStorage.setItem('menuLateral', menuLateral);
+                    this.router.navigate([moduloUriDefault], { relativeTo: this.route });
+                    // this.uiUtils.showOrHideLoadingScreen(false);
+
+                },
+                error => {
+                    this.messageUtils.showError(error);
+                },
+                () => { }
+                );
+
+            //    this.uiUtils.showOrHideLoadingScreen(false);
+        /******* INICIO QUITAR LLAVE Usuarios en duro *******/
+            }
+        /******* FIN QUITAR LLAVE Usuarios en duro *******/
+
+    }
+
+
 
     checkFullPageBackgroundImage() {
         var $page = $('.full-page');
@@ -85,317 +558,91 @@ export class LoginComponent extends BaseComponent implements OnInit {
         }
     }
 
-    async GuardarSession() {
-        localStorage.setItem('org_id', this.usuario.org_id);
-        localStorage.setItem("username", this.usuario.nombreusuario);
-        localStorage.setItem('tipo_empresa', this.usuario.tipo_empresa);
-        let org = this.usuario.organizaciones.find(a => a.id == this.usuario.org_id);
-        localStorage.setItem('Ocp_Apim_Subscription_Key', org.keySuscripcion);
-        localStorage.setItem('org_nombre', org.nombre);
-        localStorage.setItem('org_ruc', org.ruc);
-        localStorage.setItem('usuarioActual', JSON.stringify(this.usuario));
-        localStorage.setItem('passwordActual', this.loginModel.password);
-        console.log('--------consume------');
-        console.log(this.loginModel.inicio );
-        if(this.loginModel.inicio == 'false'){
-            await this.loginService.guardarUsuariosOffline(await this.loginService.obtenerUsuariosOffline(this.loginModel.ruc).toPromise()).toPromise();
-            // console.log(await this.loginService.obtenerUsuariosOffline(this.loginModel.ruc).toPromise());
-            await this.loginService.guardarIdioma().toPromise();
-            await this.loginService.guardarIdiomaQuery().toPromise();
-            await this.loginService.guardarEvento().toPromise();
-            let dataMaestra = await this.loginService.obtenerMaestra().toPromise()
-            await this.loginService.guardarMaestra(dataMaestra).toPromise() ;
-            await this.loginService.guardarParemetroEntidad().toPromise();
-            await this.loginService.guardarTipoEntidad().toPromise();
-            await this.loginService.guardarQueryEstado().toPromise();
-            try{
-                let dataEntidad = await this.loginService.obtenerEntidad().toPromise();
-                await this.loginService.guardarEntidad(dataEntidad).toPromise();
-                let imagenEbiz = await this.loginService.obtenerAzure('logo_ebiz.png').toPromise();
-                let imagenEmpresa = await this.loginService.obtenerAzure(dataEntidad.logoCloud).toPromise();
-                let plantillaRetenciones = await this.loginService.obtenerAzure('retenciones-final.xml').toPromise();
-                await this.loginService.guardarDocumentoAzure('1',dataEntidad.id, '20' , imagenEbiz, imagenEmpresa, plantillaRetenciones);
-                let plantillaBoletas = await this.loginService.obtenerAzure('facturas.xml').toPromise();
-                await this.loginService.guardarDocumentoAzure('2',dataEntidad.id, '01' , imagenEbiz, imagenEmpresa, plantillaBoletas);
-                let plantillaPercepcion = await this.loginService.obtenerAzure('percepcion.xml').toPromise();
-                await this.loginService.guardarDocumentoAzure('3',dataEntidad.id, '40' , imagenEbiz, imagenEmpresa, plantillaPercepcion);
-                let plantillaFacturas = await this.loginService.obtenerAzure('facturas.xml').toPromise();
-                await this.loginService.guardarDocumentoAzure('4',dataEntidad.id, '03' , imagenEbiz, imagenEmpresa, plantillaFacturas);
-                await this.loginService.guardarSerie(await this.loginService.obtenerSerie().toPromise()).toPromise();
-            }
-            catch(e){
-                swal({
-                    text: "Error al intentar sincronizar.",
-                    type: 'error',
-                    buttonsStyling: false,
-                    confirmButtonClass: "btn btn-error",
-                    confirmButtonText: 'CONTINUAR',
-                });
-                
-            }
-            try{
-                await this.loginService.guardarParametro(await this.loginService.obtenerParametros().toPromise()).toPromise();
-                await this.loginService.guardarTipoPrecioVenta(await this.loginService.obtenerTipoPrecioVenta().toPromise()).toPromise();
-                await this.loginService.guardarTipoAfectacionIgv(await this.loginService.obtenerTipoAfectacionIgv().toPromise()).toPromise();   
-                await this.loginService.guardarTipoCalculoIsc(await this.loginService.obtenerTipoCalculoIsc().toPromise()).toPromise();
-                await this.loginService.guardarConcepto(await this.loginService.obtenerConceptos().toPromise()).toPromise();
-                await this.loginService.guardarEmpresaLocal(this.loginModel.ruc).toPromise();
-            }
-            catch(e){
-                swal({
-                    text: "Error al intentar sincronizarN.",
-                    type: 'error',
-                    buttonsStyling: false,
-                    confirmButtonClass: "btn btn-error",
-                    confirmButtonText: 'CONTINUAR',
-                });
 
-            }
-            
-        }
-        
-        // DatatableFunctions.ConnectWebsockets();
-        
-        this.loginService.obtenerIdEntidad(localStorage.getItem('org_ruc'));
-        this.menuOffline = await this.loginService.obtenerMenuOffline().toPromise();
-        this.loginService.obtenerMenu()
-            // this.loginService.login(usuario.nombreusuario, usuario.contrasenha)
-            .subscribe(
-            data =>  {
 
-                localStorage.setItem('menuLateral', JSON.stringify(this.menuOffline));
-                this.router.navigate([data.moduloUriDefault], { relativeTo: this.route });
-            },
-            error => {
-                this.messageUtils.showError(error);
-            },
-            () => { }
-            );
-        
-
+    olvidoCuentas(){
+        this.router.navigate(['/recuperarpassword'], { relativeTo: this.route });
     }
-    async ObtenerUsuario() {
-        this.usuario = await this.loginService.obtenerUser().toPromise();
 
-        this.organizaciones = this.usuario.organizaciones;
-
-        if (this.organizaciones.length <= 0) {
-            this.finishLoading();
-            swal({
-                text: "El usuario debe tener asignado al menos una organización.",
-                type: 'warning',
-                buttonsStyling: false,
-                confirmButtonClass: "btn btn-warning"
-            });
-            return false;
-        }
-        if (this.organizaciones.length > 1) {
-            /*setTimeout(function () {
-                $("select").each(function () {
-                    $(this).keydown();
-                    if (!$(this).val() && $(this).val() == '')
-                        $(this.parentElement).addClass("is-empty");
-                });
-            }, 100);*/
-            this.finishLoading();
-            $('#mdlOrganizacion').modal('show');
-        }
-        else {
-            let org = this.organizaciones[0];
-
-            /*if (org.nombre.toLowerCase().indexOf("wong") > -1) {
-                org.url_image = "wong.png";
-            } else if (org.nombre.toLowerCase().indexOf("centenario") > -1) {
-                org.url_image = "centenario.png";
-            } else if (org.nombre.toLowerCase().indexOf("abinbev") > -1) {
-                org.url_image = "abinbev.png";
-            }*/
-            this.usuario.org_url_image = org.url_image;
-            this.usuario.ruc_org = org.ruc;
-            this.usuario.isopais_org = org.isoPais;
-            this.GuardarSession();
-        }
-        /*
-        if (usuario.perfil == "comprador")
-            this.router.navigate(["/ordencompra/comprador/buscar"], { relativeTo: this.route });
-        else
-            this.router.navigate(["/ordencompra/proveedor/buscar"], { relativeTo: this.route });
-
-    this.finishLoading();
-    */
-    }
-    public verMac() {
-        const urlMac = 'http://localhost:3000/v1/sincronizacion/consultarMac';
-        let direccionMac: string;
-        direccionMac = '';
-        this.httpClient.get(urlMac, {
-            params: null
-          }).subscribe(
-            data => {
-              console.log(data.mac);
-              direccionMac = data.mac.toString();
-              swal({
-                    title: 'Dirección Mac',
-                    html: "<p class='text-center'>" + direccionMac + "</p>",
-                    type: 'success',
-                    buttonsStyling: false,
-                    confirmButtonClass: "btn btn-warning"
-                });
-            }
-        );
-    }
-    iniciarSesion() {
-        if (this.loginModel.username == "") {
-            swal({
-                html: '<div class="text-center"> El usuario es un campo requerido.</div>',
-                type: 'warning',
-                buttonsStyling: false,
-                confirmButtonClass: "btn btn-warning",
-                confirmButtonText: 'CONTINUAR',
-            });
-            return false;
-        }
-        if (this.loginModel.password == "") {
-            swal({
-                html: '<div class="text-center"> El password es un campo requerido.</div>',
-                type: 'warning',
-                buttonsStyling: false,
-                confirmButtonClass: "btn btn-warning",
-                confirmButtonText: 'CONTINUAR',
-            });
-            return false;
-        }
-        console.log('this.loginModel.inicio');
-        console.log(this.loginModel.inicio);
-        if (this.loginModel.inicio == 'false') {
-            console.log('VALIDACION DE RUC');
-            if (this.loginModel.ruc == "") {
-                swal({
-                    html: '<div class="text-center"> El ruc es un campo requerido.</div>',
-                    type: 'warning',
-                    buttonsStyling: false,
-                    confirmButtonClass: "btn btn-warning",
-                    confirmButtonText: 'CONTINUAR',
-                });
-                return false;
-            }
-            if (this.loginModel.ruc == undefined) {
-                swal({
-                    html: '<div class="text-center"> El ruc es un campo requerido.</div>',
-                    type: 'warning',
-                    buttonsStyling: false,
-                    confirmButtonClass: "btn btn-warning",
-                    confirmButtonText: 'CONTINUAR',
-                });
-                return false;
-            }
-            if (this.loginModel.ruc.length < 11) {
-                swal({
-                    html: '<div class="text-center"> Tamaño de Ruc Inválido, Formato 11 dígitos. </div>',
-                    type: 'warning',
-                    buttonsStyling: false,
-                    confirmButtonClass: "btn btn-warning",
-                    confirmButtonText: 'CONTINUAR',
-                });
-                return false;
-            }
-        }
-        this.loading = true;
-        this.uiUtils.showOrHideLoadingScreen(this.loading);
-        //let usuario = this.usuarios.find(a=> a.nombreusuario===$("#txtUsuario").val()&& a.contrasenha===$("#txtClave").val());
-        
-        this.loginService.login(this.loginModel.username.toUpperCase(), this.loginModel.password)
-            // this.loginService.login(usuario.nombreusuario, usuario.contrasenha)
-            .subscribe(
-                response => {
-                    localStorage.setItem('access_token', response.access_token);
-                    var expireDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
-                    expireDate.setDate(expireDate.getDate()+1);
-                    localStorage.setItem('expires', expireDate.getTime().toString());
-                    localStorage.setItem('expires_in', response.expires_in);
-                    this.ObtenerUsuario();
-                    window.setup(true);
-                    // this.appUtils.redirect('/home');
-                },
-                error => {
-                    /* empieza login offline*/
-                    this.loginService.loginOffline(this.loginModel.username.toUpperCase(), this.loginModel.password).subscribe(
-                        data => {
-                            if (data !== null) {
-                                //token login
-                                localStorage.setItem('access_token', 'cdf1fe11-b36c-4be4-8434-557c143341a6');
-                                var expireDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
-                                expireDate.setDate(expireDate.getDate()+1);
-                                localStorage.setItem('expires', expireDate.getTime().toString());
-                                localStorage.setItem('expires_in', '1728000');
-                                this.ObtenerUsuarioOffline(data);
-                                // this.uiUtils.showOrHideLoadingScreen(false);
-                                swal.close();
-                            }
-                            else {
-                                this.finishLoading();
-                                this.messageUtils.showError(error);
-                                swal({
-                                    text: "El usuario o clave ingresado no son los correctos!",
-                                    type: 'warning',
-                                    buttonsStyling: false,
-                                    confirmButtonClass: "btn btn-warning"
-                                });
-                            }
-
-                        },
-                        error => {
-
-                            this.finishLoading();
-                            this.messageUtils.showError(error);
-                            swal({
-                                text: "El usuario o clave ingresado no son los correctos!",
-                                type: 'warning',
-                                buttonsStyling: false,
-                                confirmButtonClass: "btn btn-warning"
-                            });
-                        },
-                    );
-                    /* termina login offline*/
-                },
-                () => { }
-            );
-    }
 
     ngOnInit() {
+        GlobalFunctions.StopTimer();
+        DatatableFunctions.DisconnectWebsockets();
+
+        this.logoOrganizacion = './assets/img/logos/default/logo.jpg';
+        this.fondoOrganizacion = 'cunamas';
+
+        this.sub = this.route.params.subscribe(params => {
+            this.id = +params['id']; // (+) converts string 'id' to a number
+
+            console.log(this.id);
+           // alert(params);
+            // In a real app: dispatch action to load the details here.
+        });
+
         this.checkFullPageBackgroundImage();
-        this.obtenerEmpresaLocal();
         setTimeout(function () {
             // after 1000 ms we add the class animated to the login/register card
             $('.card').removeClass('card-hidden');
         }, 700)
 
         setTimeout(function () {
-            $("select").each(function () {
+            $('select').each(function () {
                 $(this).keydown();
-                if (!$(this).val() && $(this).val() == '')
-                    $(this.parentElement).addClass("is-empty");
+                if (!$(this).val() && $(this).val() === '') {
+                    $(this.parentElement).addClass('is-empty');
+                }
             });
         }, 100);
+    }
 
-    }
-    async obtenerEmpresaLocal(){
-        let empresaLocal = await this.loginService.obtenerEmpresaOffline().toPromise();
-        console.log(empresaLocal);
-        this.loginModel.ruc = empresaLocal.ruc;
-        this.loginModel.inicio = empresaLocal.inicio;
-        console.log(this.loginModel);
-    }
     ngAfterViewInit() {
+
+      //  $('#fondoLogin').attr('data-image','./assets/img/logos/panamericanos/login.jpg')
+
         DatatableFunctions.ModalSettings();
         this.uiUtils.addOrRemoveBodyBackGround(true, 'bckgrd-50percent-login');
         this.uiUtils.addOrRemoveStyleFooter(true, 'fixed_full');
-        $("#txtUsuario").focus();
+        $('#txtUsuario').focus();
+
+        // this.usuario.tipo_empresa='C';
+        // $('select[name*=tipo_org] option[value=C]').prop('selected',true);
+        // $("#tipo_org").prop('checked', true);
+
+        setTimeout(function () {
+            $('input').each(function () {
+                $(this).keydown();
+                if (!$(this).val() && $(this).val() === '') {
+                    $(this.parentElement).addClass('is-empty');
+                }
+            });
+            $('select').each(function () {
+                $(this).val('');
+                $(this).keydown();
+                $(this.parentElement).addClass('is-empty');
+
+                /*
+                $(this).keydown();
+                if (!$(this).val() && $(this).val() == '')
+                    $(this.parentElement).addClass("is-empty");
+                */
+
+            });
+            $('textarea').each(function () {
+            $(this).keydown();
+            if (!$(this).val() && $(this).val() === '') {
+                $(this.parentElement).addClass('is-empty');
+            }
+            });
+        }, 100);
+
     }
 
     ngOnDestroy() {
         this.uiUtils.addOrRemoveBodyBackGround(false, 'bckgrd-50percent-login');
         this.uiUtils.addOrRemoveStyleFooter(false, 'fixed_full');
+
+        this.sub.unsubscribe();
     }
 
     finishLoading() {
@@ -411,306 +658,4 @@ export class LoginComponent extends BaseComponent implements OnInit {
             }
         }
     }
-    /* empieza cambios login offline*/
-    ObtenerUsuarioOffline(user) {
-        let usuario_: any = {};
-
-        usuario_.id = user.id;
-        usuario_.nombreusuario = user.nombreusuario.toUpperCase();
-        usuario_.nombrecompleto = user.nombrecompleto;
-        usuario_.perfil = user.perfil;
-        usuario_.url_image = user.url_image;
-        usuario_.token = user.token;
-        usuario_.org_id = user.org_id;
-        usuario_.tipo_empresa = user.tipo_empresa;
-        usuario_.organizaciones = JSON.parse(user.organizaciones);
-        // this.usuario = jsonUser;
-        this.usuario = usuario_;
-
-        this.organizaciones = this.usuario.organizaciones;
-
-        // verifica que tenga el usuario una organizacion
-        if (this.organizaciones.length <= 0) {
-            this.finishLoading();
-            swal({
-                text: "El usuario debe tener asignado al menos una orgamización.",
-                type: 'warning',
-                buttonsStyling: false,
-                confirmButtonClass: "btn btn-warning"
-            });
-            return false;
-        }
-
-        // si el usuario tiene al menos una organizacion
-        if (this.organizaciones.length > 1) {
-            /* setTimeout(function () {
-              $("select").each(function () {
-                $(this).keydown();
-                if (!$(this).val() && $(this).val() == '')
-                  $(this.parentElement).addClass("is-empty");
-              });
-            }, 0);*/
-            this.finishLoading();
-            $('#mdlOrganizacion').modal('show');
-        }
-        else {
-            let org = this.organizaciones[0];
-            if (org.nombre.toLowerCase().indexOf("wong") > -1) {
-                org.url_image = "wong.png";
-            } else if (org.nombre.toLowerCase().indexOf("centenario") > -1) {
-                org.url_image = "centenario.png";
-            } else if (org.nombre.toLowerCase().indexOf("abinbev") > -1) {
-                org.url_image = "abinbev.png";
-            }
-
-            this.usuario.org_url_image = org.url_image;
-            this.usuario.ruc_org = org.ruc;
-            this.usuario.isopais_org = 'pprueba';
-
-
-
-            this.GuardarSessionOffline(this.usuario);
-        }
-
-    }
-    async GuardarSessionOffline(usuario) {
-        localStorage.setItem('org_id', usuario.org_id);
-        localStorage.setItem("username", usuario.nombreusuario);
-        localStorage.setItem('passwordActual', this.loginModel.password);
-        let org = usuario.organizaciones.find(a => a.id == usuario.org_id);
-
-        localStorage.setItem('tipo_empresa', usuario.tipo_empresa);
-        localStorage.setItem('Ocp_Apim_Subscription_Key', this.constantesLoginService.Ocp_Apim_Subscription_Key);
-        localStorage.setItem('org_nombre', org.nombre);
-        localStorage.setItem('org_ruc', org.ruc);
-
-        localStorage.setItem('usuarioActual', JSON.stringify(usuario));
-
-        this.loginService.obtenerIdEntidadOFE(localStorage.getItem('org_ruc'));
-
-        
-        this.menuOffline = await this.loginService.obtenerMenuOffline().toPromise();
-        
-        if (usuario != null) {
-            localStorage.setItem('menuLateral', JSON.stringify(this.menuOffline          
-            ));
-            this.router.navigate(["/comprobantes/factura/crear"], { relativeTo: this.route });
-        }
-    }
-    public menuOffline:any;
-    //  [
-    //     {
-    //         "front": "PEB2M",
-    //         "title": "Comprobante",
-    //         "mini": "CC",
-    //         "id": "1",
-    //         "modulos": [
-    //             {
-    //                 "moduloUri": "//comprobantes/factura/crear",
-    //                 "moduloDesc": "Crear",
-    //                 "mini": "CC",
-    //                 "default": "false",
-    //                 "orden": 1,
-    //                 "id": "af31777d-22b4-4a9a-aca1-b5f4454ded26"
-    //             },
-    //             {
-    //                 "moduloUri": "//comprobantes/consultar",
-    //                 "moduloDesc": "Consultar",
-    //                 "mini": "CS",
-    //                 "default": "false",
-    //                 "orden": 2,
-    //                 "id": "1c3bf1e3-8371-4777-a692-1b0be76b8aaa"
-    //             }
-    //         ],
-    //         "orden": 1
-    //     },
-    //     {
-    //         "front": "PEB2M",
-    //         "title": "Percepcion/Retencion",
-    //         "mini": "",
-    //         "id": "2",
-    //         "modulos": [
-    //             {
-    //                 "moduloUri": "//percepcion-retencion/retencion/crear/individual",
-    //                 "moduloDesc": "Crear",
-    //                 "mini": "CC",
-    //                 "default": "true",
-    //                 "orden": 1,
-    //                 "id": "03797780-2568-4da6-92a1-0ef545bf8290"
-    //             },
-    //             {
-    //                 "moduloUri": "//percepcion-retencion/consultar",
-    //                 "moduloDesc": "Consultar",
-    //                 "mini": "CC",
-    //                 "default": "false",
-    //                 "orden": 2,
-    //                 "id": "03797780-2568-4da7-92a1-0ef545bf8290"
-    //             }
-    //         ],
-    //         "orden": 2
-    //     },
-    //     {
-    //         "front": "PEB2M",
-    //         "title": "Comunicacion de bajas",
-    //         "mini": "",
-    //         "id": "3",
-    //         "modulos": [
-    //             {
-    //                 "moduloUri": "//resumen-bajas/consultar",
-    //                 "moduloDesc": "Consultar",
-    //                 "mini": "CS",
-    //                 "default": "false",
-    //                 "orden": 2,
-    //                 "id": "03797780-2568-4da9-92a1-0ef545bf8290"
-    //             },
-    //             {
-    //                 "moduloUri": "//resumen-bajas/crear",
-    //                 "moduloDesc": "Crear",
-    //                 "mini": "CC",
-    //                 "default": "false",
-    //                 "orden": 4,
-    //                 "id": "03797780-2568-4da8-92a1-0ef545bf8290"
-    //             }
-    //         ],
-    //         "orden": 3
-    //     }
-    // ];
-    // public menuOffline = [
-    //     {
-    //         "front": "PEB2M",
-    //         "logoFront": "https://sab2md.blob.core.windows.net/public-dev/org/logos/b2mining-ico.png",
-    //         "icon": "",
-    //         "title": "Comprobante",
-    //         "mini": "CC",
-    //         "modulos": [
-    //             {
-    //                 "idModulo": "03797780-2568-4da9-92a1-0ef545bf8290",
-    //                 "moduloUri": "//comprobantes/factura/crear",
-    //                 "moduloDesc": "Crear",
-    //                 "mini": "CC",
-    //                 "default": false,
-    //             },
-    //             {
-    //                 "idModulo": "03797780-2568-4da9-92a1-0ef545bf8290",
-    //                 "moduloUri": "//comprobantes/consultar",
-    //                 "moduloDesc": "Consultar",
-    //                 "mini": "CS",
-    //                 "default": false
-    //             },
-    //             // {
-    //             //     "idModulo": "03797780-2568-4da9-92a1-0ef545bf8290",
-    //             //     "moduloUri": "/resumen-boletas/consultar",
-    //             //     "moduloDesc": "Resumen Boletas - Consultar",
-    //             //     "mini": "RB",
-    //             //     "default": false
-    //             // },
-    //             // {
-    //             //     "idModulo": "03797780-2568-4da6-92a1-0ef545bf8290",
-    //             //     "moduloUri": "//percepcion-retencion/retencion/crear/masiva",
-    //             //     "moduloDesc": "Percepción/Ret. - Crear",
-    //             //     "mini": "RE",
-    //             //     "default": false
-    //             // },
-    //             // {
-    //             //     "idModulo": "03797780-2568-4da7-92a1-0ef545bf8290",
-    //             //     "moduloUri": "//percepcion-retencion/consultar",
-    //             //     "moduloDesc": "Percepción/Ret. - Consult",
-    //             //     "mini": "RL",
-    //             //     "default": true,
-    //             //     "botones": [
-    //             //         {
-    //             //             "habilitado": true,
-    //             //             "visible": true,
-    //             //             "idBoton": "5a5e3e43-73db-457e-aaaa-9cb1989c7654",
-    //             //             "nombre": "buscar",
-    //             //             "Desc": "Botón de búsqueda",
-    //             //             "Titulo": "BUSCAR"
-    //             //         }
-    //             //     ]
-    //             // },
-    //             // {
-    //             //     "idModulo": "03797780-2568-4da8-92a1-0ef545bf8290",
-    //             //     "moduloUri": "//resumen-bajas/crear",
-    //             //     "moduloDesc": "Resumen Bajas - Crear",
-    //             //     "mini": "BE",
-    //             //     "default": false
-    //             // },
-    //             // {
-    //             //     "idModulo": "03797780-2568-4da9-92a1-0ef545bf8290",
-    //             //     "moduloUri": "//resumen-bajas/consultar",
-    //             //     "moduloDesc": "Resumen Bajas - Consult",
-    //             //     "mini": "BL",
-    //             //     "default": false
-    //             // },                            
-    //             // {
-    //             //     "idModulo": "03797780-2568-4da9-92a1-0ef545bf8290",
-    //             //     "moduloUri": "//reportes",
-    //             //     "moduloDesc": "Ver",
-    //             //     "mini": "RS",
-    //             //     "default": false
-    //             // }
-    //         ]
-    //     },
-    //     {
-    //         "front": "PEB2M",
-    //         "logoFront": "https://sab2md.blob.core.windows.net/public-dev/org/logos/b2mining-ico.png",
-    //         "icon": "",
-    //         "title": "Percepcion/Retencion",
-    //         "modulos": [
-    //             {
-    //                 "idModulo": "03797780-2568-4da9-92a1-0ef545bf8290",
-    //                 "moduloUri": "//percepcion-retencion/retencion/crear/individual",
-    //                 "moduloDesc": "Crear",
-    //                 "mini": "CC",
-    //                 "default": true,
-    //             },
-    //             {
-    //                 "idModulo": "03797780-2568-4da9-92a1-0ef545bf8290",
-    //                 "moduloUri": "//percepcion-retencion/consultar",
-    //                 "moduloDesc": "Consultar",
-    //                 "mini": "CS",
-    //                 "default": false
-    //             },
-    //         ]
-    //     },
-    //     {
-    //         "front": "PEB2M",
-    //         "logoFront": "https://sab2md.blob.core.windows.net/public-dev/org/logos/b2mining-ico.png",
-    //         "icon": "",
-    //         "title": "Comunicacion de bajas",
-    //         "modulos": [
-    //             {
-    //                 "idModulo": "03797780-2568-4da9-92a1-0ef545bf8290",
-    //                 "moduloUri": "//resumen-bajas/crear",
-    //                 "moduloDesc": "Crear",
-    //                 "mini": "CC",
-    //                 "default": true,
-    //             },
-    //             {
-    //                 "idModulo": "03797780-2568-4da9-92a1-0ef545bf8290",
-    //                 "moduloUri": "//resumen-bajas/consultar",
-    //                 "moduloDesc": "Consultar",
-    //                 "mini": "CS",
-    //                 "default": false
-    //             },
-    //         ]
-    //     },
-    //     {
-    //         "front": "PEB2M",
-    //         "logoFront": "https://sab2md.blob.core.windows.net/public-dev/org/logos/b2mining-ico.png",
-    //         "icon": "",
-    //         "title": "Sincronización",
-    //         "modulos": [
-    //             {
-    //                 "idModulo": "03797780-2568-4da9-92a1-0ef545bf8290",
-    //                 "moduloUri": "//sincronizacion/sincronizar",
-    //                 "moduloDesc": "Sincronización",
-    //                 "mini": "CC",
-    //                 "default": true,
-    //             }
-    //         ]
-    //     }
-    // ];
-    /* termina cambios login offline*/
-
 }

@@ -1,16 +1,17 @@
-import {AfterViewInit, ChangeDetectorRef, Component, OnChanges, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import { Component, OnInit, OnChanges, AfterViewInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 
 
-import {ConformidadServicioBuscar, ConformidadServicioFiltros} from '../../../model/conformidadservicio';
 
-import {AppUtils} from "../../../utils/app.utils";
-import {MasterService} from '../../../service/masterservice';
-import {ComboItem} from "app/model/comboitem";
-import {URL_BUSCAR_HAS} from 'app/utils/app.constants';
-import {Boton} from 'app/model/menu';
-import {LoginService} from '../../../service/login.service';
+import { ConformidadServicioBuscar, ConformidadServicioFiltros } from '../../../model/conformidadservicio';
 
+import { AppUtils } from "../../../utils/app.utils";
+import { MasterService } from '../../../service/masterservice';
+import { ComboItem } from "app/model/comboitem";
+import { URL_BUSCAR_HAS } from 'app/utils/app.constants';
+import { Boton } from 'app/model/menu';
+import { ChangeDetectorRef } from '@angular/core';
+import { LoginService } from '../../../service/login.service';
 declare interface DataTable {
   headerRow: string[];
   footerRow: string[];
@@ -75,7 +76,7 @@ export class ConformidadServicioProveedorBuscarComponent implements OnInit, Afte
   validarfiltros() {
 
     oConformidadServicioProveedorBuscarComponent.filtro.nroconformidadservicio = oConformidadServicioProveedorBuscarComponent.filtro.nroconformidadservicio.trim();
-
+    oConformidadServicioProveedorBuscarComponent.filtro.nroordenservicio = oConformidadServicioProveedorBuscarComponent.filtro.nroordenservicio.trim();
     oConformidadServicioProveedorBuscarComponent.filtro.nroerp = oConformidadServicioProveedorBuscarComponent.filtro.nroerp.trim();
 
     if (this.filtro.nroconformidadservicio == "") {
@@ -234,10 +235,19 @@ function cargarDataTable() {
       dataSrc: "data",
       data: function (d) {
 
+        let omitirOtrosCampos=false;
         if (oConformidadServicioProveedorBuscarComponent.filtro.nroconformidadservicio != "") {
           d.NroConformidadServicio = oConformidadServicioProveedorBuscarComponent.filtro.nroconformidadservicio;
-        }else{
+          omitirOtrosCampos = true;
+        }
+        
+        if (oConformidadServicioProveedorBuscarComponent.filtro.nroordenservicio != "") {
+          d.NroOrdenServicio = oConformidadServicioProveedorBuscarComponent.filtro.nroordenservicio;
+          omitirOtrosCampos = true;          
+        }
 
+        if(!omitirOtrosCampos){
+        
             if (oConformidadServicioProveedorBuscarComponent.filtro.estado != "NONE") {
               d.Estado = oConformidadServicioProveedorBuscarComponent.filtro.estado;
             }
@@ -268,7 +278,7 @@ function cargarDataTable() {
       { data: 'IdHas', name: 'IdHas' },
 
       /*
-      { data: 'NroConformidadServicio', name: 'NroConformidadServicio' },
+      { data: 'NroConformidadServicio', name: 'NroConformidadServicio' },      
       { data: 'Proveedor', name: 'Proveedor' },
       { data: 'Cliente', name: 'Cliente' },
       { data: 'Estado', name: 'Estado' },

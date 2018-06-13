@@ -9344,8 +9344,11 @@ fieldset[disabled] .form-group.is-focused .togglebutton label {
   margin-left: -10px;
   margin-top: -10px;
   border-radius: 100%;
+  /*
   background-color: #000;
+  
   background-color: rgba(0, 0, 0, 0.05);
+  */
   transform: scale(1);
   transform-origin: 50%;
   opacity: 0;
@@ -12276,3 +12279,330 @@ footer .btn {
 }
 
 /*# sourceMappingURL=material-dashboard.css.map */
+
+.bootstrap-datetimepicker-widget table.table-condensed tr > td{
+  cursor: pointer;
+}
+.cursor-pointer{
+  cursor: pointer;
+}
+
+.page-link{
+  cursor: pointer;
+}
+
+.container-loading{
+  position: absolute;
+  width: 100%;
+  height: 200px;
+  text-align: center;
+}
+
+.lds-ripple {
+  display: inline-block;
+  position: relative;
+  width: 64px;
+  height: 64px;
+  margin-top: 10px;
+}
+.lds-ripple div {
+  position: absolute;
+  border: 4px solid #2399e5;
+  opacity: 1;
+  border-radius: 50%;
+  animation: lds-ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+.lds-ripple div:nth-child(2) {
+  animation-delay: -0.5s;
+}
+@keyframes lds-ripple {
+  0% {
+    top: 28px;
+    left: 28px;
+    width: 0;
+    height: 0;
+    opacity: 1;
+  }
+  100% {
+    top: -1px;
+    left: -1px;
+    width: 58px;
+    height: 58px;
+    opacity: 0;
+  }
+}
+
+.btn-default:focus, 
+.btn-default:active:focus, 
+.btn-default.active:focus{
+    background-color: #2399e5 !important;
+}
+
+#floating-button{
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  background: #db4437;
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  cursor: pointer;
+  box-shadow: 0px 2px 5px #666;
+}
+
+.fab-ebiz-plus{
+  color: white;
+  position: absolute;
+  top: 0;
+  display: block;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  padding: 0;
+  margin: 0;
+  line-height: 55px;
+  font-size: 38px;
+  font-family: 'Roboto';
+  font-weight: 300;
+  animation: plus-out 0.3s;
+  transition: all 0.3s;
+}
+
+#container-floating{
+  position: fixed;
+  width: 70px;
+  height: 70px;
+  bottom: 30px;
+  right: 30px;
+  z-index: 50px;
+}
+
+#container-floating:hover{
+  height: 400px;
+  width: 90px;
+  padding: 30px;
+}
+
+#container-floating:hover .fab-ebiz-plus{
+  animation: plus-in 0.15s linear;
+  animation-fill-mode: forwards;
+}
+
+.fab-ebiz-edit{
+  position: absolute;
+  top: 0;
+  display: block;
+  bottom: 0;
+  left: 0;
+  display: block;
+  right: 0;
+  padding: 0;
+  opacity: 0;
+  margin: auto;
+  line-height: 65px;
+  transform: rotateZ(-70deg);
+  transition: all 0.3s;
+  animation: edit-out 0.3s;
+}
+
+#container-floating:hover .fab-ebiz-edit{
+  animation: edit-in 0.2s;
+  animation-delay: 0.1s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes edit-in{
+  from {opacity: 0; transform: rotateZ(-70deg);}
+  to {opacity: 1; transform: rotateZ(0deg);}
+}
+
+@keyframes edit-out{
+  from {opacity: 1; transform: rotateZ(0deg);}
+  to {opacity: 0; transform: rotateZ(-70deg);}
+}
+
+@keyframes plus-in{
+  from {opacity: 1; transform: rotateZ(0deg);}
+  to {opacity: 0; transform: rotateZ(180deg);}
+}
+
+@keyframes plus-out{
+  from {opacity: 0; transform: rotateZ(180deg);}
+  to {opacity: 1; transform: rotateZ(0deg);}
+}
+
+.fab-ebiz{
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  position: fixed;
+  z-index: 300;
+  transform:  scale(0);
+  cursor: pointer;
+  animation-fill-mode:  forwards;
+}
+
+.fab-ebiz-numner1{
+  background: #d3a411;
+  right: 40px;
+  bottom: 120px;
+  animation-delay: 0.2s;
+  animation: bounce-out-fab-ebiz 0.3s linear;
+}
+
+.fab-ebiz-numner2{
+  background: #3c80f6;
+  right: 40px;
+  bottom: 180px;
+  animation-delay: 0.15s;
+  animation: bounce-out-fab-ebiz 0.15s linear;
+}
+
+.fab-ebiz-numner3{
+  background: #ba68c8;
+  right: 40px;
+  bottom: 240px;
+  animation-delay: 0.1s;
+  animation: bounce-out-fab-ebiz 0.1s linear;
+}
+
+.fab-ebiz-numner4{
+  background: #ba68c8;
+  right: 40px;
+  bottom: 300px;
+  animation-delay: 0.08s;
+  animation: bounce-out-fab-ebiz 0.1s linear;
+}
+
+@keyframes bounce-fab-ebiz{
+  from {opacity: 0;}
+  to {opacity: 1; transform: scale(1);}
+}
+
+@keyframes bounce-out-fab-ebiz{
+  from {opacity: 1; transform: scale(1);}
+  to {opacity: 0; transform: scale(0);}
+}
+
+#container-floating:hover .fab-ebiz{                
+  animation: bounce-fab-ebiz 0.1s linear;
+  animation-fill-mode:  forwards;
+}
+
+#container-floating:hover .fab-ebiz-numner2{
+  animation-delay: 0.08s;
+}
+#container-floating:hover .fab-ebiz-numner3{
+  animation-delay: 0.15s;
+}
+#container-floating:hover .fab-ebiz-numner4{
+  animation-delay: 0.2s;
+}
+
+
+.fab-ebiz-letter{
+  font-size: 23px;
+  font-family: 'Roboto';
+  color: white;
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: 0;
+  top: 4px;
+  bottom: 0;
+  text-align: center;
+  line-height: 40px;
+}
+
+
+
+.ebiz-calendar {
+  margin:auto;
+  z-index: 1;
+  background: #fff;
+  border: none;
+  border-radius: 2px;
+  display: block;
+  min-width: 20rem;
+  text-align: center;
+  max-width: 20rem;
+}
+.ebiz-calendar .ebiz-calendar-nav {
+    text-align: center;
+    font-size: 1.25rem;
+    padding: .5em;
+}
+.ebiz-calendar .ebiz-calendar-header {
+    padding: 1em 1em 0 1em;
+    background: transparent;
+    color: #fff;
+    font-size: .75rem;
+}
+.ebiz-calendar .ebiz-calendar-header, .ebiz-calendar .ebiz-calendar-body {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.ebiz-calendar .ebiz-calendar-body {
+    padding: 0 1em 1em 1em;
+    color: #7a7a7a;
+}
+.ebiz-calendar .ebiz-calendar-header, .ebiz-calendar .ebiz-calendar-body {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.ebiz-calendar .ebiz-calendar-header .ebiz-calendar-date {
+    color: #b5b5b5;
+}
+.ebiz-calendar .ebiz-calendar-header .ebiz-calendar-date, .ebiz-calendar .ebiz-calendar-body .ebiz-calendar-date {
+    flex: 0 0 14.28%;
+    max-width: 14.28%;
+}
+.ebiz-calendar .ebiz-calendar-date {
+    border: 0;
+    padding: .4rem 0;
+}
+
+.ebiz-calendar .ebiz-calendar-date.is-disabled .date-item{
+  color: #CCCCCC;
+  cursor: default;
+}
+
+.ebiz-calendar .ebiz-calendar-date .date-item.is-active {
+    background: #007BFF;
+    border-color: #007BFF;
+    color: #fff;
+}
+
+.ebiz-calendar .ebiz-calendar-date .date-item.is-mark{
+    border-color: #007BFF;
+}
+
+.ebiz-calendar .ebiz-calendar-date .date-item.is-registered{
+    background: #007BFF;
+    color: #fff;
+}
+
+.ebiz-calendar .ebiz-calendar-date .date-item {
+    appearance: none;
+    background: transparent;
+    border: .1rem solid transparent;
+    border-radius: 100%;
+    color: #4a4a4a;
+    cursor: pointer;
+    height: 2.2rem;
+    line-height: 1.4rem;
+    outline: none;
+    padding: .3rem;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    transition: all .2s ease;
+    vertical-align: middle;
+    white-space: nowrap;
+    width: 2.2rem;
+    font-size: 12px;
+}

@@ -1,8 +1,8 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import * as WrittenNumber from 'written-number';
-import { HttpClient } from '@angular/common/http';
-import { TipoArchivo, TIPOS_ARCHIVOS } from 'app/facturacion-electronica/general/models/archivos/tipoArchivo';
+import {HttpClient} from '@angular/common/http';
+import {TIPO_ARCHIVO_PDF, TipoArchivo, TIPOS_ARCHIVOS} from 'app/facturacion-electronica/general/models/archivos/tipoArchivo';
 import { Servidores } from 'app/facturacion-electronica/general/services/servidores';
 import { CorreoService } from 'app/facturacion-electronica/general/services/correo/correo.service';
 import { HttpParams } from '@angular/common/http';
@@ -15,9 +15,10 @@ import { DocumentoQueryService } from 'app/facturacion-electronica/general/servi
 import { DocumentoQuery } from 'app/facturacion-electronica/general/models/comprobantes';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { RutasService } from 'app/facturacion-electronica/general/utils/rutas.service';
-import { ColumnaDataTable } from '../../../general/data-table/utils/columna-data-table';
+import {ColumnaDataTable} from '../../../general/data-table/utils/columna-data-table';
 import { TiposService } from '../../../general/utils/tipos.service';
 import { CatalogoDocumentoIdentidadService } from '../../../general/utils/catalogo-documento-identidad.service';
+import {Subscription} from 'rxjs/Subscription';
 
 declare var $, swal: any;
 
@@ -26,10 +27,11 @@ declare var $, swal: any;
     templateUrl: './comprobante-visualizar-boleta-factura.html',
     styleUrls: ['comprobante-visualizar-boleta-factura.component.css']
 })
-export class BoletaFacturanVisualizarComponent implements OnInit {
+export class BoletaFacturanVisualizarComponent implements OnInit, OnDestroy {
+////////////////////////////////////////////////////
   public uuid: string;
   public nombreTipoDocumeto: string;
-  public documentoService: BehaviorSubject<DocumentoQuery> = new BehaviorSubject<DocumentoQuery>(null);
+  public documentoSubscription: Subscription;
   public documento: DocumentoQuery = new DocumentoQuery();
   public totalPagoPalabras: string;
   public tiposArchivos: TipoArchivo[] = TIPOS_ARCHIVOS;
@@ -40,6 +42,7 @@ export class BoletaFacturanVisualizarComponent implements OnInit {
   public detalle: DetalleFactura[] = [];
   public columnasTabla: ColumnaDataTable[];
   @ViewChild('tablaNormal') tabla: DataTableComponent<any>;
+
   constructor(
               private route: ActivatedRoute,
               private router: Router,
@@ -83,8 +86,13 @@ export class BoletaFacturanVisualizarComponent implements OnInit {
     if ( this.uuid === null ) {
       this.regresar();
     }
-    this.documentoService = this._documentoQuery.buscarDocumenentoPorId(this.uuid);
     this.getDocumento();
+  }
+
+  ngOnDestroy() {
+    if (this.documentoSubscription) {
+      this.documentoSubscription.unsubscribe();
+    }
   }
   public setNombreTipoDocumento() {
     switch (this.documento.entidadproveedora.inTipoDocumento) {
@@ -113,21 +121,19 @@ export class BoletaFacturanVisualizarComponent implements OnInit {
     this.urlLogo = usuarioActual.org_url_image != null ? usuarioActual.org_url_image : '';
   }
   public getDocumento() {
-    const urlDefecto = this._servidores.HOSTLOCAL + '/documento?id=' + this.uuid;
-    this.httpClient.get(urlDefecto, {
-      responseType: 'text'
-      // params: parametros
-    })
-    .subscribe(
+    this.documentoSubscription = this._documentoQuery.buscarDocumenentoPorId(this.uuid)
+      .subscribe(
       (data) => {
-        console.log(data);
-        this.documento = JSON.parse(data);
-        console.log(this.documento);
-        this.documento.deTotalcomprobantepago = this.formatearNumeroFormatoMoneda(Number(this.documento.deTotalcomprobantepago));
-        this.documento.dePagomontopagado = this.formatearNumeroFormatoMoneda(Number(this.documento.dePagomontopagado));
-        this.calcularTotales();
-        this.getDetalleComprobante();
-        this.setNombreTipoDocumento();
+        if (data) {
+          console.log(data);
+          this.documento = data;
+          console.log(this.documento);
+          this.documento.deTotalcomprobantepago = this.formatearNumeroFormatoMoneda(Number(this.documento.deTotalcomprobantepago));
+          this.documento.dePagomontopagado = this.formatearNumeroFormatoMoneda(Number(this.documento.dePagomontopagado));
+          this.calcularTotales();
+          this.getDetalleComprobante();
+          this.setNombreTipoDocumento();
+        }
       },
       error => {
         console.log(error);
@@ -177,6 +183,7 @@ export class BoletaFacturanVisualizarComponent implements OnInit {
             const winparams = 'dependent = yes, locationbar = no, menubar = yes, resizable, screenX = 50, screenY = 50, width = 800, height = 800';
             const htmlPop = '<embed width=100% height=100% type="application/pdf" src="data:application/pdf;base64,' + data + '"> </embed>';
             const printWindow = window.open('', 'PDF', winparams);
+            printWindow.document.close();
             printWindow.document.write(htmlPop);
           }
           // console.log(this.data);
@@ -284,11 +291,25 @@ export class BoletaFacturanVisualizarComponent implements OnInit {
     this.calcularTotales();
   }
 
-  guardarArchivo(archivo: TipoArchivo) {
-    console.log('DESCARGA DE ARCHIVOS TIPOS');
-    console.log( archivo.idArchivo);
-    console.log(this.uuid);
-    this.archivoServicio.descargararchivotipo(this.uuid, archivo.idArchivo);
+  guardarArchivo(archivo: TipoArchivo, event: Event) {
+    if (event.target['parentElement'].className !== 'disabled') {
+      this.archivoServicio.descargararchivotipo(this.uuid, archivo.idArchivo);
+    }
+  }
+
+  habilitarTipoArchivo(archivo: TipoArchivo) {
+    if (
+      this.documento &&
+      Number(this.documento.chEstadocomprobantepago) === this._tipos.TIPO_ESTADO_PENDIENTE_DE_ENVIO &&
+      archivo.idArchivo !== TIPO_ARCHIVO_PDF.idArchivo
+    ) {
+      return false;
+    }
+    return true;
+  }
+
+  convertirMonto(monto: string) {
+    return Number(monto).toFixed(2);
   }
 }
 

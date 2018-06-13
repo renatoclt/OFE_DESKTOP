@@ -61,6 +61,7 @@ export class Servicio {
     nroitem: string;
     nroordenservicio: string;
     nroitemordenservicio: string;
+    nroitemhas: string;
     descripcion: string;
     estado: string;
     servicio: string;

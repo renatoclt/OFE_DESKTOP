@@ -6,6 +6,7 @@ import {SeriesQuery} from '../models/series-query';
 export class ConfiguracionEmpresaService {
   serieEditar: BehaviorSubject<SeriesQuery>;
   tipoSerie: BehaviorSubject<string>;
+  actualizarTabla: BehaviorSubject<boolean>;
 
   constructor() {
     this.inicializarVariables();
@@ -14,5 +15,6 @@ export class ConfiguracionEmpresaService {
   inicializarVariables() {
     this.serieEditar = new BehaviorSubject(null);
     this.tipoSerie = new BehaviorSubject('');
+    this.actualizarTabla = new BehaviorSubject(false);
   }
 }

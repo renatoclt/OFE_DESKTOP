@@ -1,0 +1,62 @@
+<form [formGroup]="notaCreditoNormalFormGroup" autocomplete="off">
+  <div class="row">
+    <div class="col-md-3">
+      <div class="form-group label-floating">
+        <label id="lblDescuentos" class="control-label">
+          {{nombreDescuento | translate}}
+        </label>
+        <input class="form-control" id="txtDescuentos" formControlName="txtDescuentos" type="text"
+               (change)="reCalcularImporteTotal()" precioDirectiva>
+        <div class="row" *ngIf="notaCreditoNormalFormGroup.errors">
+          <div class="col-md-12">
+            <span class="text-danger"
+                *ngIf="notaCreditoNormalFormGroup.errors['txtDescuentosMenorQue']">
+                {{notaCreditoNormalFormGroup.errors['txtDescuentosMenorQue'] | translate: {digito: notaCreditoNormalFormGroup.errors['valortxtDescuentosMenorQue']} }}
+            </span>
+            <span class="text-danger"
+                  *ngIf="notaCreditoNormalFormGroup.errors['txtDescuentosMayorQue']">
+                {{notaCreditoNormalFormGroup.errors['txtDescuentosMayorQue'] | translate: {digito: notaCreditoNormalFormGroup.errors['valortxtDescuentosMayorQue']} }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group label-floating">
+        <label id="lblIsc" class="control-label">{{'isc' | translate}}</label>
+        <input class="form-control" id="txtIsc" formControlName="txtIsc" type="text"
+               (change)="reCalcularImporteTotal()" precioDirectiva>
+        <div class="row" *ngIf="notaCreditoNormalFormGroup.errors">
+          <div class="col-md-12">
+            <span class="text-danger"
+                  *ngIf="notaCreditoNormalFormGroup.errors['txtIscMenorQue']">
+              {{notaCreditoNormalFormGroup.errors['txtIscMenorQue'] | translate: {digito: notaCreditoNormalFormGroup.errors['valortxtIscMenorQue']} }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group label-floating">
+        <label id="lblIgv" class="control-label">{{'igv' | translate}}</label>
+        <input class="form-control" id="txtIgv" formControlName="txtIgv" type="text" precioDirectiva>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group label-floating">
+        <label id="lblImporteTotal" class="control-label">
+          {{'importeTotal' | translate}}
+        </label>
+        <input class="form-control" id="txtImporteTotal" formControlName="txtImporteTotal" type="text" precioDirectiva>
+        <div class="row" *ngIf="notaCreditoNormalFormGroup.errors">
+          <div class="col-md-12">
+            <span class="text-danger"
+                  *ngIf="notaCreditoNormalFormGroup.errors['txtImporteTotalMenorQue']">
+              {{notaCreditoNormalFormGroup.errors['txtImporteTotalMenorQue'] | translate: {digito: notaCreditoNormalFormGroup.errors['valortxtImporteTotalMenorQue']} }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

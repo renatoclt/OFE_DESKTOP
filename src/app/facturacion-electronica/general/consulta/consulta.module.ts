@@ -19,7 +19,8 @@ import { SeriesService } from '../services/configuracionDocumento/series.service
 import { ComprobantesService } from '../services/comprobantes/comprobantes.service';
 import { PersistenciaServiceRetencion } from '../../percepcion-retencion/services/persistencia.service';
 import { OrderModule } from 'ngx-order-pipe';
-//import { SpinnerService } from 'app/service/spinner.service';
+import {ArchivoService} from '../services/archivos/archivo.service';
+import {EstilosServices} from '../utils/estilos.services';
 
 @NgModule({
   imports: [
@@ -48,8 +49,9 @@ import { OrderModule } from 'ngx-order-pipe';
     SeriesService,
     CatalogoDocumentoIdentidadService,
     PersistenciaService,
-   // SpinnerService,
+    ArchivoService,
     RutasService,
+    EstilosServices,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptorService,

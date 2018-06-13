@@ -6,6 +6,7 @@ import {TranslateModule} from '@ngx-translate/core';
 import {DirectivasModule} from '../../../general/directivas/directivas.module';
 import {EstilosServices} from '../../../general/utils/estilos.services';
 import {SeriesService} from '../../../general/services/configuracionDocumento/series.service';
+import {TiposService} from '../../../general/utils/tipos.service';
 
 @NgModule({
   imports: [
@@ -23,7 +24,8 @@ import {SeriesService} from '../../../general/services/configuracionDocumento/se
   ],
   providers: [
     EstilosServices,
-    SeriesService
+    SeriesService,
+    TiposService
   ]
 })
 export class SeriesCrearEditarModule { }

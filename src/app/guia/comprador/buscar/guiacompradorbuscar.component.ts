@@ -1,13 +1,13 @@
-import {AfterViewInit, ChangeDetectorRef, Component, OnChanges, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {GuiaFiltros} from '../../../model/guia';
-import {LoginService} from '../../../service/login.service';
-import {AppUtils} from "../../../utils/app.utils";
-import {MasterService} from '../../../service/masterservice';
-import {ComboItem} from "app/model/comboitem";
-import {URL_BUSCAR_GUIA} from 'app/utils/app.constants';
-import {Boton} from 'app/model/menu';
-
+import { Component, OnInit, OnChanges, AfterViewInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
+import { GuiaBuscar, GuiaFiltros } from '../../../model/guia';
+import { LoginService } from '../../../service/login.service';
+import { AppUtils } from "../../../utils/app.utils";
+import { MasterService } from '../../../service/masterservice';
+import { ComboItem } from "app/model/comboitem";
+import { URL_BUSCAR_GUIA, URL_BUSCAR_GUIA_BORRADOR } from 'app/utils/app.constants';
+import { Boton } from 'app/model/menu';
+import { ChangeDetectorRef } from '@angular/core';
 declare interface DataTable {
   headerRow: string[];
   footerRow: string[];
@@ -248,7 +248,7 @@ function cargarDataTable() {
             }
           }
         }
-        d.column_names = '[CodigoGuia,NumeroGuia,FechaEmision,FechaInicioTraslado,FechaEstimadaArribo,RazonSocialCliente,RazonSocialProveedor,Estado,DocumentoMaterial,MotivoRechazoSAP]';
+        d.column_names = '[CodigoGuia,NumeroGuia,FechaEmision,FechaInicioTraslado,FechaEstimadaArribo,RazonSocialCliente,RazonSocialProveedor,Estado,DocumentoMaterial,MotivoRechazoSAP,MotivoErrorSAP]';
 
       }
     },
@@ -271,15 +271,20 @@ function cargarDataTable() {
       { "className": "text-center", "targets": [0, 1, 2, 3, 4, 5, 6, 7] },
       {
         render: function (data, type, row) {
-          if( (typeof row.MotivoRechazoSAP === "undefined") || (row.MotivoRechazoSAP.trim().length === 0) )
-            return row.DocumentoMaterial
-          else
-            return `<div class="text-center">
-                          <button class="btn btn-simple" style="color:red;" onclick='swal({ title:"Error SAP", text: "`+row.MotivoRechazoSAP+`",type: "error", buttonsStyling: false, confirmButtonClass: "btn btn-danger", confirmButtonColor: "#ec6c62"});'>Error</button>
-                    </div>`;
+          if(!((typeof row.MotivoRechazoSAP === "undefined") || (row.MotivoRechazoSAP.trim().length === 0)))
+              return `<div class="text-center">
+              <button class="btn btn-simple" style="color:red;" onclick='swal({ title:"Documento Rechazado", text: "`+row.MotivoRechazoSAP+`", buttonsStyling: false, confirmButtonClass: "btn btn-danger", confirmButtonColor: "#ec6c62"});'>Rechazo</button>
+              </div>`;
+
+          if(!((typeof row.MotivoErrorSAP === "undefined") || (row.MotivoErrorSAP.trim().length === 0)))          
+              return `<div class="text-center">
+              <button class="btn btn-simple" style="color:red;" onclick='swal({ title:"Error SAP", text: "`+row.MotivoErrorSAP+`", buttonsStyling: false, confirmButtonClass: "btn btn-danger", confirmButtonColor: "#ec6c62"});'>Error</button>
+              </div>`;
+
+          return row.DocumentoMaterial             
         },
         targets: 1,
-      },
+      },      
       {
 
         render: function (data, type, row) {

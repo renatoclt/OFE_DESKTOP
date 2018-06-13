@@ -20,7 +20,7 @@ const routes: Routes = [
         component: RetencionComponent,
         children: [
           {
-            path: '', pathMatch: 'full', redirectTo: 'individual'
+            path: '', pathMatch: 'full', redirectTo: 'masiva'
           },
           {
             path: 'individual',
@@ -30,7 +30,7 @@ const routes: Routes = [
               codigo: '20',
               id: 'RetencionUnitariaComponent'
             }
-          }/*,
+          },
           {
             path: 'masiva',
             component: RetencionMasivaComponent,
@@ -39,7 +39,7 @@ const routes: Routes = [
               codigo: '20',
               id: 'RetencionMasivaComponent'
             }
-          },*/
+          },
         ]
       },
       {
@@ -63,7 +63,7 @@ const routes: Routes = [
           button: 'guardar'
         }
       },
-     /* {
+      {
         path: 'masiva/detalle/:id',
         component: RetencionMasivaDetalleComponent,
         data: {
@@ -72,7 +72,7 @@ const routes: Routes = [
           codigo: '20',
           titulo: 'detalleRetencionMasiva'
         }
-      },*/
+      },
       {
         path: 'crear/individual/vista-previa',
         component: VistapreviaRetencionComponent,

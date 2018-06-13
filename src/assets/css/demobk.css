@@ -331,3 +331,7 @@ span[disabled].btn.btn-default {
     font-weight: 400;
         color: #555;
 }
+.main-indicadores{
+    margin-top: 20px;
+    min-height: auto;
+}

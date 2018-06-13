@@ -17,7 +17,7 @@ export class PercepcionRetencionReferenciasService {
     constructor(private httpClient: HttpClient,
                 private servidores: Servidores,
                 private _spinner: SpinnerService) {
-        this.urlQry = this.servidores.HOSTLOCAL + this.urlQry;
+        this.urlQry = this.servidores.DOCUQRY + this.urlQry;
     }
 
     /*public get<T>(params: HttpParams, url: string = this.urlQry,

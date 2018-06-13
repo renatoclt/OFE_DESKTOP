@@ -40,9 +40,9 @@ export class CreacionComprobantes {
 
     this.urlNotaCredito = this._servidores.DOCUCMD + this.pathNotaCredito;
     this.urlNotaDebito = this._servidores.DOCUCMD + this.pathNotaDebito;
-    this.urlFactura = this._servidores.HOSTLOCAL + this.pathFactura;
-    this.urlBoleta = this._servidores.HOSTLOCAL + this.pathBoleta;
-    this.urlPercepcion = this._servidores.HOSTLOCAL + this.pathPercepcion;
+    this.urlFactura = this._servidores.DOCUCMD + this.pathFactura;
+    this.urlBoleta = this._servidores.DOCUCMD + this.pathBoleta;
+    this.urlPercepcion = this._servidores.DOCUCMD + this.pathPercepcion;
     this._translate.get('continuar').subscribe(data => this.labelContinuar = data);
     this._translate.get('comprobanteGuardadoPendienteEnvio').subscribe(data => this.labelRespuesta = data);
   }

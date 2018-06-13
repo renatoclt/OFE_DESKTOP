@@ -1,18 +1,20 @@
-import {AfterViewInit, ChangeDetectorRef, Component, OnChanges, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import { Component, OnInit, OnChanges, AfterViewInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 
 
-import {OrdenCompraFiltros} from '../../../model/ordencompra';
 
-import {AppUtils} from "../../../utils/app.utils";
-import {MasterService} from '../../../service/masterservice';
-import {LoginService} from '../../../service/login.service';
+import { OrdenCompraBuscar, OrdenCompraFiltros } from '../../../model/ordencompra';
 
-import {ComboItem} from "app/model/comboitem";
-import {Location} from '@angular/common';
-import {URL_BUSCAR_OC} from 'app/utils/app.constants';
-import {Boton} from 'app/model/menu';
+import { AppUtils } from "../../../utils/app.utils";
+import { MasterService } from '../../../service/masterservice';
+import { LoginService } from '../../../service/login.service';
 
+import { ComboItem } from "app/model/comboitem";
+import { Location } from '@angular/common';
+import { Usuario } from 'app/model/usuario';
+import { URL_BUSCAR_OC } from 'app/utils/app.constants';
+import { Boton } from 'app/model/menu';
+import { ChangeDetectorRef } from '@angular/core';
 declare var DatatableFunctions, swal: any;
 declare var DataHardCode: any;
 
@@ -52,19 +54,19 @@ export class OrdenCompraCompradorBuscarComponent implements OnInit, AfterViewIni
     this.botonDetalle = new Boton();
 
   }
-
+  
   obtenerBotones() {
-
+    
     let botones = this._securityService.ObtenerBotonesCache(this.url_main_module_page) as Boton[];
     if (botones) {
-
+     
       this.configurarBotones(botones);
     }
     else {
-
+    
       this._securityService.obtenerBotones(this.url_main_module_page).subscribe(
         botones => {
-
+     
           oOrdenCompraCompradorBuscarComponent.configurarBotones(botones);
           oOrdenCompraCompradorBuscarComponent._securityService.guardarBotonesLocalStore(this.url_main_module_page, botones);
         },
@@ -75,13 +77,13 @@ export class OrdenCompraCompradorBuscarComponent implements OnInit, AfterViewIni
 
   }
   configurarBotones(botones: Boton[]) {
-
+   
     if (botones && botones.length > 0) {
       this.botonBuscar = botones.find(a => a.nombre === 'buscar') ? botones.find(a => a.nombre === 'buscar') : this.botonBuscar;
       this.botonDetalle = botones.find(a => a.nombre === 'detalle') ? botones.find(a => a.nombre === 'detalle') : this.botonDetalle;
-
+      
     }
-
+   
   }
   validarfiltros() {
     if (this.filtro.material == false && this.filtro.servicio == false) {
@@ -196,7 +198,7 @@ export class OrdenCompraCompradorBuscarComponent implements OnInit, AfterViewIni
 
   ngOnInit() {
 
-
+    
 
     oOrdenCompraCompradorBuscarComponent = this;
 
@@ -219,7 +221,7 @@ export class OrdenCompraCompradorBuscarComponent implements OnInit, AfterViewIni
   }
   ngAfterViewChecked()
   {
-
+    
     this.cdRef.detectChanges();
   }
 

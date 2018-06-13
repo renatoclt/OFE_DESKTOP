@@ -1,20 +1,24 @@
-import {ActivatedRoute, Params, Router} from '@angular/router';
-import {AfterViewInit, ChangeDetectorRef, Component, OnChanges, OnInit, SimpleChanges} from '@angular/core';
-import {Articulo, ClienteFiltros, Guia} from "app/model/guia";
-import {Archivo} from "app/model/archivo";
-import {MasterService} from '../../../service/masterservice';
-import {GuiaService} from "app/service/guiaservice";
-import {OrdenCompraService} from "app/service/ordencompraservice";
-import {AdjuntoService} from "app/service/adjuntoservice";
+import { Router, ActivatedRoute, Params } from '@angular/router';
+import { Component, OnInit, OnChanges, AfterViewInit, SimpleChanges } from '@angular/core';
+import { DetalleOrdenCompra } from "app/model/detalleordencompra";
+import { BuscarOrdenCompra } from "app/model/buscarordencompra";
+import { ClienteBuscar } from "app/model/cliente";
+import { Guia, Articulo, ClienteFiltros } from "app/model/guia";
+import { Archivo } from "app/model/archivo";
+import { MasterService } from '../../../service/masterservice';
+import { GuiaService } from "app/service/guiaservice";
+import { OrdenCompraService } from "app/service/ordencompraservice";
+import { AdjuntoService } from "app/service/adjuntoservice";
 
-import {OrdenCompraFiltros} from '../../../model/ordencompra';
+import { OrdenCompraFiltros, Producto } from '../../../model/ordencompra';
 
-import {AppUtils} from "../../../utils/app.utils";
-import {ComboItem} from "app/model/comboitem";
+import { AppUtils } from "../../../utils/app.utils";
+import { ComboItem } from "app/model/comboitem";
 import '../../../../assets/js/plugins/jquery.PrintArea.js';
-import {URL_BUSCAR_OC, URL_BUSCAR_ORGANIZACION} from 'app/utils/app.constants';
-import {LoginService} from '../../../service/login.service';
-import {Boton} from 'app/model/menu';
+import { URL_BUSCAR_OC, URL_BUSCAR_ORGANIZACION } from 'app/utils/app.constants';
+import { LoginService } from '../../../service/login.service';
+import { Boton } from 'app/model/menu';
+import { ChangeDetectorRef } from '@angular/core';
 
 declare interface DataTable {
   headerRow: string[];
@@ -25,6 +29,7 @@ declare var moment, swal, saveAs: any;
 declare var $: any;
 declare var DatatableFunctions: any;
 var oGuiaProveedorFormularioComponent: GuiaProveedorFormularioComponent, dtAtributos, datatable, dtArticulos, datatableOC, dtArchivos, archivo: Archivo;
+
 @Component({
   moduleId: module.id,
   selector: 'guiaproveedorformulario-cmp',
@@ -35,8 +40,6 @@ var oGuiaProveedorFormularioComponent: GuiaProveedorFormularioComponent, dtAtrib
 export class GuiaProveedorFormularioComponent implements OnInit, OnChanges, AfterViewInit {
 
   util: AppUtils;
-
-
   public id: string = '0';
   public esBorrador: string = '0';
   public id_doc: string = '';
@@ -54,7 +57,6 @@ export class GuiaProveedorFormularioComponent implements OnInit, OnChanges, Afte
   public listUnidadMedidaPesoCombo: ComboItem[];
   public listTipoDocIdentidad: ComboItem[];
 
-
   public listEstadoCombo: ComboItem[];
   public listEstadoOCCombo: ComboItem[];
 
@@ -70,30 +72,28 @@ export class GuiaProveedorFormularioComponent implements OnInit, OnChanges, Afte
   public botonGuardar: Boton = new Boton();
   public botonEnviar: Boton = new Boton();
 
-
   public url_main_module_page = '/guia/proveedor/buscar';
   public navigate(nav) {
-
     this.router.navigate(nav, { relativeTo: this.activatedRoute });
   }
 
+
   constructor(activatedRoute: ActivatedRoute, private router: Router,
-    private _masterService: MasterService, private _dataServiceAdjunto: AdjuntoService, private _dataService: GuiaService, private _dataServiceOC: OrdenCompraService, private _securityService: LoginService, private cdRef: ChangeDetectorRef) {
+              private _masterService: MasterService, private _dataServiceAdjunto: AdjuntoService,
+              private _dataService: GuiaService, private _dataServiceOC: OrdenCompraService,
+              private _securityService: LoginService, private cdRef: ChangeDetectorRef) {
     this.filtroOCDefecto();
     this.filtroClienteDefecto();
     this.activatedRoute = activatedRoute;
     this.util = new AppUtils(this.router, this._masterService);
     this.guia = new Guia();
-
     this.guiaOriginal = new Guia();
-
     this.archivo = new Archivo();
     this.producto = new Articulo();
-
-    this.baseurl = $("#baseurl").attr("href");
-
-
+    this.baseurl = $('#baseurl').attr('href');
   }
+
+
   obtenerBotones() {
 
     let botones = this._securityService.ObtenerBotonesCache(this.url_main_module_page) as Boton[];
@@ -115,21 +115,20 @@ export class GuiaProveedorFormularioComponent implements OnInit, OnChanges, Afte
     }
 
   }
+
+
   configurarBotones(botones: Boton[]) {
-
     if (botones && botones.length > 0) {
-
       this.botonImprimir = botones.find(a => a.nombre === 'imprimir') ? botones.find(a => a.nombre === 'imprimir') : this.botonImprimir;
       this.botonDescartar = botones.find(a => a.nombre === 'descartarborrador') ? botones.find(a => a.nombre === 'descartarborrador') : this.botonDescartar;
       this.botonEdicion = botones.find(a => a.nombre === 'habilitaredicion') ? botones.find(a => a.nombre === 'habilitaredicion') : this.botonEdicion;
       this.botonEnviar = botones.find(a => a.nombre === 'enviar') ? botones.find(a => a.nombre === 'enviar') : this.botonEnviar;
       this.botonGuardar = botones.find(a => a.nombre === 'guardar') ? botones.find(a => a.nombre === 'guardar') : this.botonGuardar;
-
-
-
     }
-
   }
+
+
+
   print(event): void {
     oGuiaProveedorFormularioComponent.guia.motivoguia_text = $("#motivoguia option:selected").text();
     oGuiaProveedorFormularioComponent.guia.estado_text = $("#estado option:selected").text();
@@ -142,8 +141,8 @@ export class GuiaProveedorFormularioComponent implements OnInit, OnChanges, Afte
     setTimeout(function () {
       $("div#print-section-guia").printArea({ popTitle: 'GUIA', mode: "iframe", popClose: false });
     }, 200);
-
   }
+
 
   async validardatos(e, enviar = false) {
     if (this.guia.nroguia.trim() == "" || this.guia.nroguia.trim() == "-") {
@@ -156,12 +155,32 @@ export class GuiaProveedorFormularioComponent implements OnInit, OnChanges, Afte
       return false;
     }
 
-    let regex = /^[a-z0-9]+$/i;
+    if (this.guia.nroguia1.trim() == "") {
+      swal({
+        text: "Debe completar la serie del Nro. de Guía.",
+        type: 'warning',
+        buttonsStyling: false,
+        confirmButtonClass: "btn btn-warning"
+      });
+      return false;
+    }
+
+    if (this.guia.nroguia2.trim() == "") {
+      swal({
+        text: "Debe completar el correlativo del Nro. de Guía.",
+        type: 'warning',
+        buttonsStyling: false,
+        confirmButtonClass: "btn btn-warning"
+      });
+      return false;
+    }
+
+    let regex = /^[0-9]+$/i;
     let str = this.guia.nroguia1.trim() + this.guia.nroguia2.trim();
 
     if (!regex.test(str)) {
       swal({
-        text: "Nro. Guia solo puede contener caracteres alfanuméricos.",
+        text: "Nro. Guia solo puede contener caracteres numéricos",
         type: 'warning',
         buttonsStyling: false,
         confirmButtonClass: "btn btn-warning"
@@ -169,8 +188,6 @@ export class GuiaProveedorFormularioComponent implements OnInit, OnChanges, Afte
 
       return false;
     }
-
-
 
     if (this.guia.razonsocialcliente == null || this.guia.razonsocialcliente.trim() == "") {
       swal({
@@ -271,12 +288,12 @@ export class GuiaProveedorFormularioComponent implements OnInit, OnChanges, Afte
     }
 
     if (enviar) {
-      for (let articulo of this.guia.articulos) {
-        articulo.cantidaddespachada=articulo.cantidadpedido;
-        /*
+      for (let articulo of this.guia.articulos) {  
+        //articulo.cantidaddespachada=articulo.cantidadpedido;
+        
         if (articulo.cantidaddespachada == null || (articulo.cantidaddespachada.toString().trim() == "")) {
           swal({
-            text: "Cantidad Despachada es un campo requerido. Por favor revisar el N° Item " + articulo.nroitem.toString(),
+            text: "El campo Cantidad Despachada es requerido. Por favor revisar el N° Item " + articulo.nroitem.toString(),
             type: 'warning',
             buttonsStyling: false,
             confirmButtonClass: "btn btn-warning"
@@ -284,7 +301,29 @@ export class GuiaProveedorFormularioComponent implements OnInit, OnChanges, Afte
 
           return false;
         }
-        */
+
+        if (parseInt(articulo.cantidaddespachada).toString()=='NaN') {
+          swal({
+            text: "El campo Cantidad Despachada debe contener un valor válido. Por favor revisar el N° Item " + articulo.nroitem.toString(),
+            type: 'warning',
+            buttonsStyling: false,
+            confirmButtonClass: "btn btn-warning"
+          });
+
+          return false;
+        }
+
+        if ( (parseInt(articulo.cantidaddespachada)<1) || (parseInt(articulo.cantidaddespachada) > (parseInt(articulo.cantidadpedido) - parseInt(articulo.cantidadrecibida)) ) ){
+          swal({
+            text: "El valor del campo Cantidad Despachada debe ser mayor a cero y menor o igual a la resta de los campos Cantidad del Pedido y Cantidad Recibida. Por favor revisar el N° Item " + articulo.nroitem.toString(),
+            type: 'warning',
+            buttonsStyling: false,
+            confirmButtonClass: "btn btn-warning"
+          });
+
+          return false;
+        }
+                
         if (articulo.estado == "Despachada") {
           swal({
             text: "Eliminar los ítems que ya fueron despachados.",
@@ -353,6 +392,7 @@ export class GuiaProveedorFormularioComponent implements OnInit, OnChanges, Afte
     }
   }
 
+
   async guardarGuia(e) {
     this.toggleButton = true;
     this.guia.nroguia = this.guia.nroguia1 + "-" + this.guia.nroguia2;
@@ -385,6 +425,7 @@ export class GuiaProveedorFormularioComponent implements OnInit, OnChanges, Afte
 
   }
 
+
   agregarArchivo(event) {
     this.archivo = new Archivo();
 
@@ -394,6 +435,7 @@ export class GuiaProveedorFormularioComponent implements OnInit, OnChanges, Afte
     $('#txtArchivo').val(null);
     event.preventDefault();
   }
+
 
   descartarBorrador(event) {
     swal({
@@ -408,7 +450,6 @@ export class GuiaProveedorFormularioComponent implements OnInit, OnChanges, Afte
       cancelButtonClass: "btn btn-warning",
     }).then(
       function () {
-
 
         oGuiaProveedorFormularioComponent._dataService.descartarBorrador(oGuiaProveedorFormularioComponent.id)
           .subscribe(
@@ -433,16 +474,13 @@ export class GuiaProveedorFormularioComponent implements OnInit, OnChanges, Afte
           },
           e => console.log(e),
           () => { });
-
-
-
-
       },
       function (dismiss) {
       })
 
     event.preventDefault();
   }
+
 
   validarDocumentos() {
     if ($("#txtArchivo").get(0).files.length == 0) {
@@ -456,6 +494,7 @@ export class GuiaProveedorFormularioComponent implements OnInit, OnChanges, Afte
     }
     return true;
   }
+
 
   filtroClienteDefecto() {
     this.filtroCliente = {
@@ -574,6 +613,8 @@ export class GuiaProveedorFormularioComponent implements OnInit, OnChanges, Afte
     }
 
   }
+
+
   eliminarArticulos(event) {
     event.preventDefault();
     let checkboxArticulos = $('#dtArticulos').find('.checkboxArticulos:checked');
@@ -624,23 +665,29 @@ export class GuiaProveedorFormularioComponent implements OnInit, OnChanges, Afte
     }
 
   }
+
+
   async  AgregarArticulosOC(event) {
+
     this.btnSeleccionar = true;
     event.preventDefault();
-    let checkboxOCs = $('#dtBuscarOC').find('.checkboxOC:checked');
+
+    const checkboxOCs = $('#dtBuscarOC').find('.checkboxOC:checked');
+
     if (checkboxOCs.length <= 0) {
       swal({
-        text: "Debe seleccionar una Orden de Compra.",
+        text: 'Debe seleccionar una Orden de Compra.',
         type: 'warning',
         buttonsStyling: false,
-        confirmButtonClass: "btn btn-warning"
+        confirmButtonClass: 'btn btn-warning'
       });
       this.btnSeleccionar = false;
       return false;
     }
 
-    for (let checkboxGuia of checkboxOCs) {
-      //oFacturaProveedorFormularioComponent.factura.detallefactura
+
+    for (const checkboxGuia of checkboxOCs) {
+      // oFacturaProveedorFormularioComponent.factura.detallefactura
       let id_doc = $(checkboxGuia).val();
       let oc = await this._dataServiceOC
         .obtener(id_doc, 'P', true).toPromise();
@@ -649,10 +696,10 @@ export class GuiaProveedorFormularioComponent implements OnInit, OnChanges, Afte
 
       if (arrArticulos != null && oc.productos.length == arrArticulos.length) {
         swal({
-          text: "No se puede volver a agregar la OC #" + $(checkboxGuia).attr("numOC") + ".",
+          text: 'No se puede volver a agregar la OC #' + $(checkboxGuia).attr('numOC') + '.',
           type: 'warning',
           buttonsStyling: false,
-          confirmButtonClass: "btn btn-warning"
+          confirmButtonClass: 'btn btn-warning'
         });
         this.btnSeleccionar = false;
         return false;
@@ -671,24 +718,30 @@ export class GuiaProveedorFormularioComponent implements OnInit, OnChanges, Afte
       }*/
     }
 
-    let lista_ordenado = oGuiaProveedorFormularioComponent.guia.articulos.sort((n, n1): number => {
-      this.btnSeleccionar = false;
-      if (n.nroitem < n1.nroitem) return -1;
-      if (n.nroitem > n1.nroitem) return 1;
-      return 0;
+    const lista_ordenado = oGuiaProveedorFormularioComponent.guia.articulos.sort((n, n1): number => {
+        this.btnSeleccionar = false;
+        if (n.nroitem < n1.nroitem) { return -1 };
+        if (n.nroitem > n1.nroitem) { return 1 };
+        return 0;
     });
     let max_nroitem = 1;
     if (lista_ordenado.length > 0) {
       max_nroitem = lista_ordenado[lista_ordenado.length - 1].nroitem + 1;
     }
-    for (let checkboxOC of checkboxOCs) {
 
-      let id_doc = $(checkboxOC).val();
-      let oc = await this._dataServiceOC
+    for (const checkboxOC of checkboxOCs) {
+
+      const id_doc = $(checkboxOC).val();
+      const oc = await this._dataServiceOC
         .obtener(id_doc, 'P', true).toPromise();
-      if (oc.tipo == "Material") { oGuiaProveedorFormularioComponent.guia.tipoguia = "M"; } else { oGuiaProveedorFormularioComponent.guia.tipoguia = "S"; }
 
-      for (let producto of oc.productos) {
+      if (oc.tipo === 'Material') {
+        oGuiaProveedorFormularioComponent.guia.tipoguia = "M";
+      } else {
+        oGuiaProveedorFormularioComponent.guia.tipoguia = "S";
+      }
+
+      for (const producto of oc.productos) {
         if (oGuiaProveedorFormularioComponent.guia.articulos.find(a => a.IdProductoOrden == producto.IdProductoOrden) != null) {
           continue;
         }
@@ -701,9 +754,9 @@ export class GuiaProveedorFormularioComponent implements OnInit, OnChanges, Afte
           codproducto: producto.micodigo,
           descproducto: producto.desccorta,
           cantidadpedido: producto.cantidad,
-          cantidadrecibida: '0',
+          cantidadrecibida: producto.cantidadRecibida,
+          cantidaddespachada: producto.cantidadDespachada,
           unidadmedida: producto.unidad,
-          cantidaddespachada: '',
           unidadmedidadespacho: producto.unidad,
           atributos: producto.atributos,
           pesoneto: "",
@@ -713,12 +766,13 @@ export class GuiaProveedorFormularioComponent implements OnInit, OnChanges, Afte
           preciounitario: "",
           preciototal: "",
           IdProductoOrden: producto.IdProductoOrden,
-          IdTablaUnidad: "",
-          IdRegistroUnidad: "",
+          IdTablaUnidad: producto.IdTablaUnidadMedida,
+          IdRegistroUnidad: producto.IdRegistroUnidadMedida,
           IdProdxGuia: "",
           EjercicioGuia: "",
           destino: "",
           CodigoGuiaERP: "",
+          NumeroMaterial: "",
         });
 
 
@@ -726,13 +780,10 @@ export class GuiaProveedorFormularioComponent implements OnInit, OnChanges, Afte
 
     }
 
-
     setTimeout(function () {
       dtArticulos.ajax.reload();
       $("#mdlOrdenesCompra").modal('toggle');
     }, 500);
-
-
 
   }
 
@@ -844,6 +895,8 @@ export class GuiaProveedorFormularioComponent implements OnInit, OnChanges, Afte
 
     return true;
   }
+
+
   AbrirAgregarOC(event) {
 
     if (!this.guia.ruccliente || this.guia.ruccliente === '') {
@@ -869,12 +922,16 @@ export class GuiaProveedorFormularioComponent implements OnInit, OnChanges, Afte
     event.preventDefault();
 
   }
+
+
   BuscarOCClick(event) {
     if (this.validarfiltrosOC())
       datatableOC.ajax.reload();
 
     event.preventDefault();
   }
+
+
   filtroOCDefecto() {
     let fechacreacioni = new Date();
     fechacreacioni.setDate(fechacreacioni.getDate() - 30);
@@ -882,7 +939,7 @@ export class GuiaProveedorFormularioComponent implements OnInit, OnChanges, Afte
 
       nroordencompra: '',
 
-      estado: 'OACEP',
+      estado: 'ALLGUIA',
 
 
       fechacreacioninicio: fechacreacioni,
@@ -891,6 +948,7 @@ export class GuiaProveedorFormularioComponent implements OnInit, OnChanges, Afte
 
     }
   }
+
 
   buscarCliente(e) {
 
@@ -903,6 +961,8 @@ export class GuiaProveedorFormularioComponent implements OnInit, OnChanges, Afte
     }
 
   }
+
+
   ngOnInit() {
     $("#mdlBuscarCliente").on('hidden.bs.modal', function () {
       oGuiaProveedorFormularioComponent.btnSeleccionar = false;
@@ -972,9 +1032,9 @@ export class GuiaProveedorFormularioComponent implements OnInit, OnChanges, Afte
       oGuiaProveedorFormularioComponent.listEstadoOCCombo = data;
     });
 
-
-
   }
+
+  
   ngAfterViewInit() {
     if (this.id != '0') {
       console.log('this.esBorrador', this.esBorrador);
@@ -1041,7 +1101,6 @@ export class GuiaProveedorFormularioComponent implements OnInit, OnChanges, Afte
 
         let result = {
           data: oGuiaProveedorFormularioComponent.guia.docadjuntos
-
         };
         callback(
           result
@@ -1174,12 +1233,12 @@ export class GuiaProveedorFormularioComponent implements OnInit, OnChanges, Afte
       if (oGuiaProveedorFormularioComponent.guia.nroguia1 == "") { return }
 
 
-      let regex = /^[a-z0-9]+$/i;
+      let regex = /^[0-9]+$/;
       let str = oGuiaProveedorFormularioComponent.guia.nroguia1.trim();
 
       if (!regex.test(str)) {
         swal({
-          text: "Nro. Guia - La Serie solo puede contener caracteres alfanuméricos.",
+          html: "<p class='text-center'>Nro. Guia - La Serie solo puede contener caracteres numéricos.</p>",
           type: 'warning',
           buttonsStyling: false,
           confirmButtonClass: "btn btn-warning"
@@ -1202,12 +1261,12 @@ export class GuiaProveedorFormularioComponent implements OnInit, OnChanges, Afte
       if (oGuiaProveedorFormularioComponent.guia.nroguia2 == "") { return }
 
 
-      let regex = /^[a-z0-9]+$/i;
+      let regex = /^[0-9]+$/i;
       let str = oGuiaProveedorFormularioComponent.guia.nroguia2.trim();
 
       if (!regex.test(str)) {
         swal({
-          text: "Nro. Guia - El Correlativo solo puede contener caracteres alfanuméricos.",
+          html: "<p class='text-center'>Nro. Guia - El Correlativo solo puede contener caracteres numéricos.</p>",
           type: 'warning',
           buttonsStyling: false,
           confirmButtonClass: "btn btn-warning"
@@ -1304,6 +1363,9 @@ function cargarBuscarClienteDT() {
     oGuiaProveedorFormularioComponent.buscarClienteDT(event);
     return;
   }*/
+
+
+  
   /*
    .on('init.dt', function (e, settings, json) {
       DatatableFunctions.initDatatable(e, settings, json, datatable);
@@ -1467,6 +1529,7 @@ function cargarOrdenCompraDT() {
 
 
   }).DataTable({
+    order: [[2,"asc"],[3,"asc"]],
     "ajax": function (data, callback, settings) {
       let result = {
         data: oGuiaProveedorFormularioComponent.guia.articulos
@@ -1511,13 +1574,14 @@ function cargarOrdenCompraDT() {
       {
         render: function (data, type, row) {
           var disabled = "disabled";
-         // if (!oGuiaProveedorFormularioComponent.toggleButton)
-        //    disabled = "";
-          return '<input name="cantidaddespachada" value="' + row.cantidadpedido + '" nroitem="' + row.nroitem + '" type="text" class="toggleButton cantidaddespachada' + row.nroitem + ' cantidaddespachada form-control text-center dt-text" ' + disabled + '>';
+          if (!oGuiaProveedorFormularioComponent.toggleButton)
+            disabled = "";
+          return '<input pattern= "[0-9]*"  name="cantidaddespachada" value="' + row.cantidaddespachada + '" nroitem="' + row.nroitem + '" type="text" class="toggleButton cantidaddespachada' + row.nroitem + ' cantidaddespachada form-control text-center dt-text" ' + disabled + '>';
         },
         targets: 9
       },
-      /* {
+      /*
+      {
          render: function (data, type, row) {
            var disabled = "disabled";
            if (!oGuiaProveedorFormularioComponent.toggleButton)
@@ -1525,8 +1589,9 @@ function cargarOrdenCompraDT() {
            return UnidadMedidaCombo(row.nroitem, row.unidadmedidadespacho, disabled);
          },
          targets: 10
-       },*/
-      // oGuiaProveedorFormularioComponent.listUnidadMedidaPesoCombo
+       },
+       */
+      // oGuiaProveedorFormularioComponent.listUnidadMedidaPesoCombo 
     ]
   });
 

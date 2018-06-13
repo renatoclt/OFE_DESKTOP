@@ -1,16 +1,16 @@
-import {ActivatedRoute, Params, Router} from '@angular/router';
-import {AfterViewInit, ChangeDetectorRef, Component, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import { Router, ActivatedRoute, Params } from '@angular/router';
+import { Component, OnInit, OnChanges, AfterViewInit, SimpleChanges } from '@angular/core';
 
-import {MomentModule} from 'angular2-moment/moment.module';
-import {AppUtils} from "../../../utils/app.utils";
-import {MasterService} from '../../../service/masterservice';
-import {ComboItem} from "app/model/comboitem";
-import {Atributo, OrdenCompra, Producto} from "app/model/ordencompra";
+import { MomentModule } from 'angular2-moment/moment.module';
+import { AppUtils } from "../../../utils/app.utils";
+import { MasterService } from '../../../service/masterservice';
+import { ComboItem } from "app/model/comboitem";
+import { OrdenCompra, Atributo, Producto } from "app/model/ordencompra";
 import '../../../../assets/js/plugins/jquery.PrintArea.js';
-import {OrdenCompraService} from "app/service/ordencompraservice";
-import {LoginService} from '../../../service/login.service';
-import {Boton} from 'app/model/menu';
-
+import { OrdenCompraService } from "app/service/ordencompraservice";
+import { LoginService } from '../../../service/login.service';
+import { Boton } from 'app/model/menu';
+import { ChangeDetectorRef } from '@angular/core';
 declare var moment: any;
 declare var swal: any;
 
@@ -177,7 +177,7 @@ export class OrdenCompraCompradorFormularioComponent implements OnInit, AfterVie
   }
   ngAfterViewChecked()
   {
-
+    
     this.cdRef.detectChanges();
   }
 

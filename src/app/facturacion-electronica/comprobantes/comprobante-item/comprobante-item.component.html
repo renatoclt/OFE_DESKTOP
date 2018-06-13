@@ -8,13 +8,13 @@
                         </div>
                         <div class="card-content">
                             <div class="row">
-                                
+
                                 <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
                                     <div class="form-group label-floating" id="divTxtCodigo" >
                                       <label id="lblCodigo" class="control-label">{{'codigo' | translate}}<span class="star">*</span></label>
                                       <input  codigoDirective
                                               autocomplete="off"
-                                              ng2-auto-complete 
+                                              ng2-auto-complete
                                               type="text"
                                               id="txtCodigo"
                                               formControlName="txtCodigo"
@@ -22,7 +22,7 @@
                                               [list-formatter]="formatoDeListaAutocompletado"
                                               [value-formatter] = "formatoDeValorAutocompletado"
                                               [no-match-found-text] = "'noSeEncontraronResultados' | translate"
-                                              
+
                                               open-on-focus = true
                                               close-on-focus = true
                                               auto-select-first-item = false
@@ -67,7 +67,7 @@
                                 <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
                                     <div class="form-group label-floating">
                                         <label id="lblCantidad" class="control-label">{{'cantidad' | translate}}<span class="star">*</span></label>
-                                        <input  
+                                        <input
                                                 (blur) = "calcularValorTotal()"
                                                 precioDirectiva
                                                 type="text"
@@ -187,7 +187,7 @@
                                             <i *ngIf="estadoIsc" class="fa fa-lock"></i>
                                             <i *ngIf="!estadoIsc" class="fa fa-unlock"></i>
                                         </span> -->
-                                    <!--    
+                                    <!--
                                         <span *ngIf="!itemFormGroup.get('txtIsc').valid && (itemFormGroup.get('txtIsc').touched || itemFormGroup.get('txtIsc').dirty)">
                                             <span *ngIf="itemFormGroup.controls['txtIsc'].hasError('required')" class="text-danger">Isc es requerida.</span>
                                             <span *ngIf="itemFormGroup.controls['txtIsc'].hasError('pattern')" class="text-danger">Formato invalido (Ej. 1.00).</span>
@@ -197,7 +197,7 @@
                                     -->
                                     </div>
                                 </div>
-                                
+
                             </div>
                             <div class="row" *ngIf="esBien">
                                 <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
@@ -289,10 +289,10 @@
                                 <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
                                     <div class="form-group label-floating">
                                         <label id="lblTipoPrecioVenta" class="control-label">{{'tipoPrecioVentaUnitario' | translate}}<span class="star">*</span></label>
-                                        <select id="cmbTipoPrecioVenta" formControlName="cmbTipoPrecioVenta" class="form-control">
-                                            <option *ngFor="let precioVenta of tipoPrecioVentaUnitario | async" [value]="precioVenta.codigo">
-                                                {{precioVenta.descripcion}}
-                                            </option>
+                                        <select id="cmbTipoPrecioVenta" formControlName="cmbTipoPrecioVenta" class="form-control" (change)="seleccionarTipoPrecioVenta()">
+                                          <option *ngFor="let precioVenta of tipoPrecioVentaUnitario | async" [value]="precioVenta.codigo">
+                                            {{precioVenta.descripcion}}
+                                          </option>
                                         </select>
                                         <!-- <span *ngIf="!itemFormGroup.get('cmbTipoPrecioVenta').valid && itemFormGroup.get('cmbTipoPrecioVenta').touched">
                                             <span *ngIf="itemFormGroup.controls['cmbTipoPrecioVenta'].hasError('required')" class="text-danger">Seleccione una opción.</span>
@@ -341,7 +341,7 @@
                                     -->
                                     </div>
                                 </div>
-                                
+
                             </div>
                             <div class="row" *ngIf="!esBien">
 
@@ -375,7 +375,7 @@
                                             <i *ngIf="estadoIsc" class="fa fa-lock"></i>
                                             <i *ngIf="!estadoIsc" class="fa fa-unlock"></i>
                                         </span> -->
-                                    <!--    
+                                    <!--
                                         <span *ngIf="!itemFormGroup.get('txtIsc').valid && (itemFormGroup.get('txtIsc').touched || itemFormGroup.get('txtIsc').dirty)">
                                             <span *ngIf="itemFormGroup.controls['txtIsc'].hasError('required')" class="text-danger">Isc es requerida.</span>
                                             <span *ngIf="itemFormGroup.controls['txtIsc'].hasError('pattern')" class="text-danger">Formato invalido (Ej. 1.00).</span>
@@ -385,32 +385,38 @@
                                     -->
                                     </div>
                                 </div>
-                                
+
                                 <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                    <div id="divRadioIgv" class="form-group label-floating">
-                                        <label id="lblIsc" class="control-label">TIPO IGV<span class="star">*</span></label>
-                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                                <div class="radio">
-                                                    <label>
-                                                        <input type="radio" style="background-color: #555555"formControlName="radioTipoIgv" (change)="filtrarTipoIgv($event.srcElement.value)" value="10"> Gravado
-                                                    </label>
-                                                <!-- </div>
-                                            </div>
-                                            <div class="col-xs-12 col-sm-12 col-md-4">
-                                                <div class="radio"> -->
-                                                    <label>
-                                                        <input type="radio" style="background-color: #555555" formControlName="radioTipoIgv" (change)="filtrarTipoIgv($event.srcElement.value)" value="30"> Inafecto
-                                                    </label>
-                                                <!-- </div>
-                                            </div>
-                                            <div class="col-xs-12 col-sm-12 col-md-4">
-                                                <div class="radio"> -->
-                                                    <label>
-                                                        <input type="radio" style="background-color: #555555" formControlName="radioTipoIgv" (change)="filtrarTipoIgv($event.srcElement.value)" value="20"> Exonerado
-                                                    </label>
-                                                </div>
-                                            </div>
+                                  <div id="divRadioIgv" class="form-group label-floating">
+                                    <label id="lblIsc" class="control-label">TIPO IGV<span class="star">*</span></label>
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                      <div class="radio" data-color="blue">
+                                        <label>
+                                          <input type="radio" style="background-color: #555555" formControlName="radioTipoIgv"
+                                                 name="radioTipoIgv" id="radioTipoIgvGravado"
+                                                 (change)="filtrarTipoIgv($event.srcElement.value)" value="10"> Gravado
+                                        </label>
+                                        <!-- </div>
+                                    </div>11
+                                    <div class="col-xs-12 col-sm-12 col-md-4">
+                                        <div class="radio"> -->
+                                        <label>
+                                          <input type="radio" style="background-color: #555555" formControlName="radioTipoIgv"
+                                                 name="radioTipoIgv" id="radioTipoIgvInafecto"
+                                                 (change)="filtrarTipoIgv($event.srcElement.value)" value="30"> Inafecto
+                                        </label>
+                                        <!-- </div>
                                     </div>
+                                    <div class="col-xs-12 col-sm-12 col-md-4">
+                                        <div class="radio"> -->
+                                        <label>
+                                          <input type="radio" style="background-color: #555555" formControlName="radioTipoIgv"
+                                                 name="radioTipoIgv" id="radioTipoIgvExonerado"
+                                                 (change)="filtrarTipoIgv($event.srcElement.value)" value="20"> Exonerado
+                                        </label>
+                                      </div>
+                                    </div>
+                                  </div>
                                 </div>
                             </div>
                             <div class="row" *ngIf="!esBien">

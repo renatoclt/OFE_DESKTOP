@@ -11,46 +11,53 @@
     <meta name="viewport" content="width=device-width" />
     <%= htmlWebpackPlugin.options.baseurl %>
     <!-- Bootstrap core CSS     -->
-    <link href="./assets/css/bootstrap.min.css" rel="stylesheet" />
+    
+    <link rel="stylesheet" type="text/css" href="./assets/css/bootstrap.min.css" />
     <!--  Material Dashboard CSS    -->
-    <link href="./assets/css/material-dashboard.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="./assets/css/material-dashboard.css" />
     <!--  CSS for Demo Purpose, don't include it in your project     -->
-    <link href="./assets/css/demo.css" rel="stylesheet" />
-    <link href="./assets/css/please-wait.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="./assets/css/demo.css" />
+    <link rel="stylesheet" type="text/css" href="./assets/css/please-wait.css" />
+
+    <link rel="stylesheet" type="text/css" href="./assets/css/bootstrap.min.css" />
+    <!--  Material Dashboard CSS    -->
+    <link rel="stylesheet" type="text/css" href="./assets/css/material-dashboard.css" />
+    <!--  CSS for Demo Purpose, don't include it in your project     -->
+    <link rel="stylesheet" type="text/css" href="./assets/css/demo.css" />
+    <link rel="stylesheet" type="text/css" href="./assets/css/please-wait.css" />
 
     <!--     Fonts and icons     -->
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
-    <!-- <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons"
-    /> -->
-    
-    <link rel="stylesheet" type="text/css" href="./assets/css/material-icons.css" rel="stylesheet" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
-    <link href="./assets/chat/css/estilo.css" rel="stylesheet" type="text/css" />
-    <link href="./assets/chat/css/menu.css" rel="stylesheet" type="text/css" />
-    <link href="./assets/chat/css/slide.css" rel="stylesheet" type="text/css" />
-    <script src="./assets/chat/css/menu.js" type="text/javascript"></script>
-    <SCRIPT type="text/javascript" src="./assets/chat/css/slideshow_with_captions.js"></SCRIPT>
+    <link rel="stylesheet" type="text/css" href="./assets/fonts/fonts.googleapis.com/css/font-awesome.min.css" /><!--https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css-->
+    <link rel="stylesheet" type="text/css" href="./assets/fonts/maxcdn.bootstrapcdn.com/css/font.css" /><!--href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons"-->
+    <link rel="stylesheet" type="text/css" href="./assets/chat/css/estilo.css" />
+    <link rel="stylesheet" type="text/css" href="./assets/chat/css/menu.css" />
+    <link rel="stylesheet" type="text/css" href="./assets/chat/css/slide.css" />
+
+    <script type="text/javascript" src="./assets/chat/css/menu.js"></script>
+    <script type="text/javascript" src="./assets/chat/css/slideshow_with_captions.js"></script>
+    <script type="text/javascript" src="./assets/js/plugins/sockjs.min.js"></script>
+    <script type="text/javascript" src="./assets/js/plugins/stomp.min.js"></script>
+
     <style type="text/css">
-        <!-- #apDiv1 {
-            position: absolute;
-            left: 11%;
-            top: 183px;
-            width: 280px;
-            height: 240px;
-            z-index: 1;
-            background-image: url(//chat/images/fondologo.png);
-            background-repeat: no-repeat;
-        }
+        <!--
+            #apDiv1 {
+                position: absolute;
+                left: 11%;
+                top: 183px;
+                width: 280px;
+                height: 240px;
+                z-index: 1;
+                background-image: url(//chat/images/fondologo.png);
+                background-repeat: no-repeat;
+            }
 
-        .style1 {
-            color: #FF9900
-        }
+            .style1 {
+                color: #FF9900
+            }
 
-        .style2 {
-            color: #000000
-        }
-
+            .style2 {
+                color: #000000
+            }
         -->
         /*agregado por fbascones 2009.12.09*/
 
@@ -87,6 +94,17 @@
             color: #FF9933;
         }
         /*fin agregado por fbascones 2009.12.09*/
+
+        td.details-control {
+            background: url('assets/chat/images/plus.png') no-repeat center center;
+            background-size: initial;
+            cursor: pointer;
+        }
+        
+        tr.shown td.details-control {
+            background: url('assets/chat/images/minus.png') no-repeat center center;
+        }
+
     </style>
 </head>
 
@@ -106,9 +124,6 @@
             });
         </script>
     </my-app>
-
-
 </body>
-
 
 </html>

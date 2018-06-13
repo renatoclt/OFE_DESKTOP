@@ -67,12 +67,12 @@ export class ComprobantesComponent implements OnInit, OnDestroy {
       case this._tiposService.TIPO_DOCUMENTO_BOLETA:
         ruta = 'boleta';
         break;
-      // case this._tiposService.TIPO_DOCUMENTO_NOTA_CREDITO:
-      //   ruta = 'notaCredito';
-      //   break;
-      // case this._tiposService.TIPO_DOCUMENTO_NOTA_DEBITO:
-      //   ruta = 'notaDebito';
-      //   break;
+      case this._tiposService.TIPO_DOCUMENTO_NOTA_CREDITO:
+        ruta = 'notaCredito';
+        break;
+      case this._tiposService.TIPO_DOCUMENTO_NOTA_DEBITO:
+        ruta = 'notaDebito';
+        break;
     };
     this.router.navigate([ruta + '/crear'], {relativeTo: this.route});
   }

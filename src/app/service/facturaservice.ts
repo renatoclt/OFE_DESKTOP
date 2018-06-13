@@ -203,6 +203,7 @@ export class FacturaService {
   }
 
   agregar(item: Factura): Observable<any> {
+
     let headers = this.getHeaders("P");
 
     headers.append('org_id', localStorage.getItem('org_id'));
@@ -325,7 +326,6 @@ export class FacturaService {
         }else{
           unidadmedida = listUnidadMedida.find(a => a.vc_EQUIVALENCIA == articulo.unidadmedida);
         }
-        
 
         itemFactura.NumGuiaItem = articulo.noguia;
         itemFactura.NumeroItemOC = articulo.noitemoc;
@@ -336,7 +336,8 @@ export class FacturaService {
         itemFactura.CantidadItem = articulo.cantidad;
         let preciounitreferencial: number = (articulo.preciounitreferencial == null ? 0 : Number.parseFloat(articulo.preciounitreferencial.replace(/,/g, "")));
         itemFactura.PrecioUnitario = preciounitreferencial.toString();
-        itemFactura.PrecioTotal = (Number(articulo.cantidad) * preciounitreferencial) + "";
+      //  itemFactura.PrecioTotal = (Number(articulo.cantidad) * preciounitreferencial) + "";
+        itemFactura.PrecioTotal = DatatableFunctions.StringToNumber(articulo.subtotalitemguia)+'';        
         itemFactura.NumeroGuiaItem = articulo.noitem.toString();
         itemFactura.NumeroOcItem = articulo.nooc;
         itemFactura.Posicion = articulo.posicion;
@@ -430,6 +431,7 @@ export class FacturaService {
     }
 
     let fac_json = res.json();
+    console.log(fac_json)
 
     if (fac_json.factura)
       return fac_json.factura;
@@ -456,6 +458,10 @@ export class FacturaService {
     fac.fechaemision = DatatableFunctions.ConvertStringToDatetime2(fac_json.data.FechaEmision);
     fac.tipodocumento = fac_json.data.TipoComprobante;
     fac.moneda = fac_json.data.Moneda;
+
+    fac.motivorechazosap = fac_json.data.MotivoRechazoSAP;
+    fac.motivoerrorsap = fac_json.data.MotivoErrorSAP;
+
     fac.subtotal = DatatableFunctions.FormatNumber(fac_json.data.SubTotal,4);
     fac.igv = DatatableFunctions.FormatNumber(fac_json.data.Impuesto1,4);
     fac.dsctomonto = DatatableFunctions.FormatNumber(fac_json.data.DctoMonto,2);
@@ -464,6 +470,7 @@ export class FacturaService {
     fac.impuesto3 = DatatableFunctions.FormatNumber(fac_json.data.Impuesto3,2);
     fac.importetotal = DatatableFunctions.FormatNumber(fac_json.data.ImporteTotal,2);
     fac.total = DatatableFunctions.FormatNumber(fac_json.data.ImporteTotal,4);
+    fac.totaltexto = fac_json.data.ImporteTotalCadena;
 
     fac.importereferencial = fac_json.data.ImporteReferencial;
     fac.observaciones = DatatableFunctions.ReplaceToken(fac_json.data.Observaciones);
@@ -502,7 +509,7 @@ export class FacturaService {
       let p = new DetalleFactura();
       p.IdGuia = item.IdGuia;
       p.IdOc = item.IdOc;
-      p.noitem = xI;
+      p.noitem = xI+'';
       p.noguia = item.NumGuiaItem;
       p.nooc = item.NumeroOcItem;
       p.noitemoc = item.NumeroItemOC;

@@ -85,7 +85,8 @@ body {
     color: #545454;
 }
 .login .navbar .navbar-brand {
-    background: url(../img/logo.jpg);
+    /* background: rgb(112, 112, 216); *//*#7070D8*/
+    background-image: url(../img/logos/default/logo.jpg);
     width: 200px;
     height: 82px;
     background-size: contain;
@@ -204,20 +205,20 @@ footer {
     font-weight: bold;
 }
 
-table.dataTable.table-striped tbody tr.odd.selected {
-    background-color: #acbad4 !important;
+table.dataTable.table-striped tbody tr.odd.selected {    
+    background-color: #acbad4 !important;        
 }
-table.dataTable.table-striped tbody tr.even.selected {
-    background-color: #acbad4 !important;
+table.dataTable.table-striped tbody tr.even.selected {    
+    background-color: #acbad4 !important;        
 }
 
 
 tr.highlight {
         font-weight: bold;
         /*color: blue;*/
-        background-color: #acbad4 !important;
+        background-color: #acbad4 !important;  
        /*background: #4a94c0 !important;  */
-
+        
     }
 
 .togglebutton label input[type=checkbox]:checked + .toggle {
@@ -253,13 +254,13 @@ span[disabled].btn.btn-default {
 
 
 .form-control, .form-group .form-control {
-
+    
     background-image: linear-gradient(#0067a3, #0067a3), linear-gradient(#D2D2D2, #D2D2D2);
 }
 
 
 .form-group.is-focused .form-control {
-
+    
     background-image: linear-gradient(#0067a3, #0067a3), linear-gradient(#D2D2D2, #D2D2D2);
 }
 
@@ -302,25 +303,25 @@ span[disabled].btn.btn-default {
 
 
  .checkbox-material-45  {
-
+    
     top: -7px !important;
     padding-right: 0px !important;
-
+    
 }
 
 .checkbox-material-25  {
-
+    
     top: 3px !important;
     padding-right: 0px !important;
 }
 
 td.evaluacion-cotizaciones-proveedor {
-    background: aliceblue;
-
+    background: #eaf7e8;
+       
 }
-td.evaluacion-cotizaciones-proveedor-resaltado {
-    background: #FFFCBD;
-
+td.evaluacion-cotizaciones-proveedor-resaltado {    
+    background: rgb(63, 171, 243);
+       
 }
 
 td.evaluacion-cotizaciones-producto {
@@ -333,14 +334,14 @@ td .evaluacion-cotizaciones-evaluacion-input{
 }
 
 
-.table-evaluacion-cotizaciones, .table-evaluacion-cotizaciones td, .table-evaluacion-cotizaciones th {
-    border: 1px solid #ddd;
+.table-evaluacion-cotizaciones, .table-evaluacion-cotizaciones td, .table-evaluacion-cotizaciones th {    
+    border: 1px solid #333;
    /*text-align: left;*/
 }
 
 .table-evaluacion-cotizaciones {
-
-
+    
+    
     border-collapse: collapse;
     width: 100%;
 }
@@ -349,29 +350,29 @@ td .evaluacion-cotizaciones-evaluacion-input{
     padding: 5px;
 }
 
-.table-evaluacion-cotizaciones table, .table-evaluacion-cotizaciones table td, .table-evaluacion-cotizaciones table th {
+.table-evaluacion-cotizaciones table, .table-evaluacion-cotizaciones table td, .table-evaluacion-cotizaciones table th {    
     border: 0px solid #ddd;
    /*text-align: left;*/
 }
 .evaluacion-cotizaciones-header{
-        background-color: #eeeeee;
+        background-color: #0079bf;
     /*color: #ffffff;*/
     text-align: center;
-
+     
     font-weight: bold;
 }
 
 .nav-pills.nav-pills-warning > li.active > a, .nav-pills.nav-pills-warning > li.active > a:focus, .nav-pills.nav-pills-warning > li.active > a:hover {
     background-color: #0067a3;
     box-shadow: 0 4px 20px 0px rgba(0, 0, 0, 0.14), 0 7px 10px -5px #2399e5;;
-
-
+    
+    
 }
 
 
 .table-ec-movil {
-
-
+    
+    
     border-collapse: collapse;
     width: 100%;
 }
@@ -383,7 +384,7 @@ td .evaluacion-cotizaciones-evaluacion-input{
     padding: 0px;
 }
 
-.table-ec-movil, .table-ec-movil td, .table-ec-movil th {
+.table-ec-movil, .table-ec-movil td, .table-ec-movil th {    
     border: 1px solid #ddd;
    /*text-align: left;*/
 }
@@ -398,11 +399,11 @@ td .evaluacion-cotizaciones-evaluacion-input{
 
   color: #ffffff;
 
-
+      
 
 }
 .table-ec-movil input{
-
+  
     width: 100%;
 }
 
@@ -470,9 +471,9 @@ td .evaluacion-cotizaciones-evaluacion-input{
     border: 0px solid #ddd;
 }
 @media only screen and (max-width: 700px)  {
-
-
-
+       
+   
+    
     .table-evaluacion-cotizaciones {
       display: none;
     }
@@ -481,7 +482,7 @@ td .evaluacion-cotizaciones-evaluacion-input{
 
 @media only screen and (min-width: 701px)  {
 
-
+  
     .table-ec-movil {
       display: none;
     }
@@ -511,7 +512,7 @@ td .evaluacion-cotizaciones-evaluacion-input{
 
     font-size: 14px;
     line-height: 1.42857;
-
+    
     font-weight: 400;
         color: #555;
 }
@@ -596,9 +597,9 @@ td .evaluacion-cotizaciones-evaluacion-input{
 
 
 .modal-content .modal-header {
-
-    padding-top: 15px;
-
+    
+    padding-top: 15px; 
+  
 }
 
 @media (max-width: 500px) {
@@ -608,7 +609,7 @@ td .evaluacion-cotizaciones-evaluacion-input{
   }
 
   table.dataTable > tbody > tr.child span.dtr-title {
-
+  
     min-width: 100px;
   }
 /*
@@ -623,10 +624,10 @@ td .evaluacion-cotizaciones-evaluacion-input{
 table.dataTable .fileinput-filename{
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
+    white-space: nowrap;    
     width: 80%;
     max-width: 100px;
-
+  
 }
 .dt-text{
 
@@ -639,14 +640,14 @@ table.dataTable .fileinput-filename{
 
 .fileinput-filename{
 
-
+    
     text-align: center;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
     width: 80%;
     max-width: 300px;
-
+  
 }
 @media (max-width: 500px) {
     .fileinput-filename {
@@ -671,7 +672,7 @@ table.dataTable .fileinput-filename{
 }
 
 .col-group-second {
-
+   
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -704,8 +705,8 @@ table.dataTable .fileinput-filename{
 
 
 .dtr-details .form-group {
-     padding-bottom: 2px;
-     margin: 0;
+     padding-bottom: 2px; 
+     margin: 0; 
 }
 
 table.dataTable .dtr-details .fileinput-filename {
@@ -725,10 +726,10 @@ table.dataTable .form-group {
 
 
 @media only screen and  (min-width: 992px){
-.sidebar-mini [data-background-color=black] .nav .collapse li:not(.active)>a,
-.sidebar-mini [data-background-color=black] .user .collapse li:not(.active)>a
+.sidebar-mini [data-background-color=black] .nav .collapse li:not(.active)>a, 
+.sidebar-mini [data-background-color=black] .user .collapse li:not(.active)>a 
     {
-        color: #FFF;
+        color: #FFF; 
     }
 }
 
@@ -745,7 +746,7 @@ select {
     5px 5px !important;;
   background-repeat: no-repeat !important;
   border-bottom: 1px solid #D2D2D2 !important;
-
+  
   /* styling */
   background-color: white;
   /*border: thin solid blue;*/
@@ -757,31 +758,31 @@ select {
 
   /* reset */
 
-
+  
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   -webkit-appearance: none;
   -moz-appearance: none;
-
+  
 }
-
+    
 select[disabled]{
 
     border-bottom: 1px dotted #D2D2D2 !important;
-
+  
 
 }
-
+    
 .material-datatables .form-group {
     padding-bottom: 10px !important;
     margin: 2px 0 0 !important;
-
+   
 }
 
 .material-datatables .form-group select{
     padding-left: 20px  !important;
-
+    
 }
 
 
@@ -947,7 +948,7 @@ select[disabled]{
 
 
 .navbar {
-
+   
      padding: 0 0 !important;
 }
 
@@ -988,4 +989,17 @@ select[disabled]{
 .text-danger{
   font-size: 11px;
   font-weight: 700;
+}
+.color-green{
+    color:#17d817!important;
+}
+.not-show{
+    display: none;
+}
+.show-fac{
+    display: inline-block;
+}
+.main-indicadores{
+    margin-top: 20px;
+    min-height: auto;
 }

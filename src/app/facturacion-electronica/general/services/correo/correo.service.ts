@@ -23,7 +23,7 @@ export class CorreoService {
     this._spinner.set(true);
     let oCorreo = new Correo();
     const that = this;
-    oCorreo.tipoComprobante=tipoComprobante;
+    oCorreo.tipoComprobante=tipoComprobante.toUpperCase();
     oCorreo.serie=serie;
     oCorreo.correlativo=correlativo;
     oCorreo.fechaEmision=fechaEmision;

@@ -1,0 +1,31 @@
+import { Injectable } from "@angular/core";
+
+@Injectable()
+export class CatalogoIgvService {
+    public IGV_VALOR = 0.18;
+    public IGV_GRAVADO_RANGO = 10;
+    public IGV_EXONERADO_RANGO = 20;
+    public IGV_INAFECTO_RANGO = 30;
+    public IGV_EXPORTACION_RANGO = 40;
+
+    public IGV_GRAVADO_OPERACION_ONEROSA = '10';
+    public IGV_GRAVADO_RETIRO_POR_PREMIO = '11';
+    public IGV_GRAVADO_RETIRO_POR_DONACION = '12';
+    public IGV_GRAVADO_RETIRO = '13';
+    public IGV_GRAVADO_RETIRO_POR_PUBLICIDAD = '14';
+    public IGV_GRAVADO_BONIFICACIONES = '15';
+    public IGV_GRAVADO_RETIRO_ENTREGA_TRABAJADORES = '16';
+    public IGV_GRAVADO_IVAP = '17';
+    public IGV_EXONERADO_OPERACION_ONEROSA = '20';
+    public IGV_EXONERADO_TRANFERENCIA_GRATUITA = '21';
+    public IGV_INAFECTO_OPERACION_ONEROSA = '30';
+    public IGV_INAFECTO_RETIRO_POR_BONIFICACION = '31';
+    public IGV_INAFECTO_RETIRO = '32';
+    public IGV_INAFECTO_RETIRO_POR_MUESTRAS_MEDICAS = '33';
+    public IGV_INAFECTO_RETIRO_CONVENIO_COLECTIVO = '34';
+    public IGV_INAFECTO_RETIRO_POR_PREMIO = '35';
+    public IGV_INAFECTO_RETIRO_POR_PUBLICIDAD = '36';
+    public IGV_EXPORTACION = '40';
+
+
+}

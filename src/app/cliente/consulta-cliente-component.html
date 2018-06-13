@@ -33,8 +33,8 @@
       </div>
     </div>
   </nav>
-  <div class="full-page login-page" filter-color="black" data-image="assets/img/login2.jpg">
-    <!--   you can change the color of the filter page using: data-color="blue | purple | green | orange | red | rose " -->
+  <div id="full-page-login" class="full-page login-page" filter-color="black" data-image="assets/img/logos/default/login.jpg">
+   <!--   you can change the color of the filter page using: data-color="blue | purple | green | orange | red | rose " -->
     <div class="content">
       <div class="container">
         <div class="main-content">
@@ -173,3 +173,15 @@
     </div>
   </div>
 </div>
+<style type="text/css" style="display: none">
+  .login .navbar .navbar-brand {
+
+  background: url(./assets/img/logos/default/logo.jpg);
+  /*
+  background: url({{logoOrganizacion}});
+  */
+  width: 200px;
+  height: 82px;
+  background-size: contain;
+  }
+</style>

@@ -15,29 +15,30 @@
               </div>
             </div>
           </div>
-          <!-- <div class="row">
+          <div class="row">
             <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12 col-lg-offset-4">
               <span class="text-danger" *ngIf="deshabilitar | async">Cargando...</span>
             </div>
-          </div> -->
+          </div>
           <div class="row">
-            <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12 col-lg-offset-8">
-              <!-- <div class="dropdown col-xs-12 col-sm-6 col-md-4 col-lg-4 border" style="padding-right: 2px;">
-                <button class="dropdown-toggle btn btn-default btn-block" data-toggle="dropdown" style="padding-left: 17px;" [disabled]="deshabilitar | async">{{'descargar' | translate}} <b class="caret" ></b>
+            <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12 col-lg-offset-4">
+              <div class="dropdown col-xs-12 col-sm-4 col-md-4 col-lg-4 border">
+                <button class="dropdown-toggle btn btn-default btn-block" data-toggle="dropdown"
+                        style="padding-left: 17px;" [disabled]="deshabilitar | async">
+                  {{'descargar' | translate}}
+                  <b class="caret"></b>
                   <ul class="dropdown-menu">
-                    <li *ngFor="let archivo of tiposArchivos">
-                      <a (click)="guardarArchivo(archivo)">{{archivo.descripcion}}</a>
+                    <li *ngFor="let archivo of tiposArchivos" [class]="habilitarTipoArchivo(archivo) ? '' : 'disabled'">
+                      <a class="disabled" (click)="guardarArchivo(archivo, $event)">{{archivo.descripcion}}</a>
                     </li>
                   </ul>
                 </button>
-              </div> -->
-              <!-- <div class=" col-xs-12 col-sm-6 col-md-4 col-lg-4 border">
-                <button type="submit" class="btn btn-default btn-block" (click)="enviarCorreo()" [disabled]="deshabilitar | async"> {{'enviarCorreo' | translate}}</button>
-                <button type="submit" class="btn btn-default btn-block" (click)="enviarCorreo()"> {{'enviarCorreo' | translate}}</button>
-              </div> -->
-              <div class=" col-xs-12 col-sm-6 col-md-4 col-lg-4 border">
-                <!-- <button type="submit" class="btn btn-default btn-block" (click)="imprimir()"style="padding-left: 20px;" [disabled]="deshabilitar | async"> {{'imprimir' | translate}}</button> -->
-                <button type="submit" class="btn btn-default btn-block" (click)="imprimir()"style="padding-left: 20px;"> {{'imprimir' | translate}}</button>
+              </div>
+              <div class=" col-xs-12 col-sm-4 col-md-4 col-lg-4 border">
+                <button type="button" class="btn btn-default col-xs-12 col-sm-12 col-md-12 col-lg-12" (click)="enviarCorreo()" [disabled]="deshabilitar | async"> {{'enviarCorreo' | translate}}</button>
+              </div>
+              <div class=" col-xs-12 col-sm-4 col-md-4 col-lg-4 border">
+                <button type="button" class="btn btn-default col-xs-12 col-sm-12 col-md-12 col-lg-12" (click)="imprimir()"style="padding-left: 20px;" [disabled]="deshabilitar | async"> {{'imprimir' | translate}}</button>
               </div>
             </div>
           </div>

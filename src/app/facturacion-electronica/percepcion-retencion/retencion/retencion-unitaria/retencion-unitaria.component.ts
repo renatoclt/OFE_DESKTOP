@@ -12,7 +12,7 @@ import {RetencionpersiscabeceraService} from '../../services/retencionpersiscabe
 import {PrincipalRetencion} from '../../models/principal-retencion';
 import {EstadoArchivoService} from '../../../general/utils/estadoArchivo.service';
 import {EntidadService} from '../../../general/services/organizacion/entidad.service';
-import {Entidad, OrganizacionDTO} from '../../../general/models/organizacion/entidad';
+import {Entidad} from '../../../general/models/organizacion/entidad';
 import {HttpClient} from '@angular/common/http';
 import {PersistenciaEntidadService} from '../../services/persistencia.entidad.service';
 import {Serie} from '../../../general/models/configuracionDocumento/serie';
@@ -28,8 +28,6 @@ import {ValidadorPersonalizado} from '../../../general/services/utils/validadorP
 import {RefreshService} from '../../../general/services/refresh.service';
 import {PadreRetencionPercepcionService} from '../../services/padre-retencion-percepcion.service';
 import {ColumnaDataTable} from '../../../general/data-table/utils/columna-data-table';
-import { RetencionService } from '../../../general/services/comprobantes/retencion.service';
-import { retencionesService } from '../../../../service/retencionesservice';
 declare var swal: any;
 
 @Component({
@@ -77,8 +75,7 @@ export class RetencionUnitariaComponent implements OnInit, OnDestroy {
               private _tipos: TiposService,
               private _tablaMaestraService: TablaMaestraService,
               private Refresh: RefreshService,
-              private _padreRetencionPerpcionService: PadreRetencionPercepcionService ,
-              private _servicioRetencion: RetencionService ) {
+              private _padreRetencionPerpcionService: PadreRetencionPercepcionService) {
               this._padreRetencionPerpcionService.actualizarComprobante(this.route.snapshot.data['codigo'],
                 this.route.snapshot.data['mostrarCombo'], true);
                 this.retencioncab = new RetencionCabecera();
@@ -110,7 +107,7 @@ export class RetencionUnitariaComponent implements OnInit, OnDestroy {
     this.cargarProductoEditarLleno();
     this.cargarServiciosArranque();
     this.setTipoComprobante();
-    this.serieService.filtroSeries(localStorage.getItem('id_entidad'), this._tipos.TIPO_DOCUMENTO_RETENCION, this._tipos.TIPO_SERIE_OFFLINE.toString())
+    this.serieService.filtroSeries(localStorage.getItem('id_entidad'), this._tipos.TIPO_DOCUMENTO_RETENCION, this._tipos.TIPO_SERIE_ONLINE.toString())
       .subscribe(
         valor => {
           this.series = valor;
@@ -124,7 +121,6 @@ export class RetencionUnitariaComponent implements OnInit, OnDestroy {
   }
 
   public vistaprevia() {
-    this.guardarOrganizacion();
     this.fillProducto();
     this.RetencionCabecerapersistenciaService.setCabeceraRetencion(this.retencioncab);
     this.router.navigateByUrl('percepcion-retencion/retencion/crear/individual/vista-previa');
@@ -192,6 +188,11 @@ export class RetencionUnitariaComponent implements OnInit, OnDestroy {
 
   listarOrganizacionesDeAutcompletado(keyword: any) {
     if (keyword) {
+      if (this.entidad_uno && this.entidad_uno.denominacion !== keyword) {
+        this.productFormGroup.get('txtruc').reset();
+        this.productFormGroup.get('txtdireccionfiscal').reset();
+        this.productFormGroup.get('txtcorreo').reset();
+      }
       return this._entidadServices.buscarPorRazonSocial(keyword, '6');
     } else {
       return Observable.of([]);
@@ -240,41 +241,34 @@ export class RetencionUnitariaComponent implements OnInit, OnDestroy {
         if (listaEntidades != null) {
           listaEntidades.subscribe(
             data => {
-              if(data){
-                this.entidad_uno = data ? data : new Entidad();
-                this.productFormGroup.controls['razonsocial'].setValue( this.entidad_uno.denominacion);
-                this.productFormGroup.controls['txtdireccionfiscal'].setValue(this.entidad_uno.direccionFiscal);
-                this.productFormGroup.controls['txtcorreo'].setValue(this.entidad_uno.correoElectronico);
-                const condicion1 = this.entidad_uno.correoElectronico === '';
-                const condicion2 = this.entidad_uno.correoElectronico === '-';
-                const condicion3 = this.entidad_uno.correoElectronico === null;
-                const condicion4 = condicion1 || condicion2 || condicion3;
-                if ( condicion4 ) {
-                  this.productFormGroup.controls['txtcorreo'].enable();
-                  this.productFormGroup.controls['txtdireccionfiscal'].enable();
-                } else {
-                  this.productFormGroup.controls['txtcorreo'].disable();
-                } 
-                this._entidadPersistenciaService.setEntidad(this.entidad_uno);
-                setTimeout(function () {
-                  $('input').each(function () {
-                    $(this.parentElement).removeClass('is-empty');
-                  });
-                }, 200);
-                this.eliminarEstiloInput('razonsocial', 'is-empty');
-              }else{
+              this.entidad_uno = data ? data : new Entidad();
+              this.productFormGroup.controls['razonsocial'].setValue(this.entidad_uno.denominacion);
+              this.productFormGroup.controls['txtdireccionfiscal'].setValue(this.entidad_uno.direccionFiscal);
+              const condicion1 = this.entidad_uno.correoElectronico === '';
+              const condicion2 = this.entidad_uno.correoElectronico === '-';
+              const condicion3 = this.entidad_uno.correoElectronico === null;
+              const condicion4 = condicion1 || condicion2 || condicion3;
+
+              if ( condicion4 ) {
                 this.productFormGroup.controls['txtcorreo'].enable();
-                this.productFormGroup.controls['txtdireccionfiscal'].enable();
+              } else {
+                this.productFormGroup.controls['txtcorreo'].disable();
+                this.productFormGroup.controls['txtcorreo'].setValue(this.entidad_uno.correoElectronico);
               }
+              this._entidadPersistenciaService.setEntidad(this.entidad_uno);
+              setTimeout(function () {
+                $('input').each(function () {
+                  $(this.parentElement).removeClass('is-empty');
+                });
+              }, 200);
+              this.eliminarEstiloInput('razonsocial', 'is-empty');
             }
           );
         }
       } else {
-        if( !this.productFormGroup.controls['txtcorreo'].enabled && this.productFormGroup.controls['razonsocial'].value.toString().length < 1){
-          this.productFormGroup.controls['razonsocial'].reset();
-          this.productFormGroup.controls['txtcorreo'].reset();
-          this.productFormGroup.controls['txtdireccionfiscal'].reset();
-        }    
+        this.productFormGroup.controls['razonsocial'].reset();
+        this.productFormGroup.controls['txtcorreo'].reset();
+        this.productFormGroup.controls['txtdireccionfiscal'].reset();
       }
 
   }
@@ -282,13 +276,13 @@ export class RetencionUnitariaComponent implements OnInit, OnDestroy {
   cambioAutocomplete () {
     if ( typeof this.productFormGroup.get('razonsocial').value === 'object') {
       this.estadoautocomplete.next(true);
-    } 
-    // else {
-    //   this.productFormGroup.get('txtruc').reset();
-    //   this.productFormGroup.get('txtdireccionfiscal').reset();
-    //   this.productFormGroup.get('razonsocial').reset();
-    //   this.estadoautocomplete.next(false);
-    // }
+    } else {
+      this.productFormGroup.get('txtruc').reset();
+      this.productFormGroup.get('txtdireccionfiscal').reset();
+      this.productFormGroup.get('razonsocial').reset();
+      this.productFormGroup.get('txtcorreo').reset();
+      this.estadoautocomplete.next(false);
+    }
   }
 
   public eliminarEstiloInput(idHtml: string, estilo: string) {
@@ -319,7 +313,6 @@ export class RetencionUnitariaComponent implements OnInit, OnDestroy {
               this.productFormGroup.controls['txtruc'].setValue(this.entidad_uno.documento);
               this.productFormGroup.controls['txtdireccionfiscal'].setValue(this.entidad_uno.direccionFiscal);
               this.productFormGroup.controls['razonsocial'].setValue(this.entidad_uno.denominacion);
-              this.productFormGroup.controls['txtcorreo'].setValue(this.entidad_uno.correoElectronico);
               const condicion1 = this.entidad_uno.correoElectronico === '';
               const condicion2 = this.entidad_uno.correoElectronico === '-';
               const condicion3 = this.entidad_uno.correoElectronico === null;
@@ -346,7 +339,6 @@ export class RetencionUnitariaComponent implements OnInit, OnDestroy {
             }
           ),
           error => {
-            console.log('error ');
             if (error.status == 500) {
               swal({
                 type: 'error',
@@ -395,21 +387,11 @@ export class RetencionUnitariaComponent implements OnInit, OnDestroy {
   }
 
   agregarItem(agrego: boolean) {
-    this.guardarOrganizacion();
     this.fillProducto();
     this.RetencionCabecerapersistenciaService.setCabeceraRetencion(this.retencioncab);
     this.router.navigateByUrl('percepcion-retencion/retencion/crear/individual/agregar-item');
   }
 
-  guardarOrganizacion(){
-    let organizacion:  OrganizacionDTO = new OrganizacionDTO;
-    organizacion.correo = this.productFormGroup.controls['txtcorreo'].value;
-    organizacion.direccion = this.productFormGroup.controls['txtdireccionfiscal'].value;
-    organizacion.nombreComercial = this.productFormGroup.controls['razonsocial'].value;
-    organizacion.ruc = this.productFormGroup.controls['txtruc'].value; 
-    if(organizacion.ruc.toString().length > 10)
-      this._servicioRetencion.guardarOrganizacion(organizacion);
-  }
   ejecutarAccion(evento: [TipoAccion, Retencionebiz]) {
     const tipoAccion = evento[0];
     let producto: Retencionebiz = new Retencionebiz();
@@ -424,8 +406,4 @@ export class RetencionUnitariaComponent implements OnInit, OnDestroy {
         break;
     }
   }
-  actualizarCorreo(evento){
-    this.retencioncab.email = this.productFormGroup.controls['txtcorreo'].value;
-  }
-  
 }

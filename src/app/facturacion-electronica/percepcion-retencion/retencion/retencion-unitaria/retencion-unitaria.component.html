@@ -57,7 +57,6 @@
                    [list-formatter]="autocompleListFormatter"
                    [value-formatter]="autocompleListFormatter"
                    [loading-text]="'cargando' | translate"
-                   [accept-user-input]="true"
                    (valueChanged)="busqueda()"
                    (change)="cambioAutocomplete()"
                    min-chars=1
@@ -73,7 +72,7 @@
         <div class="col-xs-12 col-sm-4 col-md-4">
           <div class="form-group label-floating">
             <label class="control-label">{{'txtcorreo' | translate}} <span class="star">*</span> </label>
-            <input id="txtcorreo" formControlName="txtcorreo" class="form-control" autocomplete="off" type="email" (keyup)="actualizarCorreo($event)">
+            <input id="txtcorreo" formControlName="txtcorreo" class="form-control" autocomplete="off" type="email">
           </div>
         </div>
       </div>

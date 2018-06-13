@@ -1,23 +1,17 @@
-import {Injectable} from '@angular/core';
-import {Headers, Http, RequestOptions, Response} from '@angular/http';
+ import { Injectable } from '@angular/core';
+import { Http, Response, RequestOptions, Headers } from '@angular/http';
 import 'rxjs/add/operator/map'
-import {Observable} from 'rxjs/Observable';
+import { Observable } from 'rxjs/Observable';
 
-import {Guia} from "app/model/guia";
+import { Guia, Articulo } from "app/model/guia";
+import { ResponseError } from '../model/responseerror';
 /*import { Configuration } from '../app.constants';*/
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
-import {AppUtils} from "app/utils/app.utils";
-import {
-  URL_AGREGAR_GUIA,
-  URL_AGREGAR_GUIA_BORRADOR,
-  URL_DESCARTAR_GUIA_BORRADOR,
-  URL_DETALLE_GUIA,
-  URL_DETALLE_GUIA_BORRADOR,
-  URL_EXISTE_GUIA
-} from 'app/utils/app.constants';
+import { AppUtils } from "app/utils/app.utils";
+import {BASE_URL, URL_DETALLE_GUIA, URL_AGREGAR_GUIA_BORRADOR , URL_DETALLE_GUIA_BORRADOR, URL_AGREGAR_GUIA ,URL_DESCARTAR_GUIA_BORRADOR, URL_EXISTE_GUIA} from 'app/utils/app.constants';
 import {Usuario} from "app/model/usuario";
-import {ArchivoAdjunto, GDUPLOADMQ, GuiaDespacho, GuiaMS, ItemGuia} from "app/model/guiams";
+import {GuiaMS, GDUPLOADMQ, GuiaDespacho, ItemGuia, ArchivoAdjunto} from "app/model/guiams";
 import {TablaDeTabla} from "app/model/tabladetabla";
 
 declare var DatatableFunctions: any;
@@ -43,7 +37,7 @@ export class GuiaService {
     headers.append('Authorization', 'Bearer ' + localStorage.getItem('access_token'));
     headers.append('tipo_empresa', 'P');
     headers.append('org_id', localStorage.getItem('org_id'));
-
+    
     let items$ = this.http
       .get(this.urlGet + idRfq, { headers: this.getHeaders() })
       .map(this.extractData2)
@@ -52,22 +46,22 @@ export class GuiaService {
   }*/
 
   agregar(item: Guia): Observable<any> {
-debugger;
+//debugger;
         let headers = this.getHeaders();
 
     headers.append('tipo_empresa', 'P');
-
+ 
     let usuario:Usuario = JSON.parse(localStorage.getItem('usuarioActual'));
-
+    
     let guiaMS:GuiaMS = new GuiaMS();
-
+    
     guiaMS.GDUPLOADMQ = new GDUPLOADMQ();
     guiaMS.GDUPLOADMQ.RucProveedor = item.rucproveedor;
     guiaMS.GDUPLOADMQ.RazonSocialProveedor = item.razonsocialproveedor;
     guiaMS.GDUPLOADMQ.GuiaDespacho = [];
-
+    
     let guiaEntity:GuiaDespacho = new GuiaDespacho();
-
+    
     //let listUnidadMedida_V:TablaDeTabla[] = JSON.parse(localStorage.getItem('listUnidadMedidaConTipo_V'));
     //let listUnidadMedida_m:TablaDeTabla[] = JSON.parse(localStorage.getItem('listUnidadMedidaConTipo_m'));
     let listUnidadMedida:TablaDeTabla[] = JSON.parse(localStorage.getItem('listUnidadMedida'));
@@ -77,15 +71,15 @@ debugger;
     let listTransporteGuia:TablaDeTabla[] = JSON.parse(localStorage.getItem('listTransporteGuia'));
     let unidadMedida;
     let unidadMedidaVol;
-
-    debugger;
+    
+    //debugger;
     unidadMedida = listUnidadMedida.find(a => a.vc_DESC_CORTA == item.totalpesobrutound);
     unidadMedidaVol = listUnidadMedida.find(a => a.vc_DESC_CORTA == item.totalvolumenund);
 
     let motivoGuia = listMotivoGuia.find(a => a.vc_DESC_CORTA == item.motivoguia);
     let transporteGuia = listTransporteGuia.find(a => a.vc_DESC_CORTA == item.tipotransporte);
     let tipoDocIdentidad = listTipoDocIdentidad.find(a => a.vc_DESC_CORTA == item.tipodoctransporte);
-
+    
     guiaEntity.IdTablaPeso = "10000";
     guiaEntity.IdRegistroPeso = (unidadMedida == null ? "" : unidadMedida.vc_IDREGISTRO)
     guiaEntity.IdTablaPeso = "10000";
@@ -134,30 +128,37 @@ debugger;
     if (item.docadjuntos != null) {
       for (let docadjunto of item.docadjuntos) {
         let archivoAdjFactura: ArchivoAdjunto = new ArchivoAdjunto();
-
+        
         archivoAdjFactura.Nombre = docadjunto.nombre;
         archivoAdjFactura.Descripcion = docadjunto.descripcion;
         archivoAdjFactura.URL = docadjunto.url;
         guiaEntity.ArchivoAdjunto.push(archivoAdjFactura);
       }
     }
-
+ 
     if (item.articulos != null){
       for (let articulo of item.articulos) {
         let itemGuia: ItemGuia = new ItemGuia();
-
-        let unidadMedidaArticulo = listUnidadMedida.find(a => a.vc_ISO == articulo.unidadmedidadespacho);
-
+      
+        
+        
         itemGuia.IdOc = articulo.idoc;
+
+        /*
+        let unidadMedidaArticulo = listUnidadMedida.find(a => a.vc_ISO == articulo.unidadmedidadespacho);
         articulo.IdTablaUnidad = "10000";
         articulo.IdRegistroUnidad = (unidadMedidaArticulo == null ? "" : unidadMedidaArticulo.vc_IDREGISTRO);
+        */
 
         itemGuia.NumeroOrden = articulo.nrooc;
         itemGuia.NumeroParte = articulo.nroparte;
         itemGuia.DescripcionItem = articulo.descproducto;
         itemGuia.PesoNetoItem = articulo.pesoneto;
+        //itemGuia.IdTablaunidadMedida = articulo.IdTablaUnidad;
+        //itemGuia.IdRegistroUnidadMedida = articulo.IdRegistroUnidad;
         itemGuia.IdTablaunidadMedida = articulo.IdTablaUnidad;
         itemGuia.IdRegistroUnidadMedida = articulo.IdRegistroUnidad;
+
         itemGuia.IdProductoxOc = articulo.IdProductoOrden;
         itemGuia.NumeroItem = articulo.nroitem + "";
         itemGuia.NumeroItemOC = articulo.nroitemoc;
@@ -167,11 +168,11 @@ debugger;
         itemGuia.CantidadDespachada = articulo.cantidaddespachada;
         itemGuia.Destino = articulo.destino;
         itemGuia.UnidadMedidaItem = articulo.unidadmedidadespacho;
-
+    
         guiaEntity.ItemGuia.push(itemGuia);
       }
     }
-
+    
     guiaMS.GDUPLOADMQ.GuiaDespacho.push(guiaEntity);
     console.clear();
     console.log(JSON.stringify(guiaMS));
@@ -180,20 +181,20 @@ debugger;
       //.map(this.extractData)
       .catch(this.handleError);
   }
-
+  
   verificar_duplicados(numGuia: string, IdOrganizacionProveedora: string, IdOrganizacionCompradora: string): Observable<any> {
     let headers = this.getHeaders();
     headers.append('tipo_empresa', 'C');
     headers.append('org_id', localStorage.getItem('org_id'));
-
+    
     let items$ = this.http
       .get(URL_EXISTE_GUIA + "?NumeroGuia=" + numGuia + "&IdOrganizacionProveedora=" + IdOrganizacionProveedora + "&IdOrganizacionCompradora=" + IdOrganizacionCompradora, { headers: headers })
       .map(this.mapDuplicados)
       .catch(this.handleError);
-
+        
     return items$;
   }
-
+  
   private mapDuplicados(res: Response): any{
     let respuesta = {
       status: res ? res.status : -1,
@@ -203,16 +204,16 @@ debugger;
     let guia = res.json();
     return guia;
   }
-
+  
   guardar(item: Guia): Observable<any> {
     let headers = this.getHeaders();
 
     headers.append('tipo_empresa', 'P');
-
+ 
     let usuario:Usuario = JSON.parse(localStorage.getItem('usuarioActual'));
-
+    
     let guiaMS:GuiaMS = new GuiaMS();
-
+    
     //guiaMS.GDUPLOADMQ = new GDUPLOADMQ();
     item.estado = "Borrador";
     guiaMS.guia = item;
@@ -220,7 +221,7 @@ debugger;
     guiaMS.recurso = "guia";
     guiaMS.vc_numeroseguimiento = item.nroguia;
     guiaMS.session_id = localStorage.getItem('access_token');
-
+    
     /*
     guiaMS.GDUPLOADMQ.RucProveedor = item.rucproveedor;
     guiaMS.GDUPLOADMQ.RazonSocialProveedor = item.razonsocialproveedor;
@@ -228,19 +229,19 @@ debugger;
     */
     /*
     let guiaEntity:GuiaDespacho = new GuiaDespacho();
-
+    
     let listUnidadMedida:TablaDeTabla[] = JSON.parse(localStorage.getItem('listUnidadMedida'));
     //let listUnidadMedidaVol:TablaDeTabla[] = JSON.parse(localStorage.getItem('listUnidadMedida'));
     let listMotivoGuia:TablaDeTabla[] = JSON.parse(localStorage.getItem('listMotivoGuia'));
     let listTipoDocIdentidad:TablaDeTabla[] = JSON.parse(localStorage.getItem('listTipoDocIdentidad'));
     let listTransporteGuia:TablaDeTabla[] = JSON.parse(localStorage.getItem('listTransporteGuia'));
-
+    
     let unidadMedida = listUnidadMedida.find(a => a.vc_DESC_CORTA == item.totalpesobrutound);
     let unidadMedidaVol = listUnidadMedida.find(a => a.vc_DESC_CORTA == item.totalvolumenund);
     let motivoGuia = listMotivoGuia.find(a => a.vc_DESC_CORTA == item.motivoguia);
     let transporteGuia = listTransporteGuia.find(a => a.vc_DESC_CORTA == item.tipotransporte);
     let tipoDocIdentidad = listTipoDocIdentidad.find(a => a.vc_DESC_CORTA == item.tipodoctransporte);
-
+    
     guiaEntity.IdTablaPeso = "10000";
     guiaEntity.IdRegistroPeso = (unidadMedida == null ? "" : unidadMedida.vc_IDREGISTRO)
     guiaEntity.IdTablaPeso = "10000";
@@ -288,7 +289,7 @@ debugger;
       for (let articulo of item.articulos) {
         let itemGuia: ItemGuia = new ItemGuia();
         let unidadMedidaArticulo = listUnidadMedida.find(a => a.vc_ISO == articulo.unidadmedidadespacho);
-
+        
         itemGuia.IdOc = articulo.idoc;
         articulo.IdTablaUnidad = "10000";
         articulo.IdRegistroUnidad = (unidadMedidaArticulo == null ? "" : unidadMedidaArticulo.vc_IDREGISTRO);
@@ -310,7 +311,7 @@ debugger;
         guiaEntity.ItemGuia.push(itemGuia);
       }
     }
-
+    
     guiaMS.GDUPLOADMQ.GuiaDespacho.push(guiaEntity);
     */
     console.clear();
@@ -401,7 +402,7 @@ debugger;
           cantaceptadaorgcomp: item.CantidadAceptada ? item.CantidadAceptada : '',
           unidadmedidaorgcomp: item.Unidad ? item.Unidad : '',
           cantpendpedido: item.CantidadDespachada ? item.CantidadDespachada : '',
-          unidadmedidapedido: item.Unidad ? item.Unidad : '',
+          unidadmedidapedido: item.Unidad ? item.Unidad : '',         
           pesoneto: item.PesoNeto ? item.PesoNeto : '',
           unidadmedidapesoneto: item.UnidadPesoNeto ? item.UnidadPesoNeto : '',
           estado: item.Estado ? item.Estado : '',
@@ -415,7 +416,7 @@ debugger;
     if (objeto_json.data.Adjunto) {
       let index = 1;
       for (let adjunto of objeto_json.data.Adjunto) {
-
+       
 
         guia.docadjuntos.push({
           id:index++,
@@ -426,7 +427,7 @@ debugger;
         });
       }
     }
-
+    
     guia.docadjuntos.push({
       id:1,
       codigo: 1,
@@ -434,8 +435,8 @@ debugger;
       descripcion: '',
       url:'https://sab2md.blob.core.windows.net/temp/11844480-b7c0-4e40-849c-6d45ad68a0d1',
     });
-
-
+  
+   
     return guia;
     //return body.data || {};
   }
@@ -450,7 +451,7 @@ debugger;
     }*/
   private mapGuia(res: Response): Guia {
     //console.log('extractData2', res);
-
+    
     let respuesta = {
       status: res ? res.status : -1,
       statusText: res ? res.statusText : "ERROR",
@@ -458,16 +459,18 @@ debugger;
     }
 
     let objeto_json = res.json();
-
+    
     if (objeto_json.guia)
         return objeto_json.guia;
-
+        
     let nroguia = objeto_json.data.NroGuia;
     let parts = [];
     if (nroguia)
       parts = nroguia.split('-');
 
     let guia: Guia = {
+      idorgcompradora2: objeto_json.data.IdOrganizacionCompradora,
+
       id: objeto_json.data.IdGuia,
       nroguia: nroguia,
       nroguia1: parts.length > 0 ? parts[0] : '',
@@ -482,6 +485,7 @@ debugger;
       motivoguia: objeto_json.data.MotivoGuia,
       observaciones: objeto_json.data.Observacion,
       motivorechazosap: objeto_json.data.MotivoRechazoSAP,
+      motivoerrorsap: objeto_json.data.MotivoErrorSAP,
       tipodoctransporte: objeto_json.data.TipoDocumento,
       rucdnitransporte: objeto_json.data.NumDocumento,
       razonsocialnombretransporte: objeto_json.data.RazonSocialTransportista,
@@ -523,6 +527,7 @@ debugger;
           cantidadatendida: ('CantidadAtentida' in item) ? item.CantidadAtentida : '',
           precioitemoc: ('PrecioItemOc' in item) ? item.PrecioItemOc : '',
           subtotalitemoc: ('SubtotalItemOc' in item) ? item.SubtotalItemOc : '',
+          subtotalitemguia: ('SubtotalItemGuia' in item) ? item.SubtotalItemGuia : '',
           unidadmedidadespacho: item.UnidadDespacho ? item.UnidadDespacho : '', //FALTA
           pesoneto: item.PesoNeto ? item.PesoNeto : '',
           //unidadmedidapesoneto: item.UnidadPesoNeto ? item.UnidadPesoNeto : '',
@@ -530,31 +535,31 @@ debugger;
           preciototal: item.PrecioTotalProducto,
           preciounitario: item.PrecioProducto,
           CodigoGuiaERP: item.CodigoGuiaERP,
+          NumeroMaterial: item.NumeroMaterial,
           EjercicioGuia: item.EjercicioGuia,
           IdTablaUnidad: item.IdTablaUnidad,
           IdRegistroUnidad: item.IdRegistroUnidad,
           IdProdxGuia: item.IdProdxGuia
         }
-
         guia.articulos.push(p);
+        console.log(p);
       }
     }
     guia.docadjuntos = [];
     if (objeto_json.data.Adjuntos) {
-      let index = 1;
-      for (let adjunto of objeto_json.data.Adjuntos) {
-
-
-        guia.docadjuntos.push({
-          id: index++,
-          codigo: adjunto.IdArchivo ? adjunto.IdArchivo : '',
-          nombre: adjunto.Nombre ? adjunto.Nombre : '',
-          descripcion: adjunto.Descripcion ? adjunto.Descripcion : '',
-          url: adjunto.UrlTemporal ? adjunto.UrlTemporal : '',
-        });
-      }
+        let index = 1;
+        for (let adjunto of objeto_json.data.Adjuntos) {
+            guia.docadjuntos.push({
+              id: index++,
+              codigo: adjunto.IdArchivo ? adjunto.IdArchivo : '',
+              nombre: adjunto.Nombre ? adjunto.Nombre : '',
+              descripcion: adjunto.Descripcion ? adjunto.Descripcion : '',
+              url: adjunto.UrlTemporal ? adjunto.UrlTemporal : '',
+            });
+        }
     }
-console.log(JSON.stringify(guia));
+
+    console.log(JSON.stringify(guia));
     return guia;
     //return body.data || {};
   }
@@ -567,7 +572,7 @@ console.log(JSON.stringify(guia));
       id_doc:id,
     }
     let options = new RequestOptions({ headers: headers, body: body });
-
+   
     return this.http.delete(URL_DESCARTAR_GUIA_BORRADOR, options)
       //.map(this.extractData)
       .catch(this.handleError);
@@ -585,7 +590,7 @@ console.log(JSON.stringify(guia));
   }
   private handleError(error: Response | any) {
     console.error('handleError', error.message || error);
-    let  data= error ? error.json() || {} : {};
+    let  data= error ? error.json() || {} : {};     
     if (data && data.error && data.error === "invalid_token")
       DatatableFunctions.logout();
     return Observable.throw(error.message || error);

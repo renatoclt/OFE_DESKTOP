@@ -64,6 +64,8 @@ export class ComprobanteItemComponent implements OnInit, AfterViewInit {
     public item: Producto;
     public itemFormGroup: FormGroup;
 
+    public tipoItem: string;
+
     public unidadesDeMedida: BehaviorSubject<TablaMaestra[]> = new BehaviorSubject<TablaMaestra[]>([]);
     public tipoPrecioVentaUnitario: BehaviorSubject<TipoPrecioVenta[]> = new BehaviorSubject<TipoPrecioVenta[]>([]);
     public tipoCalculoIsc: BehaviorSubject<TipoCalculoIsc[]> = new BehaviorSubject<TipoCalculoIsc[]>([]);
@@ -275,6 +277,7 @@ export class ComprobanteItemComponent implements OnInit, AfterViewInit {
      */
     private obtenerParametros() {
         this.tipoAccion = this._route.snapshot.data['tipoAccion'];
+        this.tipoItem = this._route.snapshot.data['tipoItem'];
         this.tipoDocumento = this._route.snapshot.data['tipoDocumento'];
         let sub = this._route
             .params
@@ -411,7 +414,7 @@ export class ComprobanteItemComponent implements OnInit, AfterViewInit {
             ]),
             'txtDescripcion': new FormControl('', [
                 Validators.required,
-                Validators.pattern('[A-Za-z0-9áéíóúÁÉÍÓÚ/%.\\s-\'\"]+'),
+                Validators.pattern('[A-Za-z0-9áéíóúÁÉÍÓÚ/%.\\s-]+'),
                 Validators.minLength(1),
                 Validators.maxLength(250)
             ]),
@@ -809,7 +812,7 @@ export class ComprobanteItemComponent implements OnInit, AfterViewInit {
                     this.producto.codigoUnidadMedida = 'NIU';
                     this.producto.idRegistroUnidad = '0000001';
                     this.producto.idTablaUnidad = '10000';
-                
+
             // this.producto.codigoUnidadMedida = this.itemFormGroup.controls['cmbUnidadMedida'].value;
             // this.producto.detalle.unidadMedida = this.itemFormGroup.controls['cmbUnidadMedida'].value;
         }
@@ -956,7 +959,7 @@ export class ComprobanteItemComponent implements OnInit, AfterViewInit {
         console.log(producto);
         if (producto !== undefined) {
             this.itemFormGroup.get('txtDescripcion').setValue(producto.descripcion);
-            this.itemFormGroup.get('txtValorUnitario').setValue(this.formatearNumeroADecimales(parseInt(producto.precioUnitario)));
+            this.itemFormGroup.get('txtValorUnitario').setValue(this.formatearNumeroADecimales( producto.precioUnitario));
             let index: number;
             this.tipoCalculoIsc.subscribe(
                 data => {
@@ -970,7 +973,7 @@ export class ComprobanteItemComponent implements OnInit, AfterViewInit {
                     }
                 }
             );
-            this.itemFormGroup.get('txtIsc').setValue(this.formatearNumeroADecimales( parseInt(producto.montoIsc)));
+            this.itemFormGroup.get('txtIsc').setValue(this.formatearNumeroADecimales( producto.montoIsc));
             this.unidadesDeMedida.subscribe(
                 data => {
                     this.indice = data.findIndex(
@@ -995,8 +998,7 @@ export class ComprobanteItemComponent implements OnInit, AfterViewInit {
      */
     public listarProductosDeAutcompletado(keyword: any) {
         if (keyword) {
-            let data = this._productosService.buscarPorCodigo(keyword);
-            return data;
+            return this._productosService.buscarPorCodigo(keyword, this.tipoItem);
         } else {
             return Observable.of([]);
         }

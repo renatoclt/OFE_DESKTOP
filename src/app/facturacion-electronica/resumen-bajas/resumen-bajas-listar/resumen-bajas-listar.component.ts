@@ -105,7 +105,7 @@ export class ResumenBajasListarComponent {
     ];
     this.columnasTabla = [
       new ColumnaDataTable('ticket', 'vcParamTicket'),
-      new ColumnaDataTable('N° Comprobante', 'serieCorrelativo'),
+      new ColumnaDataTable('numeroComprobante', 'serieCorrelativo'),
       new ColumnaDataTable('fechaEmision', 'tsFechaemision'),
       new ColumnaDataTable('PDF', TipoAccion.DESCARGAR_PDF),
       new ColumnaDataTable('XML', TipoAccion.DESCARGAR_XML),
@@ -219,10 +219,10 @@ export class ResumenBajasListarComponent {
     this.tablaResumenBajas.cargarData();
   }
   limpiar() {
-    this.resumenBajasFormGroup.controls['estado'].enable();
+    // this.resumenBajasFormGroup.controls['estado'].enable();
     this.mostrarEstado = true;
     this.resumenBajasFormGroup.reset();
-    this.resumenBajasFormGroup.controls['estado'].setValue('');
+    // this.resumenBajasFormGroup.controls['estado'].setValue('');
     this.resumenBajasFormGroup.controls['fechaBajaDel'].setValue('');
     this.resumenBajasFormGroup.controls['fechaBajaAl'].setValue('');
     this.resumenBajasFormGroup.controls['ticket'].setValue('');

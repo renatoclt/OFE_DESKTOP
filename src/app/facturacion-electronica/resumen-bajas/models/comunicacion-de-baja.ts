@@ -10,5 +10,4 @@ export class ComunicacionDeBaja {
   correo: string;
   tipoSerie: number;
   detalleBaja: DetalleBajaConsulta[];
-  usuarioCreacion: string;
 }

@@ -79,7 +79,15 @@ export class EmpresaEmisoraComponent implements OnInit {
     this.ordenarPorElCampo = 'comprobante';
     this.idModal = 'id';
     this.accionesTabla = [
-      new Accion('subir', new Icono('file_upload', 'btn-info'), TipoAccion.SUBIR),
+      new Accion('subir', new Icono('file_upload', 'btn-info'), TipoAccion.SUBIR, 'id',
+        [
+          this._tiposService.TIPO_DOCUMENTO_FACTURA,
+          this._tiposService.TIPO_DOCUMENTO_BOLETA,
+          this._tiposService.TIPO_DOCUMENTO_NOTA_CREDITO,
+          this._tiposService.TIPO_DOCUMENTO_NOTA_DEBITO,
+          this._tiposService.TIPO_DOCUMENTO_PERCEPCION,
+          this._tiposService.TIPO_DOCUMENTO_RETENCION
+        ]),
       new Accion('descargar', new Icono('file_download', 'btn-info'), TipoAccion.DESCARGAR, 'plantillaInterfaz'),
       new Accion('agregar', new Icono('add_circle', 'btn-info'), TipoAccion.AGREGAR)
     ];
@@ -93,7 +101,7 @@ export class EmpresaEmisoraComponent implements OnInit {
     this._translateService.get('seleccionarPlantilla', {tipoArchivo: 'PFX'}).take(1).subscribe( traducir => seleccionarPlantillaPFX = traducir);
     this.tituloModalCertificado = seleccionarPlantillaPFX;
 
-    this.tiposArchivosPermitidosImagen = ['image/x-png', 'image/jpeg'];
+    this.tiposArchivosPermitidosImagen = ['image/png', 'image/jpeg'];
     this.tiposArchivosPermitidosCertificado = ['application/x-pkcs12'];
     this.tiposArchivosPermitidosGeneral = ['application/xml', 'text/xml'];
     this.archivoPlantillaSeleccionado = new BehaviorSubject(null);
@@ -175,86 +183,133 @@ export class EmpresaEmisoraComponent implements OnInit {
       if (listaEntidades != null) {
         listaEntidades.subscribe(
           data => {
-            this.entidad = data ? data : new Entidad();
-            this.empresaEmisoraFormGroup.controls['txtRuc'].setValue(this.entidad.documento);
-            this.empresaEmisoraFormGroup.controls['txtRazonSocial'].setValue(this.entidad.denominacion);
-            this.empresaEmisoraFormGroup.controls['txtNombreComercial'].setValue(this.entidad.nombreComercial);
-            this.empresaEmisoraFormGroup.controls['txtDomicilioFiscal'].setValue(this.entidad.direccionFiscal);
-            this.empresaEmisoraFormGroup.controls['txtCorreoElectronico'].setValue(this.entidad.correoElectronico);
-            this.empresaEmisoraFormGroup.controls['txtUsuarioSol'].setValue(this.entidad.solUsuario);
-            this.empresaEmisoraFormGroup.controls['txtClaveSol'].setValue(this.entidad.solClave);
-            this.empresaEmisoraFormGroup.controls['txtClaveCertificadoDigital'].setValue(this.entidad.certificadoDigitalClave);
-            this.empresaEmisoraFormGroup.controls['txtClaveLlave'].setValue(this.entidad.certificadoDigitalClaveLlave);
-            const habilitarNotificaciones = this.entidad.recibirNotificaciones === 'S' ? true : false;
-            this.empresaEmisoraFormGroup.controls['checkBoxRecibirNotificaciones'].setValue(habilitarNotificaciones);
-            this.nueva_imagen(this.entidad.logoCloud);
-            const factura = new ArchivoXml(
-              this._tiposService.TIPO_DOCUMENTO_FACTURA,
-              'Factura',
-              this.entidad.plantillaFacturaCloud,
-              this.entidad.plantillaFacturaInterfaz,
-              this.dataPipe.transform(this.entidad.plantillaFacturaTiempo, 'dd/MM/yyyy' ),
-              this.dataPipe.transform(this.entidad.plantillaFacturaTiempo, 'h:mm:ss' )
-            );
-            const boleta = new ArchivoXml(
-              this._tiposService.TIPO_DOCUMENTO_BOLETA,
-              'Boleta',
-              this.entidad.plantillaBoletaCloud,
-              this.entidad.plantillaBoletaInterfaz,
-              this.dataPipe.transform(this.entidad.plantillaBoletaTiempo, 'dd/MM/yyyy' ),
-              this.dataPipe.transform(this.entidad.plantillaBoletaTiempo, 'h:mm:ss' )
-            );
-            const notaCredito = new ArchivoXml(
-              this._tiposService.TIPO_DOCUMENTO_NOTA_CREDITO,
-              'Nota de Crédito',
-              this.entidad.plantillaNotaCreditoCloud,
-              this.entidad.plantillaNotaCreditoInterfaz,
-              this.dataPipe.transform(this.entidad.plantillaNotaCreditoTiempo, 'dd/MM/yyyy' ),
-              this.dataPipe.transform(this.entidad.plantillaNotaCreditoTiempo, 'h:mm:ss' )
-            );
-            const notaDebito = new ArchivoXml(
-              this._tiposService.TIPO_DOCUMENTO_NOTA_DEBITO,
-              'Nota de Débito',
-              this.entidad.plantillaNotaDebitoCloud,
-              this.entidad.plantillaNotaDebitoInterfaz,
-              this.dataPipe.transform(this.entidad.plantillaNotaDebitoTiempo, 'dd/MM/yyyy' ),
-              this.dataPipe.transform(this.entidad.plantillaNotaDebitoTiempo, 'h:mm:ss' )
-            );
-            const retencion = new ArchivoXml(
-              this._tiposService.TIPO_DOCUMENTO_RETENCION,
-              'Retención',
-              this.entidad.plantillaRetencionCloud,
-              this.entidad.plantillaRetencionInterfaz,
-              this.dataPipe.transform(this.entidad.plantillaRetencionTiempo, 'dd/MM/yyyy' ),
-              this.dataPipe.transform(this.entidad.plantillaRetencionTiempo, 'h:mm:ss' )
-            );
-            const percepcion = new ArchivoXml(
-              this._tiposService.TIPO_DOCUMENTO_PERCEPCION,
-              'Percepción',
-              this.entidad.plantillaPercepcionCloud,
-              this.entidad.plantillaPercepcionInterfaz,
-              this.dataPipe.transform(this.entidad.plantillaPercepcionTiempo, 'dd/MM/yyyy' ),
-              this.dataPipe.transform(this.entidad.plantillaPercepcionTiempo, 'h:mm:ss' )
-             );
-            this.tabla.insertarData(
-              [
-                factura,
-                boleta,
-                notaCredito,
-                notaDebito,
-                retencion,
-                percepcion
-              ]
-            );
-            this._estilosService.eliminarEstiloInput('txtRuc', 'is-empty');
-            this._estilosService.eliminarEstiloInput('txtRazonSocial', 'is-empty');
-            this._estilosService.eliminarEstiloInput('txtNombreComercial', 'is-empty');
-            this._estilosService.eliminarEstiloInput('txtDomicilioFiscal', 'is-empty');
-            this._estilosService.eliminarEstiloInput('txtCorreoElectronico', 'is-empty');
-            this._estilosService.eliminarEstiloInput('txtUsuarioSol', 'is-empty');
-            this._estilosService.eliminarEstiloInput('txtClaveSol', 'is-empty');
-            this._estilosService.eliminarEstiloInput('txtClaveCertificadoDigital', 'is-empty');
-            this._estilosService.eliminarEstiloInput('txtClaveLlave', 'is-empty');
+            if (data) {
+              this.entidad = data ? data : new Entidad();
+              this.empresaEmisoraFormGroup.controls['txtRuc'].setValue(this.entidad.documento);
+              this.empresaEmisoraFormGroup.controls['txtRazonSocial'].setValue(this.entidad.denominacion);
+              this.empresaEmisoraFormGroup.controls['txtNombreComercial'].setValue(this.entidad.nombreComercial);
+              this.empresaEmisoraFormGroup.controls['txtDomicilioFiscal'].setValue(this.entidad.direccionFiscal);
+              this.empresaEmisoraFormGroup.controls['txtCorreoElectronico'].setValue(this.entidad.correoElectronico);
+              this.empresaEmisoraFormGroup.controls['txtUsuarioSol'].setValue(this.entidad.solUsuario);
+              this.empresaEmisoraFormGroup.controls['txtClaveSol'].setValue(this.entidad.solClave);
+              this.empresaEmisoraFormGroup.controls['txtClaveCertificadoDigital'].setValue(this.entidad.certificadoDigitalClave);
+              this.empresaEmisoraFormGroup.controls['txtClaveLlave'].setValue(this.entidad.certificadoDigitalClaveLlave);
+              const habilitarNotificaciones = this.entidad.recibirNotificaciones === 'S' ? true : false;
+              this.empresaEmisoraFormGroup.controls['checkBoxRecibirNotificaciones'].setValue(habilitarNotificaciones);
+              this.nueva_imagen(this.entidad.logoCloud);
+              const factura = new ArchivoXml(
+                this._tiposService.TIPO_DOCUMENTO_FACTURA,
+                'Factura',
+                this.entidad.plantillaFacturaCloud,
+                this.entidad.plantillaFacturaInterfaz,
+                this.dataPipe.transform(this.entidad.plantillaFacturaTiempo, 'dd/MM/yyyy' ),
+                this.dataPipe.transform(this.entidad.plantillaFacturaTiempo, 'h:mm:ss' )
+              );
+              const boleta = new ArchivoXml(
+                this._tiposService.TIPO_DOCUMENTO_BOLETA,
+                'Boleta',
+                this.entidad.plantillaBoletaCloud,
+                this.entidad.plantillaBoletaInterfaz,
+                this.dataPipe.transform(this.entidad.plantillaBoletaTiempo, 'dd/MM/yyyy' ),
+                this.dataPipe.transform(this.entidad.plantillaBoletaTiempo, 'h:mm:ss' )
+              );
+              const notaCredito = new ArchivoXml(
+                this._tiposService.TIPO_DOCUMENTO_NOTA_CREDITO,
+                'Nota de Crédito',
+                this.entidad.plantillaNotaCreditoCloud,
+                this.entidad.plantillaNotaCreditoInterfaz,
+                this.dataPipe.transform(this.entidad.plantillaNotaCreditoTiempo, 'dd/MM/yyyy' ),
+                this.dataPipe.transform(this.entidad.plantillaNotaCreditoTiempo, 'h:mm:ss' )
+              );
+              const notaDebito = new ArchivoXml(
+                this._tiposService.TIPO_DOCUMENTO_NOTA_DEBITO,
+                'Nota de Débito',
+                this.entidad.plantillaNotaDebitoCloud,
+                this.entidad.plantillaNotaDebitoInterfaz,
+                this.dataPipe.transform(this.entidad.plantillaNotaDebitoTiempo, 'dd/MM/yyyy' ),
+                this.dataPipe.transform(this.entidad.plantillaNotaDebitoTiempo, 'h:mm:ss' )
+              );
+              const retencion = new ArchivoXml(
+                this._tiposService.TIPO_DOCUMENTO_RETENCION,
+                'Retención',
+                this.entidad.plantillaRetencionCloud,
+                this.entidad.plantillaRetencionInterfaz,
+                this.dataPipe.transform(this.entidad.plantillaRetencionTiempo, 'dd/MM/yyyy' ),
+                this.dataPipe.transform(this.entidad.plantillaRetencionTiempo, 'h:mm:ss' )
+              );
+              const percepcion = new ArchivoXml(
+                this._tiposService.TIPO_DOCUMENTO_PERCEPCION,
+                'Percepción',
+                this.entidad.plantillaPercepcionCloud,
+                this.entidad.plantillaPercepcionInterfaz,
+                this.dataPipe.transform(this.entidad.plantillaPercepcionTiempo, 'dd/MM/yyyy' ),
+                this.dataPipe.transform(this.entidad.plantillaPercepcionTiempo, 'h:mm:ss' )
+              );
+              const resumenBajasBolestasFacturasNotas = new ArchivoXml(
+                this._tiposService.TIPO_DOCUMENTO_COMUNICACION_BAJA_FACTURA_BOLETA_NOTAS,
+                'Resumen Bajas Boletas/Facturas/Notas',
+                null,
+                null,
+                null,
+                null
+              );
+              const resumenDiarioBoletas = new ArchivoXml(
+                this._tiposService.TIPO_DOCUMENTO_RESUMEN_BOLETAS,
+                'Resumen Diario Boletas',
+                null,
+                null,
+                null,
+                null
+              );
+              const resumenBajasPercepcionRetencion = new ArchivoXml(
+                this._tiposService.TIPO_DOCUMENTO_COMUNICACION_BAJA_RETENCIONES_PERCEPCIONES,
+                'Resumen Bajas Percepción/Retención',
+                null,
+                null,
+                null,
+                null
+              );
+              this.tabla.insertarData(
+                [
+                  factura,
+                  boleta,
+                  notaCredito,
+                  notaDebito,
+                  retencion,
+                  percepcion,
+                  resumenBajasBolestasFacturasNotas,
+                  resumenBajasPercepcionRetencion,
+                  resumenDiarioBoletas
+                ]
+              );
+              if (this.entidad.documento) {
+                this._estilosService.eliminarEstiloInput('txtRuc', 'is-empty');
+              }
+              if (this.entidad.denominacion) {
+                this._estilosService.eliminarEstiloInput('txtRazonSocial', 'is-empty');
+              }
+              if (this.entidad.nombreComercial) {
+                this._estilosService.eliminarEstiloInput('txtNombreComercial', 'is-empty');
+              }
+              if (this.entidad.direccionFiscal) {
+                this._estilosService.eliminarEstiloInput('txtDomicilioFiscal', 'is-empty');
+              }
+              if (this.entidad.correoElectronico) {
+                this._estilosService.eliminarEstiloInput('txtCorreoElectronico', 'is-empty');
+              }
+              if (this.entidad.solUsuario) {
+                this._estilosService.eliminarEstiloInput('txtUsuarioSol', 'is-empty');
+              }
+              if (this.entidad.solClave) {
+                this._estilosService.eliminarEstiloInput('txtClaveSol', 'is-empty');
+              }
+              if (this.entidad.certificadoDigitalClave) {
+                this._estilosService.eliminarEstiloInput('txtClaveCertificadoDigital', 'is-empty');
+              }
+              if (this.entidad.certificadoDigitalClaveLlave) {
+                this._estilosService.eliminarEstiloInput('txtClaveLlave', 'is-empty');
+              }
+            }
           }
         );
       }
@@ -272,7 +327,7 @@ export class EmpresaEmisoraComponent implements OnInit {
         this.irASeries(archivo.id);
         break;
       case TipoAccion.DESCARGAR:
-        this.archivos.downloadArchivo(archivo.plantillaCloud);
+        this.archivos.downloadArchivo(archivo.plantillaInterfaz);
         break;
       case TipoAccion.SUBIR:
         this.abrirModalPlantilla(archivo.comprobante, archivo.id);
@@ -362,12 +417,15 @@ export class EmpresaEmisoraComponent implements OnInit {
             break;
         }
         that.organizaciones.actualizar_entidad(archivoEntrada).subscribe(
-          data => {
-            that.plantillaFormGroup.reset();
-            that.archivoPlantillaSeleccionado.next(null);
-            setTimeout(function () {
-              that.busquedaruc();
-            }, 3000);
+          data2 => {
+            if (data2) {
+              that.plantillaFormGroup.reset();
+              that.archivoPlantillaSeleccionado.next(null);
+              setTimeout(function () {
+                that.busquedaruc();
+              }, 3000);
+              $('#' + that.idModal).modal('hide');
+            }
           },
           error => {
             console.log(error);
@@ -391,6 +449,7 @@ export class EmpresaEmisoraComponent implements OnInit {
         archivoBase64img = archivoReaderCertificado.result.split(',')[1];
         const documento: string = localStorage.getItem('org_ruc');
         const data: string = archivoBase64img;
+        console.log('---entrando imagen', archivoEntrada);
         archivoEntrada.cargarLogo(documento, data);
       };
     }
@@ -398,15 +457,18 @@ export class EmpresaEmisoraComponent implements OnInit {
 
   public cargarCertificadoDigital(archivoEntrada: ArchivoSubir) {
     if (this.certificadoSeleccionado.value) {
+      console.log(this.certificadoSeleccionado.value);
       const archivoReaderCertificado = new FileReader();
       const archivoCertificado = this.certificadoSeleccionado.value[0];
       archivoReaderCertificado.readAsDataURL(archivoCertificado);
+      console.log( archivoReaderCertificado.result.split(',')[1]);
       let archivoBase64img = '';
 
       archivoReaderCertificado.onload = function (event) {
         archivoBase64img = archivoReaderCertificado.result.split(',')[1];
         const documento: string = localStorage.getItem('org_ruc');
         const data: string = archivoBase64img;
+        console.log('---entrando certificado', archivoEntrada);
         archivoEntrada.cargarCertificado(documento, data);
       };
     }
@@ -430,22 +492,28 @@ export class EmpresaEmisoraComponent implements OnInit {
     this.cargarImagen(archivoEntrada);
     this.cargarCertificadoDigital(archivoEntrada);
     const that = this;
-    this.organizaciones.actualizar_entidad(archivoEntrada).subscribe(
-      data => {
-        this.imagenFormGroup.reset();
-        this.certificadoFormGroup.reset();
+    setTimeout(
+      () => {
+        console.log('---entrando total', archivoEntrada)
+        this.organizaciones.actualizar_entidad(archivoEntrada).subscribe(
+          data => {
+            if (data) {
+              this.imagenFormGroup.reset();
+              this.certificadoFormGroup.reset();
 
-        this.certificadoSeleccionado.next(null);
-        this.archivoPlantillaSeleccionado.next(null);
-        setTimeout(function () {
-          that.busquedaruc();
-        }, 3000);
-      },
-      error => {
-        console.log(error);
-      }
+              this.certificadoSeleccionado.next(null);
+              this.logoSeleccionado.next(null);
+              // setTimeout(function () {
+                that.busquedaruc();
+              // }, 3000);
+            }
+          },
+          error => {
+            console.log(error);
+          }
 
+        );
+      }, 1000
     );
   }
-
 }

@@ -20,7 +20,7 @@ export class ParametrosService {
     this.pathSearch = '/search';
     this.pathDominios = '/dominios';
 
-    this.urlParamatroByIdParametro = this._servidores.HOSTLOCAL + this.pathParametros + this.pathSearch + this.pathDominios;
+    this.urlParamatroByIdParametro = this._servidores.PARMQRY + this.pathParametros + this.pathSearch + this.pathDominios;
   }
   public obtenerParametrosPorId( id: number ): BehaviorSubject<Parametros[]> {
     const listaParametros: BehaviorSubject<Parametros[]> = new BehaviorSubject<Parametros[]>([]);

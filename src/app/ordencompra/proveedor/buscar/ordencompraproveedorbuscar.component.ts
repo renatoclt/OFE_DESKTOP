@@ -1,16 +1,17 @@
-import {AfterViewInit, ChangeDetectorRef, Component, OnChanges, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import { Component, OnInit, OnChanges, AfterViewInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 
 
-import {OrdenCompraBuscar, OrdenCompraFiltros} from '../../../model/ordencompra';
 
-import {AppUtils} from "../../../utils/app.utils";
-import {MasterService} from '../../../service/masterservice';
-import {ComboItem} from "app/model/comboitem";
+import { OrdenCompraBuscar, OrdenCompraFiltros } from '../../../model/ordencompra';
+
+import { AppUtils } from "../../../utils/app.utils";
+import { MasterService } from '../../../service/masterservice';
+import { ComboItem } from "app/model/comboitem";
 import {URL_BUSCAR_OC} from 'app/utils/app.constants';
-import {Boton} from 'app/model/menu';
-import {LoginService} from '../../../service/login.service';
-
+import { Boton } from 'app/model/menu';
+import { ChangeDetectorRef } from '@angular/core';
+import { LoginService } from '../../../service/login.service';
 declare interface DataTable {
   headerRow: string[];
   footerRow: string[];
@@ -46,19 +47,19 @@ export class OrdenCompraProveedorBuscarComponent implements OnInit, AfterViewIni
     this.util = new AppUtils(this.router, this._masterService);
   }
 
-
+  
   obtenerBotones() {
-
+    
     let botones = this._securityService.ObtenerBotonesCache(this.url_main_module_page) as Boton[];
     if (botones) {
-
+    
       this.configurarBotones(botones);
     }
     else {
-
+  
       this._securityService.obtenerBotones(this.url_main_module_page).subscribe(
         botones => {
-
+        
           oOrdenCompraProveedorBuscarComponent.configurarBotones(botones);
           oOrdenCompraProveedorBuscarComponent._securityService.guardarBotonesLocalStore(this.url_main_module_page, botones);
         },
@@ -69,13 +70,13 @@ export class OrdenCompraProveedorBuscarComponent implements OnInit, AfterViewIni
 
   }
   configurarBotones(botones: Boton[]) {
-
+   
     if (botones && botones.length > 0) {
       this.botonBuscar = botones.find(a => a.nombre === 'buscar') ? botones.find(a => a.nombre === 'buscar') : this.botonBuscar;
       this.botonDetalle = botones.find(a => a.nombre === 'detalle') ? botones.find(a => a.nombre === 'detalle') : this.botonDetalle;
-
+      
     }
-
+   
   }
   validarfiltros() {
     if (this.filtro.material == false && this.filtro.servicio == false) {
@@ -112,8 +113,8 @@ export class OrdenCompraProveedorBuscarComponent implements OnInit, AfterViewIni
     if (this.filtro.fechacreacioninicio != null && this.filtro.fechacreacioninicio.toString() != "" && this.filtro.fechacreacionfin != null && this.filtro.fechacreacionfin.toString() != "") {
       let fechacreacioninicio = DatatableFunctions.ConvertStringToDatetime(oOrdenCompraProveedorBuscarComponent.filtro.fechacreacioninicio);
       let fechacreacionfin = DatatableFunctions.ConvertStringToDatetime(oOrdenCompraProveedorBuscarComponent.filtro.fechacreacionfin);
-
-
+      
+      
 
       if(moment(fechacreacionfin).diff(fechacreacioninicio,'days')>30){
 
@@ -169,6 +170,7 @@ export class OrdenCompraProveedorBuscarComponent implements OnInit, AfterViewIni
   filtroDefecto() {
     let fechacreacioni = new Date();
     fechacreacioni.setDate(fechacreacioni.getDate() - 30);
+    console.log(fechacreacioni)
     this.filtro = {
 
       nroordencompra: '',
@@ -187,6 +189,7 @@ export class OrdenCompraProveedorBuscarComponent implements OnInit, AfterViewIni
 
 
   ngOnInit() {
+    
 
     oOrdenCompraProveedorBuscarComponent = this;
 
@@ -194,6 +197,7 @@ export class OrdenCompraProveedorBuscarComponent implements OnInit, AfterViewIni
       oOrdenCompraProveedorBuscarComponent.listEstadoCombo = data;
     });
     this.filtroDefecto();
+    console.log(this.filtro)
 
   }
 
@@ -207,7 +211,7 @@ export class OrdenCompraProveedorBuscarComponent implements OnInit, AfterViewIni
   }
   ngAfterViewChecked()
   {
-
+    
     this.cdRef.detectChanges();
   }
 
@@ -235,9 +239,9 @@ function cargarDataTable() {
     order: [[8, "desc"]],
     searching: false,
     serverSide: true,
-
+  
     ajax: {
-
+      
       beforeSend: function (request) {
         if(!oOrdenCompraProveedorBuscarComponent.util.tokenValid()){
           return;
@@ -318,15 +322,15 @@ function cargarDataTable() {
         targets: 5
       },
       {
-
+        
                 render: function (data, type, row) {
-
+        
                   //return data +' ('+ row[3]+')';
                   return row.MonedaOrden + ' ' + DatatableFunctions.FormatNumber(row.ValorTotal);
                 },
                 targets: 7
               },
-
+    
       {
 
         render: function (data, type, row) {

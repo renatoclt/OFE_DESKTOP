@@ -9,7 +9,7 @@ import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Subscription} from 'rxjs/Subscription';
 import {SpinnerService} from '../../../../service/spinner.service';
 import {TiposService} from '../../../general/utils/tipos.service';
-import {TipoArchivo, TIPOS_ARCHIVOS} from '../../../general/models/archivos/tipoArchivo';
+import {TIPO_ARCHIVO_PDF, TipoArchivo, TIPOS_ARCHIVOS} from '../../../general/models/archivos/tipoArchivo';
 import {ArchivoService} from '../../../general/services/archivos/archivo.service';
 import {CorreoService} from '../../../general/services/correo/correo.service';
 import {TranslateService} from '@ngx-translate/core';
@@ -161,6 +161,7 @@ export class ComprobanteVisualizarNotaCreditoDebitoComponent implements OnInit, 
               ' screenY = 50, width = 800, height = 800';
             const htmlPop = '<embed width=100% height=100% type="application/pdf" src="data:application/pdf;base64,' + data + '"> </embed>';
             const printWindow = window.open('', 'PDF', winparams);
+            printWindow.document.close();
             printWindow.document.write(htmlPop);
           }
         }
@@ -235,7 +236,20 @@ export class ComprobanteVisualizarNotaCreditoDebitoComponent implements OnInit, 
     });
   }
 
-  guardarArchivo(archivo: TipoArchivo) {
-    this._archivoService.descargararchivotipo(this.comprobante.value.inIdcomprobantepago, archivo.idArchivo);
+  guardarArchivo(archivo: TipoArchivo, event: Event) {
+    if (event.target['parentElement'].className !== 'disabled') {
+      this._archivoService.descargararchivotipo(this.comprobante.value.inIdcomprobantepago, archivo.idArchivo);
+    }
+  }
+
+  habilitarTipoArchivo(archivo: TipoArchivo) {
+    if (
+      this.comprobante.value &&
+      Number(this.comprobante.value.chEstadocomprobantepago) === this._tiposService.TIPO_ESTADO_PENDIENTE_DE_ENVIO &&
+      archivo.idArchivo !== TIPO_ARCHIVO_PDF.idArchivo
+    ) {
+      return false;
+    }
+    return true;
   }
 }

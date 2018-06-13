@@ -1,15 +1,16 @@
-import {AfterViewInit, ChangeDetectorRef, Component, OnChanges, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {GuiaBuscar, GuiaFiltros} from '../../../model/guia';
-import {AppUtils} from "../../../utils/app.utils";
-import {MasterService} from '../../../service/masterservice';
-import {GuiaService} from '../../../service/guiaservice';
+import { Component, OnInit, OnChanges, AfterViewInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
+import { GuiaBuscar, GuiaFiltros } from '../../../model/guia';
+import { AppUtils } from "../../../utils/app.utils";
+import { MasterService } from '../../../service/masterservice';
+import { GuiaService } from '../../../service/guiaservice';
 
-import {ComboItem} from "app/model/comboitem";
-import {URL_BUSCAR_GUIA, URL_BUSCAR_GUIA_BORRADOR} from 'app/utils/app.constants';
+import { ComboItem } from "app/model/comboitem";
+import { URL_BUSCAR_GUIA, URL_BUSCAR_GUIA_BORRADOR } from 'app/utils/app.constants';
 
-import {LoginService} from '../../../service/login.service';
-import {Boton} from 'app/model/menu';
+import { LoginService } from '../../../service/login.service';
+import { Boton } from 'app/model/menu';
+import { ChangeDetectorRef } from '@angular/core';
 
 declare interface DataTable {
   headerRow: string[];
@@ -31,7 +32,7 @@ export class GuiaProveedorBuscarComponent implements OnInit, AfterViewInit {
   public dtGuia: DataTable;
   public resultados: GuiaBuscar[];
   public filtro: GuiaFiltros;
-
+  
   public url_main_module_page = '/guia/proveedor/buscar';
   public botonBuscar: Boton = new Boton();
   public botonDetalle: Boton = new Boton();
@@ -85,6 +86,30 @@ export class GuiaProveedorBuscarComponent implements OnInit, AfterViewInit {
     this.filtro.nrooc = this.filtro.nrooc.trim();
     this.filtro.nroerp = this.filtro.nroerp.trim();
 
+
+
+    let regex = /^[0-9]*$/;
+      if (!regex.test(this.filtro.nroerp) || !regex.test(this.filtro.nrooc)) {
+        swal({
+          html: " <p class= text-center> Solo se aceptan caracteres de tipo numérico </p>",
+          type: 'warning',
+          buttonsStyling: false,
+          confirmButtonClass: "btn btn-warning"
+        });
+        return false;
+      }
+
+      /*if (this.filtro.nroguia == " " && this.filtro.nrooc== "") {
+        swal({
+          text: "Se requiere al menos el numero de Guía o de Orden de Compra",
+          type: 'warning',
+          buttonsStyling: false,
+          confirmButtonClass: "btn btn-warning"
+        });
+        return false;
+      }*/
+      
+      /*
     if (this.filtro.nroguia == "" && this.filtro.nrooc == "") {
       if (this.filtro.fechaemisioninicio == null || this.filtro.fechaemisioninicio.toString() == "") {
         swal({
@@ -95,16 +120,7 @@ export class GuiaProveedorBuscarComponent implements OnInit, AfterViewInit {
         });
         return false;
       }
-      if (this.filtro.fechaemisionfin == null || this.filtro.fechaemisionfin.toString() == "") {
-        swal({
-          text: "Fecha de Emisión fin es un campo requerido.",
-          type: 'warning',
-          buttonsStyling: false,
-          confirmButtonClass: "btn btn-warning"
-        });
-        return false;
-
-      }
+    }*/
 
       if (this.filtro.fechaemisioninicio != null && this.filtro.fechaemisioninicio.toString() != "" && this.filtro.fechaemisionfin != null && this.filtro.fechaemisionfin.toString() != "") {
         let fechaemisioninicio = DatatableFunctions.ConvertStringToDatetime(oGuiaBuscarComponent.filtro.fechaemisioninicio);
@@ -137,7 +153,7 @@ export class GuiaProveedorBuscarComponent implements OnInit, AfterViewInit {
 
           return false;
         }
-      }
+      
     }
     return true;
   }
@@ -338,7 +354,7 @@ function cargarDataTable() {
 
 
         }
-        d.column_names = '[CodigoGuia,NumeroGuia,FechaEmision,FechaInicioTraslado,FechaEstimadaArribo,RazonSocialCliente,RazonSocialProveedor,Estado,DocumentoMaterial,MotivoRechazoSAP]';
+        d.column_names = '[CodigoGuia,NumeroGuia,FechaEmision,FechaInicioTraslado,FechaEstimadaArribo,RazonSocialCliente,RazonSocialProveedor,Estado,DocumentoMaterial,MotivoRechazoSAP,MotivoErrorSAP]';
 
       }
     },
@@ -371,12 +387,17 @@ function cargarDataTable() {
       },
       {
         render: function (data, type, row) {
-          if( (typeof row.MotivoRechazoSAP === "undefined") || (row.MotivoRechazoSAP.trim().length === 0) )
-            return row.DocumentoMaterial
-          else
-            return `<div class="text-center">
-                      <button class="btn btn-simple" style="color:red;" onclick='swal({ title:"Error SAP", text: "`+row.MotivoRechazoSAP+`",type: "error", buttonsStyling: false, confirmButtonClass: "btn btn-danger", confirmButtonColor: "#ec6c62"});'>Error</button>
-                    </div>`;
+          if(!((typeof row.MotivoRechazoSAP === "undefined") || (row.MotivoRechazoSAP.trim().length === 0)))
+              return `<div class="text-center">
+              <button class="btn btn-simple" style="color:red;" onclick='swal({ title:"Documento Rechazado", text: "`+row.MotivoRechazoSAP+`", buttonsStyling: false, confirmButtonClass: "btn btn-danger", confirmButtonColor: "#ec6c62"});'>Rechazo</button>
+              </div>`;
+
+          if(!((typeof row.MotivoErrorSAP === "undefined") || (row.MotivoErrorSAP.trim().length === 0)))          
+              return `<div class="text-center">
+              <button class="btn btn-simple" style="color:red;" onclick='swal({ title:"Error SAP", text: "`+row.MotivoErrorSAP+`", buttonsStyling: false, confirmButtonClass: "btn btn-danger", confirmButtonColor: "#ec6c62"});'>Error</button>
+              </div>`;
+
+          return row.DocumentoMaterial
         },
         targets: 2,
       },

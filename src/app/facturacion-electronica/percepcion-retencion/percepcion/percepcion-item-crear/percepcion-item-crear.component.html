@@ -31,6 +31,9 @@
               <div class="row" *ngIf="!itemFormGroup.get('txtSerieComprobante').valid && itemFormGroup.get('txtSerieComprobante').touched">
                 <div class="col-md-12">
                   <span *ngIf="itemFormGroup.controls['txtSerieComprobante'].hasError('required')" class="text-danger">{{'campoRequerido' | translate}}</span>
+                  <span *ngIf="itemFormGroup.controls['txtSerieComprobante'].hasError('pattern')"   class="text-danger">{{'formatoInvalido' | translate}}</span>
+                  <span *ngIf="itemFormGroup.controls['txtSerieComprobante'].hasError('minlength')" class="text-danger">{{'minimoDigitos' | translate:{digito:'4'} }}</span>
+                  <span *ngIf="itemFormGroup.controls['txtSerieComprobante'].hasError('maxlength')" class="text-danger">{{'maximoDigitos' | translate:{digito:'4'} }}</span>
                 </div>
               </div>
             </div>

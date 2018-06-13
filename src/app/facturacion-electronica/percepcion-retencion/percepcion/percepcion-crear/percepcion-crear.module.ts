@@ -17,6 +17,7 @@ import {Ng2AutoCompleteModule} from 'ng2-auto-complete';
 import {CatalogoDocumentoIdentidadService} from '../../../general/utils/catalogo-documento-identidad.service';
 import {PersistenciaDatosService} from '../../../general/services/utils/persistenciaDatos.service';
 import {UtilsService} from '../../../general/utils/utils.service';
+import {ManejoMensajes} from '../../../general/utils/manejo-mensajes';
 
 @NgModule({
   imports: [
@@ -45,7 +46,8 @@ import {UtilsService} from '../../../general/utils/utils.service';
     TablaMaestraService,
     CatalogoDocumentoIdentidadService,
     PersistenciaDatosService,
-    UtilsService
+    UtilsService,
+    ManejoMensajes
   ]
 })
 export class PercepcionCrearModule { }

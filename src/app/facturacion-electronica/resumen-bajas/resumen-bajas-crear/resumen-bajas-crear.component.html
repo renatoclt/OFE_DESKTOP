@@ -27,6 +27,9 @@
                   <select name="cmbserie" id="cmbserie" formControlName="cmbserie" class="form-control">
                     <option *ngFor="let serie of series "[value]="serie.serie"> {{serie.serie}} </option>
                   </select>
+                  <span *ngIf="!productFormGroup.valid && productFormGroup.hasError('serieError')"
+                        class="text-danger">{{productFormGroup.errors['serieError'] | translate}}
+                  </span>
                 </div>
               </div>
               <div class="col-xs-12 col-sm-6 col-md-3">
@@ -35,6 +38,9 @@
                   <input   id="correlativoinicio"
                           correlativoDirective
                           formControlName="correlativoinicio" type="text" class="form-control">
+                  <span *ngIf="!productFormGroup.valid && productFormGroup.hasError('correlativoInicialError')"
+                        class="text-danger">{{productFormGroup.errors['correlativoInicialError'] | translate}}
+                  </span>
                 </div>
               </div>
               <div class="col-xs-12 col-sm-6 col-md-3">
@@ -43,6 +49,9 @@
                   <input  id="correlativofinal"
                           correlativoDirective
                           formControlName="correlativofinal" type="text" class="form-control">
+                  <span *ngIf="!productFormGroup.valid && productFormGroup.hasError('correlativoFinalError')"
+                        class="text-danger">{{productFormGroup.errors['correlativoInicialError'] | translate}}
+                  </span>
                 </div>
               </div>
             </div>
@@ -101,7 +110,7 @@
             <nav class="navbar navbar-info" role="navigation"></nav>
             <div class="row"><p> &nbsp; </p></div>
                 <app-data-table
-                 
+                 (iniciarData)="iniciarData($event)"
                  #tablaNormal
                  [idTabla]="'tablaNormal'"
                  [habilitarAgregar]="false"

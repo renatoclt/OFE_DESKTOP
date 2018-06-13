@@ -9,8 +9,6 @@
             </div>
             <div class="card-content" id="print-section">
 
-
-
               <div class="row">
                 <div class="col-md-12">
                   <div class="card">
@@ -60,8 +58,6 @@
                             <input name="correoproveedor" [(ngModel)]="item.correoproveedor" required type="text" class="form-control" [disabled]="toggleButton">
                           </div>
                         </div>
-
-
                       </div>
 
                       <div class="row">
@@ -136,9 +132,6 @@
                         </div>
 
                       </div>
-
-
-
                     </div>
                     <!-- end content-->
                   </div>
@@ -205,8 +198,6 @@
               <a routerLink="/conformidadservicio/comprador/buscar" class="btn btn-fill btn-default pull-right">Regresar</a>
               <button class="btn btn-fill btn-default pull-right" (click)="print($event)"   *ngIf="botonImprimir.visible" [disabled]="!botonImprimir.habilitado" >{{botonImprimir.Titulo}}</button>
 
-
-
             </div>
           </form>
         </div>
@@ -215,7 +206,6 @@
   </div>
 </div>
 
-
 <div style="display:none">
 
   <div id="print-section-has" style='font-family: Arial, Helvetica, sans-serif;color: #000;font-size: 12px;'>
@@ -223,8 +213,6 @@
       <tbody>
         <tr>
           <td align="center">
-
-
             <table width="900" cellpadding="0" cellspacing="0" border="0" bgcolor="#fff">
               <tbody>
                 <tr>
@@ -237,18 +225,12 @@
                     <b>Aceptación de Servicio  {{item.nroconformidadservicio}}</b><br><br>
                   </td>
                 </tr>
-
-
-
-
               </tbody>
             </table>
 
             <table width="900" class="print-table" cellpadding="5" border='0' style="border:1px solid #999;border-collapse: collapse;"
               cellspacing="0" bgcolor="#fff">
               <tbody>
-
-
                 <tr style="border:1px solid #999;">
                   <td colspan="12" bgcolor="#fff" align="left" valign="top" style="border:1px solid #999;font-size: 18px">
                     <b>Datos Generales</b>
@@ -342,8 +324,6 @@
                   <td colspan="2" bgcolor="#fff" align="center" valign="top" style="border:1px solid #999;">
                     <b>Valor Recibido</b>
                   </td>
-
-
                 </tr>
 
                 <tr *ngFor="let row of this.item.productos" style="border:1px solid #999;">
@@ -371,8 +351,6 @@
                   <td colspan="2" bgcolor="#fff" align="center" valign="top" style="border:1px solid #999;">
                     {{row.valorrecibido}}
                   </td>
-
-
                 </tr>
                 <tr style="border:0px solid #999;">
                   <td colspan="9" bgcolor="#fff" align="center" valign="top" style="border:0px solid #999;">
@@ -386,18 +364,10 @@
                 </tr>
               </tbody>
             </table>
-
-
-
-
-
           </td>
         </tr>
       </tbody>
     </table>
     <br>
-
   </div>
-
-
 </div>

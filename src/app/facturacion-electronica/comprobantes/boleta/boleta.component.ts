@@ -28,7 +28,7 @@ import { COMPOSITION_BUFFER_MODE } from '@angular/forms/src/directives/default_v
 import { concat } from 'rxjs/operator/concat';
 import { CatalogoIgvService } from 'app/facturacion-electronica/general/utils/catalogo-igv.service';
 import { Observable } from 'rxjs/Observable';
-import { Entidad, OrganizacionDTO } from '../../general/models/organizacion/entidad';
+import { Entidad } from '../../general/models/organizacion/entidad';
 import { PersistenciaEntidadService } from 'app/facturacion-electronica/percepcion-retencion/services/persistencia.entidad.service';
 import { CatalogoDocumentoIdentidadService } from 'app/facturacion-electronica/general/utils/catalogo-documento-identidad.service';
 import { toString } from '@ng-bootstrap/ng-bootstrap/util/util';
@@ -155,6 +155,7 @@ export class BoletaComponent implements OnInit, AfterViewInit {
       this._persistenciaService.removePersistenciaSimple('checkBoletaAnticipo');
       this._persistenciaService.removePersistenciaSimple('listaProductos');
       this._persistenciaService.removePersistenciaSimple('cabeceraFactura');
+
       this._persistenciaService.removePersistenciaSimple('factura');
       this._persistenciaService.removePersistenciaSimple('listaProductos')
       this._persistenciaService.removePersistenciaSimple('listaConsultaDocumentosRelacionados');
@@ -172,7 +173,7 @@ export class BoletaComponent implements OnInit, AfterViewInit {
     //   this.series = val;
     // });
     this.seriesService.filtroSeries(localStorage.getItem('id_entidad'),
-      this._tipos.TIPO_DOCUMENTO_BOLETA, this._tipos.TIPO_SERIE_OFFLINE.toString())
+      this._tipos.TIPO_DOCUMENTO_BOLETA, this._tipos.TIPO_SERIE_ONLINE.toString())
       .subscribe(
         valor => {
           this.series = valor;
@@ -221,6 +222,7 @@ export class BoletaComponent implements OnInit, AfterViewInit {
     this.boleta.montoExoaneradas = 0;
     this.boleta.montoInafectas = 0;
     this.boleta.subTotalComprobanteConcepto = 0;
+
     montoTipoOperacion = 0;
     if (this.listaProductos.length > 0) {
       this.setTipoIgv(Number(this.listaProductos[0].detalle.codigoTipoIgv));
@@ -236,8 +238,8 @@ export class BoletaComponent implements OnInit, AfterViewInit {
           Number(this.boleta.importeReferencial) +
           (Number(this.listaProductos[a].cantidad) * Number(this.listaProductos[a].precioUnitario))
         ).toString();
-        this.boleta.subTotalComprobanteConcepto = this.boleta.subTotalComprobanteConcepto + 
-                                                  Number(this.listaProductos[a].cantidad) * Number(this.listaProductos[a].precioUnitario);
+        this.boleta.subTotalComprobanteConcepto = this.boleta.subTotalComprobanteConcepto +
+                                    Number(this.listaProductos[a].cantidad) * Number(this.listaProductos[a].precioUnitario);
       }
       this.boleta.subTotal = (montoTipoOperacion + this.boleta.sumaIsc);
       if (this.tipoIgvItems === this._catalogoIgvService.IGV_GRAVADO_RANGO) {
@@ -361,7 +363,6 @@ export class BoletaComponent implements OnInit, AfterViewInit {
    * Establece los valores generales de la cabecera de la boleta, para su envio a API
    */
   public setBoletaCabeceraDetalle() {
-    this.guardarOrganizacion();
     this.cabeceraDatosBoleta = new CabeceraFactura();
     //  this._persistenciaService.getCabeceraBoleta();
     this.cabeceraDatosBoleta.ubigeoCliente = this.ubigeoCliente;
@@ -454,8 +455,8 @@ export class BoletaComponent implements OnInit, AfterViewInit {
       this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_DNI,
       this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_CARNET_EXTRANJERIA,
       this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_PASAPORTE,
-      //  this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_CEDULA_DIPLOMATICA_IDENTIDAD,
-      //  this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_OTROS
+      // this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_CEDULA_DIPLOMATICA_IDENTIDAD,
+      // this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_OTROS
     ];
     this.todosTiposDocumentoIdentidad = this._tablaMaestraService.obtenerPorIdTabla(TABLA_MAESTRA_DOCUMENTO_IDENTIDAD);
     this.tiposDocumentos =
@@ -471,7 +472,6 @@ export class BoletaComponent implements OnInit, AfterViewInit {
     this.tabla.insertarData(this.listaProductos);
   }
   public irDocumentoRelacionado() {
-    this.guardarOrganizacion();
     this.setBoletaCabeceraDetalle();
     this._persistenciaService.setFactura(this.boleta);
     const listaTmpDocumentosRelacionados = this._persistenciaService.getDocumentosReferencia();
@@ -597,7 +597,6 @@ export class BoletaComponent implements OnInit, AfterViewInit {
     this.boleta.documentoEntidad[0].idTipoEntidad = this._tipos.TIPO_ENTIDAD_EMISOR;
     this.boleta.documentoEntidad[0].descripcionTipoEntidad = this._tipos.DESCRIPCION_TIPO_ENTIDAD_EMISOR;
     this.boleta.documentoEntidad[0].idEntidad = localStorage.getItem('id_entidad');
-    // this.boleta.documentoEntidad[0].idEntidad = idReceptor;
     this.boleta.documentoEntidad[0].tipoDocumento = '6'; // this._cataloDocumentos.TIPO_DOCUMENTO_IDENTIDAD_RUC;
     this.boleta.documentoEntidad[0].documento = localStorage.getItem('org_ruc');
     this.boleta.documentoEntidad[0].denominacion = localStorage.getItem('org_nombre');
@@ -608,25 +607,11 @@ export class BoletaComponent implements OnInit, AfterViewInit {
     this.boleta.documentoEntidad[0].correo = localStorage.getItem('org_email');
     this.boleta.documentoEntidad[0].notifica = this._tipos.NOTIFICACION_DOCUMENTO_ENTIDAD;
     //  Receptor
-    const ruc = this.boletaFormGroup.controls['txtNumeroDocumento'].value;
-    let idReceptor: string;
-    // const entidad = this._entidadServices.buscarPorRuc(ruc);
-    const entidad = this._entidadServices.buscarPorRuc(this.boletaFormGroup.get('txtNumeroDocumento').value
-    + '?idTipoDocumento=' + (Number(this.boletaFormGroup.get('cmbTipoDocumento').value)).toString());
-    if (entidad) {
-      entidad.subscribe(
-        data => {
-          if (data) {
-            idReceptor = data.id;
-          }
-      });
-    }
     // this.org_busqueda = this._entidadPersistenciaService.getEntidad();
     this.boleta.documentoEntidad[1].idTipoEntidad = this._tipos.TIPO_ENTIDAD_RECEPTOR;
     this.boleta.documentoEntidad[1].descripcionTipoEntidad = this._tipos.DESCRIPCION_TIPO_ENTIDAD_RECEPTOR;
     if (this.flagTipoDocumento) {
-      // this.boleta.documentoEntidad[1].idEntidad = this.idEntidadCliente;
-      this.boleta.documentoEntidad[1].idEntidad = idReceptor;
+      this.boleta.documentoEntidad[1].idEntidad = this.idEntidadCliente;
       this.boleta.documentoEntidad[1].ubigeo = this.ubigeoCliente;
     } else {
       this.boleta.documentoEntidad[1].idEntidad = null;
@@ -647,14 +632,14 @@ export class BoletaComponent implements OnInit, AfterViewInit {
     this.boleta.documentoEntidad[1].notifica = this._tipos.NOTIFICACION_DOCUMENTO_ENTIDAD;
     //  DOCUMENTO CONCEPTO
     const codigosConceptosAUtilizar = [
-      Number(this._tipos.CONCEPTO_OPERACION_GRAVADA_CODIGO),
-      Number(this._tipos.CONCEPTO_OPERACION_INAFECTAS_CODIGO),
-      Number(this._tipos.CONCEPTO_OPERACION_EXONERADO_CODIGO),
-      Number(this._tipos.CONCEPTO_OPERACION_GRATUITA_CODIGO),
-      Number(this._tipos.CONCEPTO_OPERACION_SUB_TOTAL_VENTA_CODIGO),
-      Number(this._tipos.CONCEPTO_OPERACION_TOTAL_DESCUENTOS_CODIGO),
-      Number(this._tipos.CONCEPTO_OPERACION_DETRACCIONES_CODIGO),
-      Number(this._tipos.CONCEPTO_OPERACION_OTROS_CARGOS_CODIGO),
+      this._tipos.CONCEPTO_OPERACION_GRAVADA_CODIGO,
+      this._tipos.CONCEPTO_OPERACION_INAFECTAS_CODIGO,
+      this._tipos.CONCEPTO_OPERACION_EXONERADO_CODIGO,
+      this._tipos.CONCEPTO_OPERACION_GRATUITA_CODIGO,
+      this._tipos.CONCEPTO_OPERACION_SUB_TOTAL_VENTA_CODIGO,
+      this._tipos.CONCEPTO_OPERACION_TOTAL_DESCUENTOS_CODIGO,
+      this._tipos.CONCEPTO_OPERACION_DETRACCIONES_CODIGO,
+      this._tipos.CONCEPTO_OPERACION_OTROS_CARGOS_CODIGO,
     ];
     this.tiposConceptos = this._conceptoDocumentoService.obtenerPorCodigos(this.todosTipoConceptos, codigosConceptosAUtilizar);
     this.setDocumentoConcepto();
@@ -686,8 +671,8 @@ export class BoletaComponent implements OnInit, AfterViewInit {
     this.tiposConceptos.subscribe(
       (conceptos) => {
         for (const concepto of conceptos) {
-          switch (Number(concepto.codigo)) {
-            case Number(this._tipos.CONCEPTO_OPERACION_GRAVADA_CODIGO):
+          switch (concepto.codigo) {
+            case this._tipos.CONCEPTO_OPERACION_GRAVADA_CODIGO:
               documentoConcepto = new DocumentoConcepto();
               documentoConcepto.idConcepto = concepto.idConcepto.toString();
               documentoConcepto.descripcionConcepto = concepto.descripcion;
@@ -696,7 +681,7 @@ export class BoletaComponent implements OnInit, AfterViewInit {
               this.boleta.documentoConcepto.push(documentoConcepto);
               // documentoConceptoOperacionesGravadas.importe = ;
               break;
-            case Number(this._tipos.CONCEPTO_OPERACION_INAFECTAS_CODIGO):
+            case this._tipos.CONCEPTO_OPERACION_INAFECTAS_CODIGO:
               documentoConcepto = new DocumentoConcepto();
               documentoConcepto.idConcepto = concepto.idConcepto.toString();
               documentoConcepto.descripcionConcepto = concepto.descripcion;
@@ -705,7 +690,7 @@ export class BoletaComponent implements OnInit, AfterViewInit {
               this.boleta.documentoConcepto.push(documentoConcepto);
               // documentoConceptoOperacionesInafectas.importe = ;
               break;
-            case Number(this._tipos.CONCEPTO_OPERACION_EXONERADO_CODIGO):
+            case this._tipos.CONCEPTO_OPERACION_EXONERADO_CODIGO:
               documentoConcepto = new DocumentoConcepto();
               documentoConcepto.idConcepto = concepto.idConcepto.toString();
               documentoConcepto.descripcionConcepto = concepto.descripcion;
@@ -714,7 +699,7 @@ export class BoletaComponent implements OnInit, AfterViewInit {
               this.boleta.documentoConcepto.push(documentoConcepto);
               // documentoConceptoOperacionesExoneradas.importe = ;
               break;
-            case Number(this._tipos.CONCEPTO_OPERACION_GRATUITA_CODIGO):
+            case this._tipos.CONCEPTO_OPERACION_GRATUITA_CODIGO:
               documentoConcepto = new DocumentoConcepto();
               documentoConcepto.idConcepto = concepto.idConcepto.toString();
               documentoConcepto.descripcionConcepto = concepto.descripcion;
@@ -723,17 +708,16 @@ export class BoletaComponent implements OnInit, AfterViewInit {
               this.boleta.documentoConcepto.push(documentoConcepto);
               // documentoConceptoOperacionesGratuitas.importe = ;
               break;
-            case Number(this._tipos.CONCEPTO_OPERACION_SUB_TOTAL_VENTA_CODIGO):
+            case this._tipos.CONCEPTO_OPERACION_SUB_TOTAL_VENTA_CODIGO:
               documentoConcepto = new DocumentoConcepto();
               documentoConcepto.idConcepto = concepto.idConcepto.toString();
               documentoConcepto.descripcionConcepto = concepto.descripcion;
               documentoConcepto.codigoConcepto = concepto.codigo;
               documentoConcepto.importe = (this.boleta.subTotalComprobanteConcepto).toString();
-              // documentoConcepto.importe = (this.boleta.subTotal).toString();
               this.boleta.documentoConcepto.push(documentoConcepto);
               // documentoConceptoOperacionesSubTotalVenta.importe = ;
               break;
-            case Number(this._tipos.CONCEPTO_OPERACION_TOTAL_DESCUENTOS_CODIGO):
+            case this._tipos.CONCEPTO_OPERACION_TOTAL_DESCUENTOS_CODIGO:
               documentoConcepto = new DocumentoConcepto();
               documentoConcepto.idConcepto = concepto.idConcepto.toString();
               documentoConcepto.descripcionConcepto = concepto.descripcion;
@@ -742,7 +726,7 @@ export class BoletaComponent implements OnInit, AfterViewInit {
               this.boleta.documentoConcepto.push(documentoConcepto);
               // documentoConceptoOperacionesTotalDescuentos.importe = ;
               break;
-            case Number(this._tipos.CONCEPTO_OPERACION_DETRACCIONES_CODIGO):
+            case this._tipos.CONCEPTO_OPERACION_DETRACCIONES_CODIGO:
               documentoConcepto = new DocumentoConcepto();
               documentoConcepto.idConcepto = concepto.idConcepto.toString();
               documentoConcepto.descripcionConcepto = concepto.descripcion;
@@ -751,7 +735,7 @@ export class BoletaComponent implements OnInit, AfterViewInit {
               this.boleta.documentoConcepto.push(documentoConcepto);
               // documentoConceptoOperacionesTotalDescuentos.importe = ;
               break;
-            case Number(this._tipos.CONCEPTO_OPERACION_OTROS_CARGOS_CODIGO):
+            case this._tipos.CONCEPTO_OPERACION_OTROS_CARGOS_CODIGO:
               documentoConcepto = new DocumentoConcepto();
               documentoConcepto.idConcepto = concepto.idConcepto.toString();
               documentoConcepto.descripcionConcepto = concepto.descripcion;
@@ -770,7 +754,6 @@ export class BoletaComponent implements OnInit, AfterViewInit {
     if (value === true) {
       //  Validación si existen items ingresados de forma normal, una boleta de anticipo no debe tener productos ingresados
       if (this._persistenciaService.getListaProductos().length === 0) {
-        // this.guardarOrganizacion();
         this.tituloBoletaAnticipo = 'Boleta de Anticipo';
         this.invocarModalMontoacturaAnticipo();
         this.esBoletaAnticipo = value;
@@ -780,7 +763,6 @@ export class BoletaComponent implements OnInit, AfterViewInit {
         this.esBoletaAnticipo = false;
         // this.boletaFormGroup.controls['txtDetraccion'].enable();
         $('#chkBoletaAnticipo').prop('checked', false);
-        // try {
         swal(
           {
             title: '¿Está seguro?',
@@ -813,11 +795,6 @@ export class BoletaComponent implements OnInit, AfterViewInit {
             }
           }
           );
-        // }
-        // catch(e){
-        //   console.log('errrroojasldkfjasklñdfjañsdfj');
-        //   console.log(e);
-        // }
       }
       //  Boleta Anticipo => false
     } else {
@@ -865,7 +842,6 @@ export class BoletaComponent implements OnInit, AfterViewInit {
     //  this.recargarTabla();
   }
   public seleccionBoletaAnticipo(value: boolean) {
-    this.guardarOrganizacion();
     let mensajeDocumentosRelacionadosExistentes: string;
     let tituloAdvertencia: string;
     let eliminarLabel: string;
@@ -877,8 +853,6 @@ export class BoletaComponent implements OnInit, AfterViewInit {
     const that = this;
     $('#chkBoletaAnticipo').prop('checked', !value);
     if (this.boleta.documentoReferencia.length > 0) {
-      // try{
-      //   console.log('try');
       swal(
         {
           title: 'Advertencia',
@@ -901,7 +875,7 @@ export class BoletaComponent implements OnInit, AfterViewInit {
               title: 'Advertencia',
               text: 'Documentos Relacionados eliminados exitosamente.',
               confirmButtonText: 'CONTINUAR'
-            });
+            })
             that._persistenciaService.removeDocumentosReferencia();
             this.boleta.documentoReferencia = [];
             this.validacionesBoletaAnticipo(value);
@@ -910,9 +884,6 @@ export class BoletaComponent implements OnInit, AfterViewInit {
           }
         }
         );
-      // }catch(e){
-      //   console.log(e);
-      // }
     } else {
       this.validacionesBoletaAnticipo(value);
     }
@@ -928,10 +899,10 @@ export class BoletaComponent implements OnInit, AfterViewInit {
       title: this.tituloBoletaAnticipo,
       //  input: 'text',
       html: '<div class="form-group label-floating" xmlns="http://www.w3.org/1999/html">' +
-            '<label class="control-label">Monto Boleta Anticipo (sin IGV)<span class="star">*</span> </label>' +
-            '<input type="text" id="montoAnticipo" type="text" class="form-control"/> ' +
-            '<label>' + formatoMonedaLabel + '</label>' +
-            '</div>',
+        '<label class="control-label">Monto Boleta Anticipo (sin IGV)<span class="star">*</span> </label>' +
+        '<input type="text" id="montoAnticipo" type="text" class="form-control"/> ' +
+        '<label>' + formatoMonedaLabel + '</label>' +
+        '</div>',
       allowOutsideClick: false,
 
       preConfirm: () => {
@@ -955,22 +926,17 @@ export class BoletaComponent implements OnInit, AfterViewInit {
                   if (numero <= 0 ) {
                     bandera = 2;
                     return true;
-                  }
-                  return false;
+                    }
+                    return false;
                 }
-                /*if (Number(monto) <= 0 ) {
-                  bandera = 2;
-                  return true;
-                }
-                return false;*/
               }
             });
             if (bandera) {
               switch (bandera) {
                 case 1: swal.showValidationError(), reject(new Error('Formato Inválido'));
-                        break;
+                  break;
                 case 2: swal.showValidationError(), reject(new Error('Monto Inválido'));
-                        break;
+                  break;
               }
             } else {
               resolve(montoAnticipo);
@@ -988,20 +954,20 @@ export class BoletaComponent implements OnInit, AfterViewInit {
       )
       .then((result) => {
         if (result) {
-            this.setBoletaAnticipo(Number(that.formatearNumeroADecimales(Number(result))));
-            swal({
-              type: 'success',
-              title: 'Acción Exitosa',
-              confirmButtonText: 'CONTINUAR',
-              confirmButtonColor: '#4caf50'
-            });
-            that.listaProductos = that._persistenciaService.getListaProductos();
-            that.tabla.insertarData(that.listaProductos);
-            this.esBoletaAnticipo = true;
-            $('#chkBoletaAnticipo').prop('checked', true);
-            this._persistenciaService.setEstadoFacturaAnticipo(true);
-            // this.boletaFormGroup.controls['txtDetraccion'].disable();
-            // this.boletaFormGroup.controls['txtDetraccion'].setValue('0.00');
+          this.setBoletaAnticipo(Number(that.formatearNumeroADecimales(Number(result))));
+          swal({
+            type: 'success',
+            title: 'Acción Exitosa',
+            confirmButtonText: 'CONTINUAR',
+            confirmButtonColor: '#4caf50'
+          });
+          that.listaProductos = that._persistenciaService.getListaProductos();
+          that.tabla.insertarData(that.listaProductos);
+          this.esBoletaAnticipo = true;
+          $('#chkBoletaAnticipo').prop('checked', true);
+          this._persistenciaService.setEstadoFacturaAnticipo(true);
+          // this.boletaFormGroup.controls['txtDetraccion'].disable();
+          // this.boletaFormGroup.controls['txtDetraccion'].setValue('0.00');
         } else {
           this.esBoletaAnticipo = false;
           $('#chkBoletaAnticipo').prop('checked', false);
@@ -1237,11 +1203,6 @@ export class BoletaComponent implements OnInit, AfterViewInit {
                   }
                   return false;
                 }
-                /*if (Number(monto) <= 0) {
-                  bandera = 2;
-                  return true;
-                }
-                return false;*/
               }
             });
             if (bandera) {
@@ -1473,35 +1434,5 @@ export class BoletaComponent implements OnInit, AfterViewInit {
     setTimeout(function () {
       $('#' + idHtml).parent().parent().removeClass(estilo);
     }, 200);
-  }
-  
-  guardarOrganizacion() {
-    let organizacion:  OrganizacionDTO = new OrganizacionDTO;
-    organizacion.correo = this.boletaFormGroup.controls['txtCorreo'].value;
-    organizacion.direccion = this.boletaFormGroup.controls['txtDireccionFiscal'].value;
-    organizacion.nombreComercial = this.boletaFormGroup.controls['txtRazonSocial'].value;
-    organizacion.ruc = this.boletaFormGroup.controls['txtNumeroDocumento'].value; 
-    organizacion.idTipoDocumento = this.boletaFormGroup.controls['cmbTipoDocumento'].value;
-    console.log('ingreseeeee',organizacion.ruc.toString().length,'fasdf',organizacion.idTipoDocumento)
-    if(organizacion.ruc.toString().length == this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_RUC_TAMANIO && organizacion.idTipoDocumento == this._cataloDocumentos.TIPO_DOCUMENTO_IDENTIDAD_RUC){
-      console.log('ingreseeeee1')
-      this._conceptoDocumentoService.guardarOrganizacion(organizacion).subscribe();
-    }
-    if(organizacion.ruc.toString().length == this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_CARNET_EXTRANJERIA_TAMANIO && organizacion.idTipoDocumento == this._cataloDocumentos.TIPO_DOCUMENTO_IDENTIDAD_CARNET_EXTRANJERIA){
-      console.log('ingreseeeee2')
-      this._conceptoDocumentoService.guardarOrganizacion(organizacion).subscribe();
-    }
-    if(organizacion.ruc.toString().length == this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_CEDULA_DIPLOMATICA_IDENTIDAD_TAMANIO && organizacion.idTipoDocumento == this._cataloDocumentos.TIPO_DOCUMENTO_IDENTIDAD_CEDULA_DIPLOMATICA_IDENTIDAD){
-      console.log('ingreseeeee3')
-      this._conceptoDocumentoService.guardarOrganizacion(organizacion).subscribe();
-    }
-    if(organizacion.ruc.toString().length == this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_DNI_TAMANIO && organizacion.idTipoDocumento == this._cataloDocumentos.TIPO_DOCUMENTO_IDENTIDAD_DNI){
-      console.log('ingreseeeee4')
-      this._conceptoDocumentoService.guardarOrganizacion(organizacion).subscribe();
-    }
-    if(organizacion.ruc.toString().length == this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_PASAPORTE_TAMANIO && organizacion.idTipoDocumento == this._cataloDocumentos.TIPO_DOCUMENTO_IDENTIDAD_PASAPORTE){
-      console.log('ingreseeeee5')
-      this._conceptoDocumentoService.guardarOrganizacion(organizacion).subscribe();
-    }
   }
 }

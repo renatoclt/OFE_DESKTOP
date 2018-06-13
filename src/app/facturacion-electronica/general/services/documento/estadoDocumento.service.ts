@@ -11,8 +11,7 @@ export class EstadoDocumentoService {
 
   constructor( private httpClient: HttpClient,
                private servidores: Servidores) {
-    //this.url = this.servidores.AFEDOCUQRY + this.url;
-    this.url = "http://localhost:3000/v1" + this.url;
+    this.url = this.servidores.AFEDOCUQRY + this.url;
     this.estadosDocumento = new BehaviorSubject<EstadoDocumento[]>([]);
     this.obtenerTodosEstadosComprobantes();
   }

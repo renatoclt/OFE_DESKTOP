@@ -23,7 +23,7 @@ export class PrincipalRetencion {
   razonSocialComprador: string;
   moneda: string;
   fechaRegistro: string;
-  fechaEmision: string;
+  fechaEmision: number;
   fechaCreacion: string;
   fechaVencimiento: string;
   fechaEnvio: Date;

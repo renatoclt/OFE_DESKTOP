@@ -6,7 +6,7 @@ import {TipoAccion} from '../../../general/data-table/utils/tipo-accion';
 import {DataTableComponent} from '../../../general/data-table/data-table.component';
 import {ModoVistaAccion} from '../../../general/data-table/utils/modo-vista-accion';
 import {EntidadService} from '../../../general/services/organizacion/entidad.service';
-import {Entidad, OrganizacionDTO} from '../../../general/models/organizacion/entidad';
+import {Entidad} from '../../../general/models/organizacion/entidad';
 import {HttpClient} from '@angular/common/http';
 import {Serie} from '../../../general/models/configuracionDocumento/serie';
 import {SeriesService} from '../../../general/services/configuracionDocumento/series.service';
@@ -27,7 +27,6 @@ import {Parametros} from '../../../general/models/parametros/parametros';
 import {ParametrosService} from '../../../general/services/configuracionDocumento/parametros.service';
 import {ValidadorPersonalizado} from '../../../general/services/utils/validadorPersonalizado';
 import {ColumnaDataTable} from '../../../general/data-table/utils/columna-data-table';
-import { DocumentoQueryService } from '../../../general/services/comprobantes/documentoQuery.service';
 
 declare var $, swal: any;
 
@@ -54,7 +53,6 @@ export class PercepcionCrearComponent implements OnInit {
   public entidadEmisor: Entidad;
 
   public titulo: string;
-  public documentoQueryService: DocumentoQueryService;
 
   @ViewChild('tablaNormal') tabla: DataTableComponent<PercepcionCrearDetalle>;
 
@@ -102,7 +100,7 @@ export class PercepcionCrearComponent implements OnInit {
   filtrarSeries() {
     this.series = this._serieService.filtroSeries(
       localStorage.getItem('id_entidad'),
-      this._tiposService.TIPO_DOCUMENTO_PERCEPCION, this._tiposService.TIPO_SERIE_OFFLINE.toString()
+      this._tiposService.TIPO_DOCUMENTO_PERCEPCION, this._tiposService.TIPO_SERIE_ONLINE.toString()
     );
   }
 
@@ -174,6 +172,7 @@ export class PercepcionCrearComponent implements OnInit {
       this.percepcionFormGroup.controls['txtruc'].setValue(entidadReceptora.documento);
       this.percepcionFormGroup.controls['razonsocial'].setValue(entidadReceptora.denominacion);
       this.percepcionFormGroup.controls['txtcorreo'].setValue(entidadReceptora.correoElectronico);
+      this.percepcionFormGroup.controls['txtcorreo'].enable(true);
       this.percepcionFormGroup.controls['txtdireccionfiscal'].setValue(entidadReceptora.direccionFiscal);
 
       this._estilosService.eliminarEstiloInput('txtruc', 'is-empty');
@@ -249,6 +248,11 @@ export class PercepcionCrearComponent implements OnInit {
 
   listarOrganizacionesDeAutcompletado(keyword: any) {
     if (keyword) {
+      if (this.entidadEmisor && this.entidadEmisor.denominacion !== keyword) {
+        this.percepcionFormGroup.get('txtruc').reset();
+        this.percepcionFormGroup.get('txtdireccionfiscal').reset();
+        this.percepcionFormGroup.get('txtcorreo').reset();
+      }
       return this._entidadServices.buscarPorRazonSocialAutocomplete(
         keyword,
         this._catalogoDocumentoEntidadService.TIPO_DOCUMENTO_IDENTIDAD_RUC
@@ -277,17 +281,13 @@ export class PercepcionCrearComponent implements OnInit {
               this.entidadEmisor = data;
               this.llenarDatosEmisorEnFormulario(true);
             } else {
-              //this.limpiarBusquedaEntidadEmisora(true);
-              this.percepcionFormGroup.controls['txtcorreo'].enable();
-              this.percepcionFormGroup.controls['txtdireccionfiscal'].enable();
+              this.limpiarBusquedaEntidadEmisora(true);
             }
           }
         );
       }
     } else {
-      if( !this.percepcionFormGroup.controls['txtcorreo'].enabled && this.percepcionFormGroup.controls['razonsocial'].value.toString().length < 1){
-        this.limpiarBusquedaEntidadEmisora(true);
-      }
+      this.limpiarBusquedaEntidadEmisora(true);
     }
   }
 
@@ -335,7 +335,7 @@ export class PercepcionCrearComponent implements OnInit {
   cambioBusquedaAutocompleteEntidadEmisora () {
     if ( typeof this.percepcionFormGroup.get('razonsocial').value === 'object') {
     } else {
-      //this.limpiarBusquedaEntidadEmisora(false);
+      this.limpiarBusquedaEntidadEmisora(false);
     }
   }
 
@@ -357,8 +357,7 @@ export class PercepcionCrearComponent implements OnInit {
     }
     return true;
   }
-  async agregarItem(agrego: boolean) {
-    this.guardarOrganizacion();
+  agregarItem(agrego: boolean) {
     if (agrego) {
       if (this.percepcionFormGroup.controls['cmbPorcentajePercepcion'].value) {
         this.agregarPersistencia();
@@ -370,16 +369,6 @@ export class PercepcionCrearComponent implements OnInit {
         this.percepcionFormGroup.controls['cmbPorcentajePercepcion'].setErrors({seleccioneUnTipoDePercepcion: true});
       }
     }
-  }
-
-  async guardarOrganizacion(){
-    let organizacion:  OrganizacionDTO = new OrganizacionDTO;
-    organizacion.correo = this.percepcionFormGroup.controls['txtcorreo'].value;
-    organizacion.direccion = this.percepcionFormGroup.controls['txtdireccionfiscal'].value;
-    organizacion.nombreComercial = this.percepcionFormGroup.controls['razonsocial'].value;
-    organizacion.ruc = this.percepcionFormGroup.controls['txtruc'].value;
-    if(organizacion.ruc.toString().length > 10)
-      this.documentoQueryService.guardarOrganizacion(organizacion);
   }
 
   agregarPersistencia() {
@@ -394,6 +383,9 @@ export class PercepcionCrearComponent implements OnInit {
     percepcionCabecera.porcentajePercepcion = this.verificarMontoPorcentajePercepcion(percepcionCabecera.tipoPorcentajePercepcion);
 
     const percepcionAuxiliar = new PercepcionCrearAuxiliar();
+    if (this.entidadEmisor) {
+      this.entidadEmisor.correoElectronico = this.percepcionFormGroup.controls['txtcorreo'].value;
+    }
     percepcionAuxiliar.entidadReceptora = this.entidadEmisor;
     percepcionAuxiliar.cabecera = percepcionCabecera;
     percepcionAuxiliar.detalle = this.tabla.getData();
@@ -406,24 +398,19 @@ export class PercepcionCrearComponent implements OnInit {
 
   verificarMontoPorcentajePercepcion(tipoPercepcion: Parametros) {
     let porcentajePercepcion = 0;
-    console.log(tipoPercepcion);
     if (tipoPercepcion) {
-      switch (parseInt(tipoPercepcion.id_dominio)) {
+      switch (tipoPercepcion.id_dominio) {
         case this._tiposService.TIPO_PERCEPCION_VENTA_INTERNA_ID:
-          console.log('this._tiposService.TIPO_PERCEPCION_VENTA_INTERNA_ID');
           porcentajePercepcion = this._tiposService.TIPO_PERCEPCION_VENTA_INTERNA_TASA;
           break;
         case this._tiposService.TIPO_PERCEPCION_A_LA_ADQUISICION_DE_COMBUSTIBLE_ID:
-          console.log('TIPO_PERCEPCION_A_LA_ADQUISICION_DE_COMBUSTIBLE_ID');
           porcentajePercepcion = this._tiposService.TIPO_PERCEPCION_A_LA_ADQUISICION_DE_COMBUSTIBLE_TASA;
           break;
         case this._tiposService.TIPO_PERCEPCION_REALIZADA_AL_AGENTE_DE_PERCEPCION_CON_TASA_ESPECIAL_ID:
-          console.log('TIPO_PERCEPCION_A_LA_ADQUISICION_DE_COMBUSTIBLE_ID');
           porcentajePercepcion = this._tiposService.TIPO_PERCEPCION_REALIZADA_AL_AGENTE_DE_PERCEPCION_CON_TASA_ESPECIAL_TASA;
           break;
       }
     }
-    console.log(porcentajePercepcion);
     return porcentajePercepcion;
   }
 
@@ -454,8 +441,6 @@ export class PercepcionCrearComponent implements OnInit {
       const nuevoMontoPercepcion = this.verificarMontoPorcentajePercepcion(detalle.tipoPorcentajePercepcion);
       detalle.porcentajePercepcion = nuevoMontoPercepcion;
       detalle.montoPercepcion = (Number(detalle.importeSolesComprobante) * nuevoMontoPercepcion / 100).toFixed(2);
-      console.log(detalle);
-      console.log(detalle.montoPercepcion);
     }
   }
 }

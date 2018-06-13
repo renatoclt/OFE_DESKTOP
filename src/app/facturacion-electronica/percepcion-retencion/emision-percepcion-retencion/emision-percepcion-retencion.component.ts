@@ -137,11 +137,16 @@ export class EmisionPercepcionRetencionComponent implements OnInit {
     this.archivoServicio.base.subscribe(
       (data) => {
         that.pdfSrc.next(data);
+        console.log('PDF');
+        console.log(this.pdfSrc.value);
       }
     );
   }
 
   guardarArchivo(archivo: TipoArchivo) {
+    console.log('DESCARGA DE ARCHIVOS TIPOS');
+    console.log( archivo.idArchivo);
+    console.log(this.idComprobante);
     this.archivoServicio.descargararchivotipo(this.idComprobante, archivo.idArchivo);
   }
 

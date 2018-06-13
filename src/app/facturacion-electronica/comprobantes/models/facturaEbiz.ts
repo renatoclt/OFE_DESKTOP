@@ -76,16 +76,18 @@ export class FacturaEbiz {
     public sumaIsc: number;
     public sumaIgv: number;
     public subTotal: number;
+    public subTotalComprobanteConcepto: number;
     public importeTotal: number;
     public detraccion: number;
     public serieNombre: string;
-    public subTotalComprobanteConcepto: any;
+
     public detalleEbiz: DetalleEbiz[];
     public documentoEntidad: DocumentoEntidad[];
     public documentoConcepto: DocumentoConcepto[];
     public documentoParametro: DocumentoParametro[];
     public documentoReferencia: DocumentoReferencia[];
     constructor() {
+        this.subTotalComprobanteConcepto = 0;
         this.importeReferencial = '0.00';
         this.montoIgv = 0.00;
         this.montoGravadas = 0.00;

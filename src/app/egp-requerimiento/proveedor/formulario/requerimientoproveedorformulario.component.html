@@ -1,0 +1,257 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="card">
+          <form method="#" action="#"  >
+            <div class="card-header card-header-text" data-background-color="blue">
+              <h4 class="card-title">Detalle Requerimiento</h4>
+            </div>
+            <div class="card-content">
+              <div class="row">
+                <div class="col-sm-4">
+                  <div class="form-group label-floating">
+                    <label class="control-label">N° Req.
+                      <span class="star">*</span>
+                    </label>
+                    <input name="nroreq" type="text" class="form-control" [(ngModel)]="item.nroreq" disabled>
+                  </div>
+                </div>
+                <div class="col-sm-8">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Organización Compradora
+                      <span class="star">*</span>
+                    </label>
+                    <input name="organizacioncompradora" type="text" class="form-control"  [(ngModel)]="item.organizacioncompradora" disabled>
+                  </div>
+                </div>
+
+              </div>
+              <div class="row">
+
+                <div class="col-sm-4">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Prioridad <span class="star">*</span></label>
+                    <select name="prioridad" class="form-control"  [(ngModel)]="item.prioridad" disabled>
+                      <option disabled="" selected=""></option>
+                      <option value="Alta"> Alta </option>
+                      <option value="Media"> Media </option>
+                      <option value="Baja"> Baja </option>
+
+                    </select>
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Moneda</label>
+                    <select name="moneda" class="form-control"  [(ngModel)]="item.moneda" disabled>
+                      <option disabled="" selected=""></option>
+                      <option value="PEN"> PEN </option>
+                      <option value="USD"> USD </option>
+                      <option value="EUR"> EUR </option>
+
+                    </select>
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Estado</label>
+                    <select name="estado" class="form-control"  [(ngModel)]="item.estado" disabled>
+                      <option disabled="" selected=""></option>
+                      <option value="En Proceso"> En Proceso </option>
+                      <option value="Por Modificar"> Por Modificar </option>
+                      <option value="En Ejecución"> En Ejecución </option>
+                      <option value="Anulada"> Anulada </option>
+                      <option value="Culminado"> Culminado </option>
+
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-6">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Descripción</label>
+                    <textarea name="descripcion" class="form-control" rows="2" [(ngModel)]="item.descripcion" disabled></textarea>
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Und. Orgánicas</label>
+                    <textarea name="unidadorganicas" class="form-control" rows="2" [(ngModel)]="item.unidadorganicas" disabled></textarea>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-6">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Notas</label>
+                    <textarea name="notas" class="form-control" rows="5" [(ngModel)]="item.notas" disabled></textarea>
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="row">
+                    <div class="col-sm-4">
+                      <div class="form-group label-floating">
+                        <label class="control-label">Fecha Inicio</label>
+                        <input type="text" class="form-control" name="fechainiciod"[(ngModel)]="item.fechainiciod" disabled />
+                      </div>
+                    </div>
+                    <div class="col-sm-3">
+                      <div class="form-group label-floating">
+                        <label class="control-label">Hora</label>
+                        <input type="text" class="form-control" name="fechainiciot" [(ngModel)]="item.fechainiciot" disabled />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-4">
+                      <div class="form-group label-floating">
+                        <label class="control-label">Fecha Fin</label>
+                        <input type="text" class="form-control" name="fechafind"  [(ngModel)]="item.fechafind" disabled />
+                      </div>
+                    </div>
+                    <div class="col-sm-3">
+                      <div class="form-group label-floating">
+                        <label class="control-label">Hora</label>
+                        <input type="text" class="form-control" name="fechafint"  [(ngModel)]="item.fechafint" disabled />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="card">
+                    <div class="card-header card-header-icon" data-background-color="blue">
+                      <i class="material-icons">assignment</i>
+                    </div>
+                    <div class="card-content">
+                      <h4 class="card-title">Archivos Adjuntos</h4>
+                      <div class="toolbar">
+
+                      </div>
+                      <div class="material-datatables table-responsive">
+                        <table id="dtArchivos" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+                          <thead>
+                          <tr>
+                           
+                            <th width="90%">Descripción</th>
+                            <th class="disabled-sorting text-center">Acciones</th>
+                          </tr>
+                          </thead>
+
+                         
+                        </table>
+                      </div>
+                    </div>
+                    <!-- end content-->
+                  </div>
+                  <!--  end card  -->
+                </div>
+                <!-- end col-md-12 -->
+              </div>
+
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="card">
+                    <div class="card-header card-header-icon" data-background-color="blue">
+                      <i class="material-icons">assignment</i>
+                    </div>
+                    <div class="card-content">
+                      <h4 class="card-title">Detalle de RTM-ET</h4>
+                      <div class="toolbar">
+
+                      </div>
+                      <div class="material-datatables table-responsive">
+                        <table id="dtArticulos" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+                          <thead>
+                          <tr>
+                           
+                            <th>Código</th>
+                            <th>Nombre</th>
+                            <th>Objeto Contratado</th>
+                            <th>Cantidad</th>
+                            <th>Unidad</th>
+                            <th class="disabled-sorting text-center">Atributos</th>
+                          </tr>
+                          </thead>
+
+                         
+                        </table>
+                      </div>
+                    <!-- end content-->
+                    </div>
+                  </div>
+                  <!--  end card  -->
+                </div>
+                <!-- end col-md-12 -->
+              </div>
+
+
+
+
+
+
+
+            </div>
+            <div class="card-footer">
+
+              <button class="btn btn-fill btn-default pull-right">Imprimir</button>
+              <!--<button class="btn btn-fill btn-default pull-right">Generar Consulta</button>-->
+              <button routerLink="/egp-requerimiento/proveedor/buscar"class="btn btn-fill btn-default pull-right">No Participar</button>
+              <button class="btn btn-fill btn-default pull-right" [routerLink]="['/egp-cotizacion/proveedor/formulario', 0]">Crear Propuesta</button>
+              <a routerLink="/egp-requerimiento/proveedor/buscar" class="btn btn-fill btn-default pull-right">Salir</a>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+ 
+  <div id="mdlAtributos" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">Atributo por Item</h4>
+        </div>
+        <div class="modal-body">
+
+        
+          <div class="material-datatables table-responsive">
+            <table id="dtAtributos" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+              <thead>
+              <tr>
+               
+                <th>Nombre</th>
+              
+                <th>Valor</th>
+                <th>Unidad</th>
+                <th>Obligatorio</th>
+               
+              </tr>
+              </thead>
+
+              
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+          
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div>
+
+
+
+</div>

@@ -38,6 +38,8 @@ export class Factura {
   documentoerp: string;
   formapago: string;
   moneda: string;
+  motivorechazosap: string;
+  motivoerrorsap: string;
   moneda_text?: string;
   bienserviciodetraccion: string;
   condicionpago: string;
@@ -78,7 +80,7 @@ export class Factura {
 export class DetalleFactura {
   IdGuia?: string;
   IdOc?: string;
-  noitem: number;
+  noitem: string;
   noguia: string;
   nooc: string;
   noitemoc: string;
@@ -87,6 +89,7 @@ export class DetalleFactura {
   preciounitreferencial: string;
   cantidad: string;
   importetotalitem: string;
+  subtotalitemguia: string;
   IdProdxGuia: string;
   posicion: string;
   CodigoGuiaERP: string;

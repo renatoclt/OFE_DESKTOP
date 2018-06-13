@@ -1,0 +1,754 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="card">
+          <form method="#" action="#">
+            <div class="card-header card-header-text" data-background-color="blue">
+              <h4 class="card-title">Requerimiento Detalle</h4>
+            </div>
+            <div class="card-content">
+              <div class="row">
+                <div class="col-sm-4">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Número de requerimiento
+                      <span class="star">*</span>
+                    </label>
+                    <input name="nroreq" [(ngModel)]="item.nroreq" required type="text" class="form-control" [disabled]="toggleButton">
+                    
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Prioridad <span class="star">*</span></label>
+                    <select name="prioridad" [(ngModel)]="item.prioridad" required class="form-control" [disabled]="toggleButton">
+                      <option disabled="" selected=""></option>
+                      <option >Alta </option>
+                      <option >Media</option>
+                      <option >Baja</option>
+                     <!-- <option *ngFor="let optPrioridad of listPrioridadCombo" value="{{optPrioridad.valor}}"> {{optPrioridad.desc}} </option> -->        
+                    </select>
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Moneda</label>
+                    <select name="moneda" [(ngModel)]="item.moneda" class="form-control" [disabled]="toggleButton">
+                      <option >Soles</option>
+                      <option >Dolares</option>
+                      <option >Euros</option>
+                     <!-- <option *ngFor="let optPrioridad of listPrioridadCombo" value="{{optPrioridad.valor}}"> {{optPrioridad.desc}} </option> -->
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-6">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Descripción</label>
+                    <textarea [(ngModel)]="item.description" name="description" class="form-control" rows="2" [disabled]="toggleButton"></textarea>
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Und. Orgánicas</label>
+                    <textarea [(ngModel)]="item.comentarios" name="comentarios" class="form-control" rows="2" [disabled]="toggleButton"></textarea>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-6">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Notas</label>
+                    <textarea [(ngModel)]="item.notas" name="notas" class="form-control" rows="5" [disabled]="toggleButton"></textarea>
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="row">
+                    <div class="col-sm-4">
+                      <div class="form-group label-floating">
+                        <label class="control-label">Fecha Inicio</label>
+                        <input type="text" class="form-control" datepicker name="fechainiciod" [(ngModel)]="item.fechainiciod" [disabled]="toggleButton"
+                        />
+                      </div>
+                    </div>
+                    <div class="col-sm-3">
+                      <div class="form-group label-floating">
+                        <label class="control-label">Hora</label>
+                        <input type="text" class="form-control" timepicker name="fechainiciot" [(ngModel)]="item.fechainiciot" [disabled]="toggleButton"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-4">
+                      <div class="form-group label-floating">
+                        <label class="control-label">Fecha Fin</label>
+                        <input type="text" class="form-control" datepicker name="fechafind" [(ngModel)]="item.fechafind" [disabled]="toggleButton"
+                        />
+                      </div>
+                    </div>
+                    <div class="col-sm-3">
+                      <div class="form-group label-floating">
+                        <label class="control-label">Hora</label>
+                        <input type="text" class="form-control" timepicker name="fechafint" [(ngModel)]="item.fechafint" [disabled]="toggleButton"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="card">
+                    <div class="card-header card-header-icon" data-background-color="blue">
+                      <i class="material-icons">assignment</i>
+                    </div>
+                    <div class="card-content">
+                      <h4 class="card-title">Archivos Adjuntos</h4>
+                      <div class="toolbar">
+                        <div class="row">
+                          <div class="col-sm-12">
+                            <nav class="navbar navbar-info" role="navigation">
+                              <div class="container-fluid">
+                                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                                  <ul class="nav navbar-nav">
+                                    <li><a href="#mdlArchivosAdjuntos" data-toggle="modal" (click)="agregarArchivo($event)" data-target="#mdlArchivosAdjuntos">Agregar</a></li>
+                                    <li><a href="javascript:void(0)">Eliminar</a></li>
+                                  </ul>
+                                </div>
+                              </div>
+                            </nav>
+
+                          </div>
+                        </div>
+                      </div>
+                      <div class="material-datatables table-responsive">
+                        <table id="dtArchivos" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+                          <thead>
+                            <tr>
+                              <th class="disabled-sorting text-right">
+                                <div class="checkbox text-right">
+                                  <label><input type="checkbox" name="optionsCheckboxes" class="checkall" ></label>
+                                </div>
+                              </th>
+                              <th width="90%">Descripción</th>
+                              <th class="disabled-sorting text-center">Acciones</th>
+                            </tr>
+                          </thead>
+
+
+                        </table>
+                      </div>
+                    </div>
+                    <!-- end content-->
+                  </div>
+                  <!--  end card  -->
+                </div>
+                <!-- end col-md-12 -->
+              </div>
+
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="card">
+                    <div class="card-header card-header-icon" data-background-color="blue">
+                      <i class="material-icons">assignment</i>
+                    </div>
+                    <div class="card-content">
+                      <h4 class="card-title">Detalle de RTM-ET</h4>
+                      <div class="toolbar">
+                        <div class="row">
+                          <div class="col-sm-12">
+                            <nav class="navbar navbar-info" role="navigation">
+                              <div class="container-fluid">
+                                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                                  <ul class="nav navbar-nav">
+                                    <li><a href="javascript:void(0)" data-toggle="modal" data-target="#mdlArticulo">Agregar</a></li>
+                                    <li><a href="javascript:void(0)">Eliminar</a></li>
+                                  </ul>
+                                </div>
+                              </div>
+                            </nav>
+
+                          </div>
+                        </div>
+                      </div>
+                      <div class="material-datatables table-responsive">
+                        <table id="dtArticulos" class="table table-striped table-no-bordered table-hover text-center" cellspacing="0" width="100%" style="width:100%">
+                          <thead>
+                            <tr>
+                              <th class="disabled-sorting text-right">
+                                <div class="checkbox text-right">
+                                  <label><input type="checkbox" name="optionsCheckboxes" class="checkall" ></label>
+                                </div>
+                              </th>
+                              <th>Código</th>
+                              <th>Nombre</th>
+                              <th>Objeto Contratado</th>
+                              <th>Cantidad</th>
+                              <th>Unidad</th>
+                              <th class="disabled-sorting text-center">Acciones</th>
+                            </tr>
+                          </thead>
+                          <td class="text-right">
+                              <tr class="text-right"><div class="checkbox">
+                                  <label><input type="checkbox" name="optionsCheckboxes" class="checkall" ></label>
+                                </div>
+                              </tr>
+                              
+                          </td>
+                          <td>
+                              <tr class="text-right">0001</tr>
+                              
+                          </td>
+                          <td>
+                            
+                            <tr>PROVIAS</tr>
+                          </td>
+                          <td>
+                            <tr class="text-center">Servicio</tr>
+                           
+                          </td>
+                          <td>
+                            <tr class="text-center">1</tr>
+                           
+                          </td>
+                          <td>
+                            <tr>Und.</tr>
+                            
+                          </td>
+                          <td class="text-center">
+                            <tr><button class="btn btn-simple btn-danger btn-icon remove" rel="tooltip" title="Eliminar" data-placement="left"><i class="material-icons">delete</i></button></tr>
+                            
+
+                          </td>
+
+                          
+                        </table>
+                      </div>
+                      <!-- end content-->
+                    </div>
+                  </div>
+                  <!--  end card  -->
+                </div>
+                <!-- end col-md-12 -->
+              </div>
+
+
+
+
+
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="card">
+                    <div class="card-header card-header-icon" data-background-color="blue">
+                      <i class="material-icons">assignment</i>
+                    </div>
+                    <div class="card-content">
+                      <h4 class="card-title">Proveedores</h4>
+                      <div class="toolbar">
+                        <div class="row">
+                          <div class="col-sm-12">
+                            <nav class="navbar navbar-info" role="navigation">
+                              <div class="container-fluid">
+                                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                                  <ul class="nav navbar-nav">
+                                    <li><a href="#mdlProveedor" data-toggle="modal" data-target="#mdlProveedor">Agregar</a></li>
+                                    <li><a href="javascript:void(0)">Eliminar</a></li>
+                                  </ul>
+                                </div>
+                              </div>
+                            </nav>
+
+                          </div>
+                        </div>
+                      </div>
+                      <div class="material-datatables table-responsive">
+                        <table id="dtProveedores" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+                          <thead>
+                            <tr>
+                              <th class="disabled-sorting text-right">
+                                <div class="checkbox text-right">
+                                  <label><input type="checkbox" name="optionsCheckboxes" class="checkall" ></label>
+                                </div>
+                              </th>
+                              <th>Usuario</th>
+                              <th>Razón Social</th>
+                              <th>RUC</th>
+                              <th class="disabled-sorting text-center">Acciones</th>
+                            </tr>
+                          </thead>
+
+
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="card">
+                    <div class="card-header card-header-icon" data-background-color="blue">
+                      <i class="material-icons">assignment</i>
+                    </div>
+                    <div class="card-content">
+                      <h4 class="card-title">Proveedor Invitado</h4>
+                      <div class="toolbar">
+                        <div class="row">
+                          <div class="col-sm-12">
+                            <nav class="navbar navbar-info" role="navigation">
+                              <div class="container-fluid">
+                                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                                  <ul class="nav navbar-nav">
+                                    <li><a href="#mdlProveedorInvitado" data-toggle="modal" (click)="agregarProveedorInvitado($event)"
+                                        data-target="#mdlProveedorInvitado">Agregar</a></li>
+                                        <!--
+                                    <li><a href="javascript:void(0)">Eliminar</a></li>
+                                        -->
+                                  </ul>
+                                </div>
+                              </div>
+                            </nav>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="material-datatables table-responsive">
+                        <table id="dtProveedoresInvitados" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%"
+                          style="width:100%">
+                          <thead>
+                            <tr>
+                              <!--
+                              <th class="disabled-sorting text-right">
+                                <div class="checkbox text-right">
+                                  <label><input type="checkbox" name="optionsCheckboxes" class="checkall" ></label>
+                                </div>
+                              </th>
+                              -->
+                              <th>Razón Social</th>
+                              <th>RUC</th>
+                              <th>E-mail</th>
+                              <th>Móvil</th>                              
+                              <th class="disabled-sorting text-center">Acciones</th>
+                            </tr>
+                          </thead>
+
+
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <button type="button" class="btn btn-fill btn-default pull-right" (click)="grabar($event)" [disabled]="toggleButton">Grabar</button>
+              <button (click)="toggleButton=false" class="btn btn-fill btn-default pull-right" *ngIf="id>0">Habilitar Edición</button>
+              <a routerLink="/egp-requerimiento/comprador/buscar" class="btn btn-fill btn-default pull-right">Salir</a>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div id="mdlArchivosAdjuntos" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">Archivo Adjunto</h4>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <div class="fileinput fileinput-new input-group" data-provides="fileinput">
+                  <div class="form-control" data-trigger="fileinput">
+                    <i class="material-icons fileinput-exists">attach_file</i>
+                    <span class="fileinput-filename"></span>
+                  </div>
+                  <span class="input-group-addon btn btn-default btn-file">
+                    <span class="fileinput-new">Seleccionar Archivo</span>
+                  <span class="fileinput-exists">Cambiar</span>
+                  <input type="file" name="..." id="txtArchivo">
+                  </span>
+                  <a href="#" class="input-group-addon btn btn-default fileinput-exists" data-dismiss="fileinput" id="btnEliminarAA">Eliminar</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group label-floating">
+                <textarea name="descripcion" placeholder="Descripción" [(ngModel)]="archivo.descripcion" class="form-control" rows="4" [disabled]="toggleButton"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+          <button type="button" class="btn btn-default" (click)="grabarArchivoAdjunto()" [disabled]="toggleButton">Grabar</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+
+  <div id="mdlArticulo" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">Detalle de RTM-ET</h4>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="form-group label-floating">
+                <label class="control-label">Código del Bien o Servicio
+                  <span class="star">*</span>
+                </label>
+                <input name="txtCod" [(ngModel)]="producto.codigoproducto" number="true" required id="txtCod" type="text" class="form-control">
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group label-floating">
+                <label class="control-label">Nombre del Bien o Servicio<span class="star">*</span></label>
+                <input name="txtNombre" id="txtNombre" required [(ngModel)]="producto.nombreproducto" type="text" class="form-control" [disabled]="toggleButton">
+              </div>
+            </div>
+
+          </div>
+          <div class="row">
+            <div class="col-sm-5">
+              <div class="form-group label-floating">
+                <label class="control-label">Objeto de Contratación
+                  <span class="star">*</span>
+                </label>
+                <select name="cmbObjetoContratacion" id="cmbObjetoContratacion" required class="form-control" [disabled]="toggleButton">
+                  <option disabled="" selected=""></option>
+                  <option value="Bien"> Bien </option>
+                  <option value="Servicio"> Servicio </option>
+                  <option value="Obra"> Obra </option>
+                </select>
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <div class="form-group label-floating">
+                <label class="control-label">Cantidad <span class="star">*</span></label>
+                <input name="txtCantidad" id="txtCantidad" type="text" required [(ngModel)]="producto.cantidad" class="form-control" [disabled]="toggleButton">
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group label-floating">
+                <label class="control-label">Unidad <span class="star">*</span></label>
+                <select name="cmbUnidad" id="cmbUnidad" class="form-control" required [(ngModel)]="producto.unidad" [disabled]="toggleButton">
+                  <option disabled="" selected=""></option>
+                  <option >Unidad</option>
+                  <option >Litro</option>
+                  <option >Metro</option>
+                  <option >Kilos</option>
+                  <!--<option *ngFor="let optUnidad of listUnidadCombo" value="{{optUnidad.valor}}"> {{optUnidad.desc}} </option> -->                  
+                </select>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="row" >
+            <div class="col-md-12">
+              <div class="card">
+                <div class="card-header card-header-icon" data-background-color="blue">
+                  <i class="material-icons">assignment</i>
+                </div>
+                <div class="card-content" >
+                  <h4 class="card-title">RMT-ET</h4>
+                  <div class="toolbar">
+                    <div class="row">
+                      <div class="col-sm-12">
+                        <nav class="navbar navbar-info" role="navigation">
+                          <div class="container-fluid">
+                            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                              <ul class="nav navbar-nav">
+                                <li><a href="javascript:void(0)" data-toggle="modal" data-target="#mdlAtributos">Agregar</a></li>
+                                <li><a href="javascript:void(0)">Eliminar</a></li>
+                              </ul>
+                            </div>
+                          </div>
+                        </nav>
+
+                      </div>
+                    </div>
+                  </div>
+                  <div class="material-datatables table-responsive">
+                    <table id="dtDetalleAtributos" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+                      <thead>
+                        <tr>
+                          <th class="disabled-sorting text-right">
+                            <div class="checkbox text-right">
+                              <label><input type="checkbox" name="optionsCheckboxes" class="checkall" ></label>
+                            </div>
+                          </th>
+                          <th>{{ dtDetalleAtributos.headerRow[0] }}</th>
+                          <th>{{ dtDetalleAtributos.headerRow[1] }}</th>
+                          <th>{{ dtDetalleAtributos.headerRow[2] }}</th>
+                          <th>{{ dtDetalleAtributos.headerRow[3] }}</th>
+                          <th>{{ dtDetalleAtributos.headerRow[4] }}</th>
+                          <th class="disabled-sorting text-right">{{ dtDetalleAtributos.headerRow[5] }}</th>
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                        <tr *ngFor="let row of dtDetalleAtributos.dataRows">
+                          <td>
+                            <div class="text-right" height="100%"><div class="checkbox text-right"><label><input type="checkbox" name="optionsCheckboxes"></label></div></div>
+                          </td>
+                          <td width="50%">{{row[0]}}</td>
+                          <td width="10%">{{row[1]}}</td>
+                          <td width="10%">{{row[2]}}</td>
+                          <td width="10%">{{row[3]}}</td>
+                          <td width="10%">{{row[4]}}</td>
+                          <td width="10%" class="text-center">
+                            <button class="btn btn-simple btn-info btn-icon edit" data-toggle="modal" data-target="#mdlAtributos" rel="tooltip" title="Editar"
+                              data-placement="left" [disabled]="toggleButton">
+                            <i class="material-icons">visibility</i>
+                          </button>
+                            <button class="btn btn-simple btn-danger btn-icon edit" rel="tooltip" title="Eliminar" data-placement="left" [disabled]="toggleButton">
+                            <i class="material-icons">delete</i>
+                          </button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <!-- end content-->
+              </div>
+              <!--  end card  -->
+            </div>
+            <!-- end col-md-12 -->
+          </div>
+
+
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+          <button type="button" class="btn btn-default" (click)="grabarArticulo()" [disabled]="toggleButton">Grabar</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+
+
+  </div>
+
+  <div id="mdlAtributos" class="modal fade" tabindex="-1" role="dialog" style="box-shadow: 3px 3px solid  rgb(51,51,51);">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">Atributo por RTM-ET</h4>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="form-group label-floating">
+                <label class="control-label">Descripción
+                  <span class="star">*</span>
+                </label>
+                <input name="firstname" type="text" class="form-control" [disabled]="toggleButton">
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group label-floating">
+                <label class="control-label">Atributo
+                  <span class="star">*</span>
+                </label>
+                <select name="country" class="form-control" [disabled]="toggleButton">
+                  <option disabled="" selected=""></option>
+                  <option value="Tamaño">F. Entrega</option>
+                  <option value="Tamaño">Color</option>
+                  <option value="Tamaño">Marca</option>
+                  <option value="Tamaño">Garantia</option>
+                  <option value="Tamaño">Precio</option>
+                  <option value="Tamaño">Comentario</option>
+                  <option value="Tamaño">Equivalencia</option>
+                </select>
+              </div>
+            </div>
+
+          </div>
+          <div class="row">
+            <!--<div class="col-sm-3">
+              <div class="form-group label-floating">
+                <label class="control-label">Operador
+                  <span class="star">*</span>
+                </label>
+                <select name="country" class="form-control" [disabled]="toggleButton">
+                  <option disabled="" selected=""></option>
+                  <option value="Tamaño"> = </option>
+                  <option value="Color"> > </option>
+                  <option value="Ancho"> < </option>
+                </select>
+              </div>
+            </div>-->
+            <div class="col-sm-3">
+              <div class="form-group label-floating">
+                <label class="control-label">Valor
+                  <span class="star">*</span>
+                </label>
+                <input name="firstname" type="text" class="form-control" [disabled]="toggleButton">
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <div class="form-group label-floating">
+                <label class="control-label">Unidad
+                  <span class="star">*</span>
+                </label>
+                <select name="country" class="form-control" [disabled]="toggleButton">
+                  <option disabled="" selected=""></option>
+                  <option value="Bien">Bolsa</option>
+                  <option value="Bien">Caja</option>
+                  <option value="Bien">ton/m3</option>
+                  <option value="Bien">Kilogram</option>
+                  <option value="Bien">Metros Cuadados</option>
+                  <option value="Bien">Metro cubico</option>
+                  <option value="Bien">Unidades</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <div class="form-group label-floating">
+                <label class="control-label">Obligatorio
+                  <span class="star">*</span>
+                </label>
+                <select name="country" class="form-control" [disabled]="toggleButton">
+                  <option disabled="" selected=""></option>
+                  <option value="Tamaño"> Si </option>
+                  <option value="Color"> No </option>
+                </select>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+          <button type="button" class="btn btn-default" [disabled]="toggleButton"data-dismiss="modal">Grabar</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+
+  <div id="mdlProveedor" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">Proveedor</h4>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group label-floating">
+                <label class="control-label">Razón Social
+                  <span class="star">*</span>
+                </label>
+                <select name="txtRazonSocial2" id="txtRazonSocial2" type="text" class="form-control" [disabled]="toggleButton"> <!--"-->
+                  <option disabled="" selected=""></option>
+                  <option value="Gloria">3M</option>
+                  <option value="Hidrostal">CPP</option>
+                  <option value="Nissa Maquinarias">Pintado Edificio S.A</option>
+                  <option value="SODIMAC">Claro-Perú</option>
+                  <option value="Tailoy">Telmex-Perú</option>
+                  <option value="Toyota Maquinarias">Telefonica</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+
+              <div class="material-datatables table-responsive">
+                <table id="dtProveedoresBuscar" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+                  <thead>
+                    <tr>
+                      <th>Usuario</th>
+                      <th class="disabled-sorting text-right">Acciones</th>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+          <button type="button" class="btn btn-default" [disabled]="toggleButton" (click)="grabarAgregarProveedor($event)">Grabar</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+
+  <div id="mdlProveedorInvitado" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">Proveedor Invitado</h4>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-sm-8">
+              <div class="form-group label-floating">
+                <label class="control-label">Razón Social <span class="star">*</span></label>
+                <input name="razonsocial" required [(ngModel)]="proveedorInvitado.razonsocial" type="text" class="form-control" [disabled]="toggleButton">
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group label-floating">
+                <label class="control-label">RUC <small>(Solo Perú*)</small></label>
+                <input name="ruc" type="text" required class="form-control" [(ngModel)]="proveedorInvitado.ruc" [disabled]="toggleButton">
+              </div>
+            </div>
+
+          </div>
+          <div class="row">
+            <div class="col-sm-8">
+              <div class="form-group label-floating">
+                <label class="control-label">E-mail <span class="star">*</span></label>
+                <input name="email" email="true" required type="email" [(ngModel)]="proveedorInvitado.email" class="form-control" [disabled]="toggleButton">
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group label-floating">
+                <label class="control-label">Teléfono Móvil <span class="star">*</span></label>
+                <input name="movil" required  [(ngModel)]="proveedorInvitado.movil" class="form-control" [disabled]="toggleButton">
+              </div>
+            </div>            
+          </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" (click)="grabarProveedorInvitado()" [disabled]="toggleButton">Grabar</button>          
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+
+</div>

@@ -1,15 +1,16 @@
-import {AfterViewInit, ChangeDetectorRef, Component, OnChanges, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import { Component, OnInit, OnChanges, AfterViewInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 
 
-import {ConformidadServicioBuscar, ConformidadServicioFiltros} from '../../../model/conformidadservicio';
-import {LoginService} from '../../../service/login.service';
-import {AppUtils} from "../../../utils/app.utils";
-import {MasterService} from '../../../service/masterservice';
-import {ComboItem} from "app/model/comboitem";
-import {URL_BUSCAR_HAS} from 'app/utils/app.constants';
-import {Boton} from 'app/model/menu';
 
+import { ConformidadServicioBuscar, ConformidadServicioFiltros } from '../../../model/conformidadservicio';
+import { LoginService } from '../../../service/login.service';
+import { AppUtils } from "../../../utils/app.utils";
+import { MasterService } from '../../../service/masterservice';
+import { ComboItem } from "app/model/comboitem";
+import { URL_BUSCAR_HAS } from 'app/utils/app.constants';
+import { Boton } from 'app/model/menu';
+import { ChangeDetectorRef } from '@angular/core';
 declare interface DataTable {
   headerRow: string[];
   footerRow: string[];
@@ -74,6 +75,7 @@ export class ConformidadServicioCompradorBuscarComponent implements OnInit, Afte
   }
   validarfiltros() {
     oConformidadServicioCompradorBuscarComponent.filtro.nroconformidadservicio = oConformidadServicioCompradorBuscarComponent.filtro.nroconformidadservicio.trim();
+    oConformidadServicioCompradorBuscarComponent.filtro.nroordenservicio = oConformidadServicioCompradorBuscarComponent.filtro.nroordenservicio.trim();
     oConformidadServicioCompradorBuscarComponent.filtro.nroerp = oConformidadServicioCompradorBuscarComponent.filtro.nroerp.trim();
 
     if (this.filtro.nroconformidadservicio == "") {
@@ -208,9 +210,18 @@ function cargarDataTable() {
       dataSrc: "data",
       data: function (d) {
 
+        let omitirOtrosCampos=false;
         if (oConformidadServicioCompradorBuscarComponent.filtro.nroconformidadservicio != "") {
           d.NroConformidadServicio = oConformidadServicioCompradorBuscarComponent.filtro.nroconformidadservicio;
-        }else{
+          omitirOtrosCampos = true;          
+        }
+
+        if (oConformidadServicioCompradorBuscarComponent.filtro.nroordenservicio != "") {
+          d.NroOrdenServicio = oConformidadServicioCompradorBuscarComponent.filtro.nroordenservicio;
+          omitirOtrosCampos = true;          
+        }  
+        
+        if(!omitirOtrosCampos){
 
             if (oConformidadServicioCompradorBuscarComponent.filtro.estado != "NONE") {
               d.Estado = oConformidadServicioCompradorBuscarComponent.filtro.estado;
@@ -221,13 +232,11 @@ function cargarDataTable() {
             }
 
             if (oConformidadServicioCompradorBuscarComponent.filtro.fechacreacioninicio) {
-
               let fechacreacioninicio = DatatableFunctions.ConvertStringToDatetime(oConformidadServicioCompradorBuscarComponent.filtro.fechacreacioninicio);
               d.FechaAprobacion_inicio = DatatableFunctions.FormatDatetimeForMicroService(fechacreacioninicio);
             }
 
             if (oConformidadServicioCompradorBuscarComponent.filtro.fechacreacionfin) {
-
               let fechacreacionfin = DatatableFunctions.ConvertStringToDatetime(oConformidadServicioCompradorBuscarComponent.filtro.fechacreacionfin);
               d.FechaAprobacion_fin = DatatableFunctions.FormatDatetimeForMicroService(fechacreacionfin);
             }

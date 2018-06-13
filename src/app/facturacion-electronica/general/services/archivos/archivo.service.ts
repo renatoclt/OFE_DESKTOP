@@ -34,8 +34,7 @@ export class ArchivoService {
               private _translate: TranslateService) {
     this._translate.get('continuar').subscribe(data => this.labelContinuar = data);
     this.urlDownload = this.servidor.FILEQRY + this.urlDownload;
-    this.urlQuery = this.servidor.HOSTLOCAL + this.urlQuery;
-    //this.urlQuery = this.servidor.FILEQRY + this.urlQuery;
+    this.urlQuery = this.servidor.FILEQRY + this.urlQuery;
   }
 
   descargarArchivo(tipoArchivo: TipoArchivo) {
@@ -245,14 +244,6 @@ export class ArchivoService {
               title: 'No se encontró el documento de descarga u ocurrió un problema en el servidor.',
               confirmButtonClass: 'btn btn-danger',
               confirmButtonText: that.labelContinuar,
-              buttonsStyling: false
-            });
-          }
-          if (error.status == 0) {
-            swal({
-              type: 'error',
-              title: 'No cuentas con conexión a internet. Por favor revise su conexión.',
-              confirmButtonClass: 'btn btn-danger',
               buttonsStyling: false
             });
           }

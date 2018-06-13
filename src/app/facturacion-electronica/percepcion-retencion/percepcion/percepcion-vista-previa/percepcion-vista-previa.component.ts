@@ -24,6 +24,7 @@ export class PercepcionVistaPreviaComponent implements OnInit, OnDestroy {
   public formatoFechaEmision: string;
   public tituloComprobante: string;
   public totalEnPalabras: string;
+  public total: string;
 
   public percepcionAuxiliar: PercepcionCrearAuxiliar;
 
@@ -63,9 +64,18 @@ export class PercepcionVistaPreviaComponent implements OnInit, OnDestroy {
           this.percepcionAuxiliar.cabecera.totalComprobante,
           this.percepcionAuxiliar.cabecera.tipoMoneda
         );
+      this.cargarTotal();
     } else {
       this.regresar();
     }
+  }
+
+  cargarTotal() {
+    let totalAux = 0;
+    for (const detalle of this.percepcionAuxiliar.detalle) {
+      totalAux += Number(detalle.importeSolesComprobante);
+    }
+    this.total = totalAux.toFixed(2);
   }
 
   cargarDataTablePersistencia() {
@@ -84,7 +94,7 @@ export class PercepcionVistaPreviaComponent implements OnInit, OnDestroy {
       new ColumnaDataTable('serie', 'serieComprobante'),
       new ColumnaDataTable('numeroCorrelativo', 'correlativoComprobante'),
       new ColumnaDataTable('fechaEmision', 'fechaEmisionComprobante'),
-      new ColumnaDataTable('monedaOrigen', 'monedaComprobante.descripcionLarga'),
+      new ColumnaDataTable('monedaOrigen', 'monedaComprobante.descripcionCorta'),
       new ColumnaDataTable('importeTotal', 'importeTotalComprobante', {'text-align': 'right'}),
       new ColumnaDataTable('importeTotalsoles', 'importeSolesComprobante', {'text-align': 'right'}),
       new ColumnaDataTable('porcentajePercepcion', 'tipoPorcentajePercepcion.descripcion_dominio'),

@@ -1,21 +1,22 @@
-import {Injectable} from '@angular/core';
-import {Headers, Http, RequestOptions, Response, ResponseContentType} from '@angular/http';
+import { Injectable } from '@angular/core';
+import { Http, Response, RequestOptions, Headers, ResponseContentType } from '@angular/http';
 import 'rxjs/add/operator/map'
-import {Observable} from 'rxjs/Observable';
+import { Observable } from 'rxjs/Observable';
 
-import {Archivo} from "app/model/archivo";
+import { Archivo } from "app/model/archivo";
+import { ResponseError } from '../model/responseerror';
+import { ATTACHED_FILES } from 'app/utils/app.constants';
 /*import { Configuration } from '../app.constants';*/
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
-import {AppUtils} from "app/utils/app.utils";
-
+import { AppUtils } from "app/utils/app.utils";
 declare var DatatableFunctions, CryptoJS: any;
 @Injectable()
 export class AdjuntoService {
 
 
   private urlAgregar: string;
-
+  
   util: AppUtils;
 
   private AzureStorageKey: string = 'UfDrI36qq+Aes78m1C0yB6CAVganO7XrVlTzLZMssA53oFRkHHrZ/UWgu7/jlkJy2L5XRrCTl26/jhOlhU0Rrw==';
@@ -23,7 +24,7 @@ export class AdjuntoService {
   private ContentType: string = 'image/jpeg,';
   private xmsversion: string = '2017-04-17';
   private myaccount: string = 'sab2md';
-  private mycontainer: string = 'temp';
+  private mycontainer: string = ATTACHED_FILES;
 
   constructor(private http: Http) {
     this.urlAgregar = "https://" + this.myaccount + ".blob.core.windows.net/" + this.mycontainer + "/";
@@ -69,106 +70,97 @@ export class AdjuntoService {
       .map(this.extractData)
       .catch(this.handleError);
   }
+
+
   AgregarArchivo(item: Archivo): Observable<any> {
-    let date = new Date();
-    let headers = this.getHeaders('PUT', date.toUTCString(), item.contenido.type + ',', item.nombreblob, item.contenido.size, item);
-    let options = new RequestOptions({ headers: headers });
-
-
-
-    let url = this.urlAgregar + item.nombreblob;
-    let body = item.contenido;
-
-    return this.http.put(url, body, options)
-      //.map(this.extractData)
-      .catch(this.handleError);
+      let date = new Date();
+      let headers = this.getHeaders('PUT', date.toUTCString(), item.contenido.type + ',', item.nombreblob, item.contenido.size, item);
+      let options = new RequestOptions({ headers: headers });
+      
+      let url = this.urlAgregar + item.nombreblob;
+      let body = item.contenido;
+      
+      return this.http.put(url, body, options)
+                      //.map(this.extractData)
+                      .catch(this.handleError);
   }
 
   private extractData(response: Response) {
-
-
-    let contentType = response.headers.get('content-type');
-    let blob = new Blob([response.blob()], { type: contentType });
-    return blob;
-
+      let contentType = response.headers.get('content-type');
+      let blob = new Blob([response.blob()], { type: contentType });
+      return blob;
   }
+
   private handleError(error: Response | any) {
-    console.error('handleError', error.message || error);
-    return Observable.throw(error.message || error);
+      console.error('handleError', error.message || error);
+      return Observable.throw(error.message || error);
   }
 
   private getHeaders(verb: string, date: string, ContentType: string, namefile: string, ContentLength: number, item: Archivo) {
-    // I included these headers because otherwise FireFox
-    // will request text/html
-    let headers = new Headers();
+      // I included these headers because otherwise FireFox
+      // will request text/html
+      let headers = new Headers();
 
-    headers.append("Authorization", 'SharedKeyLite ' + this.myaccount + ':' + this.getAuthorizationAgregar(verb, date, ContentType, namefile, 'BlockBlob', item));
-    headers.append('x-ms-date', date);
-    headers.append('x-ms-version', this.xmsversion);
+      headers.append("Authorization", 'SharedKeyLite ' + this.myaccount + ':' + this.getAuthorizationAgregar(verb, date, ContentType, namefile, 'BlockBlob', item));
+      headers.append('x-ms-date', date);
+      headers.append('x-ms-version', this.xmsversion);
 
-    headers.append('x-ms-meta-nombreoriginal', item.nombre);
-    headers.append('x-ms-meta-orgid', localStorage.getItem('org_id'));
-
-    headers.append('x-ms-blob-type', 'BlockBlob');
-    headers.append('Content-Type', undefined);
-    //headers.append('Content-Length', ContentLength.toString());
-
-
-
-    return headers;
+      headers.append('x-ms-meta-nombreoriginal', item.nombre);
+      headers.append('x-ms-meta-orgid', localStorage.getItem('org_id'));
+    
+      headers.append('x-ms-blob-type', 'BlockBlob');
+      headers.append('Content-Type', undefined);
+      //headers.append('Content-Length', ContentLength.toString());
+      
+      return headers;
   }
-
-
 
   private getAuthorization(verb: string, date: string, ContentType: string, namefile: string, blob_type: string, container:string) {
 
-    var canHeaders = "";
-    if (blob_type)
-      canHeaders = "x-ms-blob-type:" + blob_type + "\n";
+      var canHeaders = "";
+      if (blob_type)
+        canHeaders = "x-ms-blob-type:" + blob_type + "\n";
 
-    canHeaders = canHeaders + "x-ms-date:" + date + "\n" +
-      "x-ms-version:" + this.xmsversion + "\n";
+      canHeaders = canHeaders + "x-ms-date:" + date + "\n" +
+        "x-ms-version:" + this.xmsversion + "\n";
 
-    //Signature String
-    let finalStr = verb + "\n";
-    finalStr += this.ContentMD5 + "\n";
-    finalStr += ContentType + "\n";
-    finalStr += "\n";
-    finalStr += canHeaders;
-    finalStr += "/" + this.myaccount + "/" + container + "/" + namefile;
-console.log(finalStr);
-    let Authorization = CryptoJS.HmacSHA256(finalStr, CryptoJS.enc.Base64.parse(this.AzureStorageKey))
-      .toString(CryptoJS.enc.Base64);
-    return Authorization;
+      //Signature String
+      let finalStr = verb + "\n";
+      finalStr += this.ContentMD5 + "\n";
+      finalStr += ContentType + "\n";
+      finalStr += "\n";
+      finalStr += canHeaders;
+      finalStr += "/" + this.myaccount + "/" + container + "/" + namefile;
+      console.log(finalStr);
+      let Authorization = CryptoJS.HmacSHA256(finalStr, CryptoJS.enc.Base64.parse(this.AzureStorageKey))
+        .toString(CryptoJS.enc.Base64);
+      return Authorization;
   }
 
   private getAuthorizationAgregar(verb: string, date: string, ContentType: string, namefile: string, blob_type: string,item: Archivo) {
+    
+      var canHeaders = "";
+      if (blob_type)
+        canHeaders = "x-ms-blob-type:" + blob_type + "\n";
 
-        var canHeaders = "";
-        if (blob_type)
-          canHeaders = "x-ms-blob-type:" + blob_type + "\n";
+      canHeaders = canHeaders + "x-ms-date:" + date + "\n" +
+      "x-ms-meta-nombreoriginal:" + item.nombre + "\n"+
+      "x-ms-meta-orgid:" + localStorage.getItem('org_id') + "\n"+
+      "x-ms-version:" + this.xmsversion + "\n";        
+        
+      //Signature String
+      let finalStr = verb + "\n";
+      finalStr += this.ContentMD5 + "\n";
+      finalStr += ContentType + "\n";
+      finalStr += "\n";
+      finalStr += canHeaders;
+      finalStr += "/" + this.myaccount + "/" + this.mycontainer + "/" + namefile;
 
-        canHeaders = canHeaders + "x-ms-date:" + date + "\n" +
-        "x-ms-meta-nombreoriginal:" + item.nombre + "\n"+
-        "x-ms-meta-orgid:" + localStorage.getItem('org_id') + "\n"+
-        "x-ms-version:" + this.xmsversion + "\n";
+      console.log(finalStr);
 
-
-        //Signature String
-        let finalStr = verb + "\n";
-        finalStr += this.ContentMD5 + "\n";
-        finalStr += ContentType + "\n";
-        finalStr += "\n";
-        finalStr += canHeaders;
-        finalStr += "/" + this.myaccount + "/" + this.mycontainer + "/" + namefile;
-
-        console.log(finalStr);
-
-        let Authorization = CryptoJS.HmacSHA256(finalStr, CryptoJS.enc.Base64.parse(this.AzureStorageKey))
-          .toString(CryptoJS.enc.Base64);
-        return Authorization;
-      }
-
-
+      let Authorization = CryptoJS.HmacSHA256(finalStr, CryptoJS.enc.Base64.parse(this.AzureStorageKey))
+        .toString(CryptoJS.enc.Base64);
+      return Authorization;
+  }
 
 }

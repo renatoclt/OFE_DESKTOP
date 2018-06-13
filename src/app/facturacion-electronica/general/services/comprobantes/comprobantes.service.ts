@@ -39,8 +39,7 @@ export class ComprobantesService {
               private _spinner: SpinnerService,
               private _utilsService: UtilsService) {
     this.urlConsultaDocumentos = this.servidores.DOCUQRY + this.urlConsultaDocumentos + this.consultaDocumentos + this.filtro;
-    //this.url_documento_query = this.servidores.DOCUQRY + this.url_documento_query;
-    this.url_documento_query =  this.servidores.HOSTLOCAL+'/documento/query';
+    this.url_documento_query = this.servidores.DOCUQRY + this.url_documento_query;
     this.urlConsultaReferencias = this.servidores.DOCUQRY + this.urlConsultaReferencias;
   }
 
@@ -71,6 +70,10 @@ export class ComprobantesService {
           data[nombreKeyJson].map(
             (item) => {
               item['tsFechaemision'] = that._utilsService.obtenerFecha(item['tsFechaemision']);
+              const ticket = item['vcParamTicket'];
+              item['vcParamTicket'] = ticket ? ticket : '-';
+              const ticketRetencion = item['vcTicketRetencion'];
+              item['vcTicketRetencion'] = ticketRetencion ? ticketRetencion : '-';
               item['deDctomonto'] = Number(item['deDctomonto']).toFixed(2);
               item['deTotalcomprobantepago'] = Number(item['deTotalcomprobantepago']).toFixed(2);
               if (item['tsParamFechabaja'] === null) {
@@ -408,7 +411,7 @@ export class ComprobantesService {
   public buscarPorUuid(uuid: string): BehaviorSubject<DocumentoQuery> {
     const parametros = new HttpParams()
       .set('id', uuid);
-    const urlDefecto = this.servidores.HOSTLOCAL + this.url_documento;
+    const urlDefecto = this.servidores.DOCUQRY + this.url_documento;
     const comprobantes: BehaviorSubject<DocumentoQuery> = new BehaviorSubject<DocumentoQuery>(null);
     this.httpClient.get<DocumentoQuery>(urlDefecto, {
       params: parametros
@@ -424,7 +427,7 @@ export class ComprobantesService {
   }
 
   public visualizar (uuid: string): BehaviorSubject<Comprobante> {
-    const urlDefecto = this.servidores.HOSTLOCAL + '/documento?id=' + uuid;
+    const urlDefecto = this.servidores.DOCUQRY + '/documento?id=' + uuid;
     const datas: BehaviorSubject<Comprobante> = new BehaviorSubject<Comprobante>(null);
       this._spinner.set(true);
     this.httpClient.get<Comprobante>(urlDefecto)

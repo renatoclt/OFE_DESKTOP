@@ -54,13 +54,3 @@ export class Entidad {
   plantillaPercepcionTiempo: string;
   constructor() {}
 }
-
-export class OrganizacionDTO{
-  ruc: string;
-  nombreComercial: string;
-  correo: string;
-  direccion: string;
-  idTipoDocumento: string;
-  tipoDocumento: string;
-  constructor(){}
-}

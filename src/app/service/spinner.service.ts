@@ -5,7 +5,7 @@ import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 export class SpinnerService  {
 
   //public loading = false;
-  public loading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  private loading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   set(value:boolean):BehaviorSubject<boolean>{
     this.loading.next(value);

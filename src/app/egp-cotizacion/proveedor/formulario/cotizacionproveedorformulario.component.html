@@ -1,0 +1,333 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="card">
+          <form method="#" action="#">
+            <div class="card-header card-header-text" data-background-color="blue">
+              <h4 class="card-title">Detalle Cotización</h4>
+            </div>
+            <div class="card-content">
+              <div class="row">
+                <div class="col-sm-6">
+                  <div class="form-group label-floating">
+                    <label class="control-label">N° Cotización
+                    
+                    </label>
+                    <input name="nrocotizacion" type="text" class="form-control" disabled [(ngModel)]="item.nrocotizacion">
+                  </div>
+                </div>
+
+
+              </div>
+              <div class="row">
+                <div class="col-sm-6">
+                  <div class="form-group label-floating">
+                    <label class="control-label">N° Requerimiento</label>
+                    <input name="nrorequerimiento" type="text" class="form-control" disabled [(ngModel)]="item.nroreq">
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Organización Compradora</label>
+                    <input name="orgcomparadora" type="text" class="form-control" disabled [(ngModel)]="item.organizacioncompradora">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-6">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Atención a</label>
+                    <input name="usuarioatencion" type="text" class="form-control" disabled [(ngModel)]="item.atenciona">
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Preparado por</label>
+                    <input name="usuariopreparado" type="text" class="form-control" disabled [(ngModel)]="item.preparadopor">
+
+
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-4">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Moneda</label>
+                    <select name="moneda" class="form-control" disabled value="Jose R." >
+                      <option Value=""></option>
+                      <option value="USD"> US Dollar </option>
+                      <option value="EUR"> Euro Currency </option>
+                      <option value="PEN"> Peruvian Nuevos Soles </option>
+
+                    </select>
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Mensaje</label>
+                    <textarea name="mensaje" class="form-control" rows="5" [disabled]="toggleButton" [(ngModel)]="item.mensaje"></textarea>
+                  </div>
+                </div>
+
+              </div>
+
+
+
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="card">
+                    <div class="card-header card-header-icon" data-background-color="blue">
+                      <i class="material-icons">assignment</i>
+                    </div>
+                    <div class="card-content">
+                      <h4 class="card-title">Detalle de RTM-ET</h4>
+
+                      <div class="material-datatables table-responsive" style="display:block">
+                        <table id="dtArticulos" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+                          <colgroup span="3"></colgroup>
+                          <colgroup span="7"></colgroup>
+                          <thead>
+                            <tr>
+
+                              <th colspan="3" scope="colgroup" border="1">Productos a Cotizar</th>
+                              <th colspan="7" scope="colgroup" border="1">Caracteristicas</th>
+                            </tr>
+                            <tr>
+
+                              <th>Posición</th>
+                              <th>Nombre Prod.</th>
+                              <th class="disabled-sorting text-center">Atributos RTM-ET</th>
+                              <th class="disabled-sorting">Cant. Base</th>
+                              <th class="disabled-sorting">Unidad</th>
+                              <th class="disabled-sorting">Cantidad</th>
+                              <th class="disabled-sorting">Precio</th>
+                              <th class="disabled-sorting">Adjuntos</th>
+                              <th class="disabled-sorting">Fecha Entrega</th>
+
+                            </tr>
+                          </thead>
+
+                          <tbody>
+                            <tr *ngFor="let row of item.productos">
+
+                              <td>{{row.posicion}}</td>
+                              <td>{{row.nombreproducto}}</td>
+                              <td class="text-center">
+                                <button class="btn btn-simple btn-info btn-icon atributos" rel="tooltip" title="Ver Atributos" (click)="verAtributos($event,row.posicion)"
+                                  data-placement="left" data-toggle="modal" data-target="#mdlAtributos">
+                                <i class="material-icons">visibility</i>
+                              </button>
+
+                              </td>
+                              <td>{{row.cantidadbase}}</td>
+                              <td>{{row.unidad}}</td>
+                              <td>
+
+                                <input name="cantidad" [(ngModel)]="row.cantidad" type="text" class="form-control" disabled>
+                              </td>
+                              <td>
+                                <input name="precio" [(ngModel)]="row.precio" type="text" class="form-control" disabled>
+                              </td>
+
+                              <td>
+                                <div class="fileinput fileinput-new input-group" data-provides="fileinput">
+                                  <div class="form-control" data-trigger="fileinput">
+                                    <span class="fileinput-filename"></span>
+                                  </div>
+                                  <span class="input-group-addon btn btn-default btn-file">
+                                    <span class="fileinput-new">Seleccionar Archivo</span>
+                                  <span class="fileinput-exists">
+                                      <i class="material-icons fileinput-exists">attach_file</i>
+                                    </span>
+                                  <input (change)="onChange($event,row.posicion)" type="file" name="..." [disabled]="toggleButton">
+                                  </span>
+                                  <span href="#" class="input-group-addon btn btn-default fileinput-exists" data-dismiss="fileinput">
+                                    <i class="material-icons" (click)="onChange($event,row.posicion)">delete</i>
+                                  </span>
+                                </div>
+                              </td>
+
+                              <td><input datepicker enabled type="text" class="form-control"
+                                  placeholder="Seleccionar dias" ></td>
+
+
+
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <!-- end content-->
+                    </div>
+                  </div>
+                  <!--  end card  -->
+                </div>
+                <!-- end col-md-12 -->
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="card">
+                    <div class="card-header card-header-icon" data-background-color="blue">
+                      <i class="material-icons">assignment</i>
+                    </div>
+                    <div class="card-content">
+                      <h4 class="card-title">Documentos Adjuntos</h4>
+                      <div class="toolbar">
+                        <div class="row">
+                          <div class="col-sm-12">
+                            <nav class="navbar navbar-info" role="navigation">
+                              <div class="container-fluid">
+                                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                                  <ul class="nav navbar-nav">
+                                    <li id="btnAgregarArchivo" class="disabled"><a href="#mdlArchivosAdjuntos" (click)="agregarArchivo($event)">Agregar</a></li>
+                                    <li><a href="javascript:void()">Eliminar</a></li>
+                                  </ul>
+                                </div>
+                              </div>
+                            </nav>
+
+                          </div>
+                        </div>
+                      </div>
+                      <div class="material-datatables table-responsive">
+                        <table id="dtArchivos" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+                          <thead>
+                            <tr>
+                              <th class="disabled-sorting text-right">
+                                <div class="checkbox text-right">
+                                  <label><input type="checkbox" name="optionsCheckboxes" class="checkall" ></label>
+                                </div>
+                              </th>
+                              <th width="90%">Descripción</th>
+                              <th class="disabled-sorting text-center">Acciones</th>
+                            </tr>
+                          </thead>
+
+
+                        </table>
+                      </div>
+                    </div>
+                    <!-- end content-->
+                  </div>
+                  <!--  end card  -->
+                </div>
+                <!-- end col-md-12 -->
+              </div>
+
+            </div>
+            <div class="card-footer">
+              <a class="btn btn-fill btn-default pull-right" [routerLink]="['/egp-requerimiento/proveedor/buscar']">Salir</a>
+              <!--
+              <button class="btn btn-fill btn-default pull-right" [disabled]="toggleButton" [routerLink]="['/egp-requerimiento/proveedor/buscar']">Enviar</button>
+              -->
+              <button class="btn btn-fill btn-default pull-right" [disabled]="toggleButton" (click)='enviar($event)'>Enviar</button>              
+              <button type="button" class="btn btn-fill btn-default pull-right" routerLink="/egp-requerimiento/proveedor/buscar" [disabled]="toggleButton">Guardar</button>
+              <button (click)="habilitarEdicion($event)" class="btn btn-fill btn-default pull-right" *ngIf="id>0">Habilitar Edición</button>
+
+
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div id="mdlArchivosAdjuntos" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">Documento Adjunto</h4>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <div class="fileinput fileinput-new input-group" data-provides="fileinput">
+                  <div class="form-control" data-trigger="fileinput"><i class="material-icons fileinput-exists">attach_file</i> <span class="fileinput-filename"></span></div>
+                  <span class="input-group-addon btn btn-default btn-file"><span class="fileinput-new">Seleccionar Archivo</span>
+                  <span class="fileinput-exists">Cambiar</span><input type="file" name="..." id="txtArchivo"></span>
+                  <a href="#" class="input-group-addon btn btn-default fileinput-exists" data-dismiss="fileinput" id="btnEliminarAA">Remover</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group label-floating">
+                <textarea name="descripcion" placeholder="Descripción" class="form-control" rows="4" [(ngModel)]="archivo.descripcion"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" (click)="grabarArchivo($event)">Grabar</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+
+
+  <div id="mdlAtributos" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">Atributos por Producto</h4>
+        </div>
+        <div class="modal-body">
+
+
+          <div class="material-datatables table-responsive">
+            <table id="dtDetalleAtributos" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+              <thead>
+                <tr>
+
+                  <th class="disabled-sorting">Nombre</th>
+                  <th class="disabled-sorting text-center">Operador</th>
+                  <th class="disabled-sorting text-center">Valor</th>
+                  <th class="disabled-sorting text-center">Unidad</th>
+                  <th class="disabled-sorting text-center">Obligatorio</th>
+
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr *ngFor="let row of atributos">
+
+                  <td>{{row.nombre}}</td>
+                  <td class="text-center">{{row.operador}}</td>
+                  <td>
+                    <input name="valor" [(ngModel)]="row.valor" type="text" class="form-control" [disabled]="toggleButton">
+                  </td>
+                  <td class="text-center">{{row.unidad}}</td>
+                  <td class="text-center">{{row.obligatorio}}</td>
+
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer">
+
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" (click)="grabarAtributos()" [disabled]="toggleButton">Grabar</button>
+
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+
+
+
+
+
+</div>

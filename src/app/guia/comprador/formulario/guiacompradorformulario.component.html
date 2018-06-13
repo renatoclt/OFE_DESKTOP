@@ -5,7 +5,7 @@
         <div class="card">
           <form method="#" action="#">
             <div class="card-header card-header-text" data-background-color="blue">
-              <h4 class="card-title">Guía</h4>
+                <h4 class="card-title">Guía</h4>
             </div>
             <div class="card-content">
               <div class="card-header">
@@ -13,94 +13,80 @@
               </div>
               <div class="card-content">
                 <div class="row">
-                  <div class="col-sm-6">
-                    <div class="row">
-                      <div class="col-sm-5">
-                        <div class="form-group label-floating">
-                          <label class="control-label">N° Guía</label>
-                          <input type="text" name="nroguia1" [disabled]="toggleButton" [(ngModel)]="guia.nroguia1" class="form-control">
+                    <div class="col-sm-6">
+                      <div class="row">
+                        <div class="col-sm-5">
+                          <div class="form-group label-floating">
+                            <label class="control-label">N° Guía</label>
+                            <input type="text" name="nroguia1" [disabled]="toggleButton" [(ngModel)]="guia.nroguia1" class="form-control">
+                          </div>
                         </div>
-                      </div>
-                      <div class="col-sm-7">
-                        <div class="form-group label-floating">
-                          <input type="text" name="nroguia2" [disabled]="toggleButton" [(ngModel)]="guia.nroguia2" class="form-control">
-
+                        <div class="col-sm-7">
+                          <div class="form-group label-floating">
+                            <input type="text" name="nroguia2" [disabled]="toggleButton" [(ngModel)]="guia.nroguia2" class="form-control">
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-
                 </div>
                 <div class="row">
-
-
-
-                  <div class="col-sm-6">
-                    <div class="form-group label-floating">
-                      <label class="control-label">Organización Compradora 
-                      </label>
-                      <input name="razonsocialcliente" type="text" [disabled]="toggleButton" [(ngModel)]="guia.razonsocialcliente" class="form-control">
-                    </div>
-                  </div>
-                  <div class="col-sm-6">
-                    <div class="form-group label-floating">
-                      <label class="control-label">Organización Proveedora
+                    <div class="col-sm-6">
+                      <div class="form-group label-floating">
+                        <label class="control-label">Organización Compradora 
                         </label>
-                      <input name="razonsocialproveedor" type="text" [disabled]="toggleButton" [(ngModel)]="guia.razonsocialproveedor" class="form-control">
+                        <input name="razonsocialcliente" type="text" [disabled]="toggleButton" [(ngModel)]="guia.razonsocialcliente" class="form-control">
+                      </div>
                     </div>
-                  </div>
+                    <div class="col-sm-6">
+                      <div class="form-group label-floating">
+                        <label class="control-label">Organización Proveedora
+                          </label>
+                        <input name="razonsocialproveedor" type="text" [disabled]="toggleButton" [(ngModel)]="guia.razonsocialproveedor" class="form-control">
+                      </div>
+                    </div>
                 </div>
                 <div class="row">
-                  <div class="col-sm-6">
-
-                    <div class="form-group label-floating">
-                      <label class="control-label">RUC Organización Compradora
-                                              </label>
-                      <input name="ruccliente" type="text" [disabled]="toggleButton" [(ngModel)]="guia.ruccliente" class="form-control">
-
+                    <div class="col-sm-6">
+                      <div class="form-group label-floating">
+                        <label class="control-label">RUC Organización Compradora</label>
+                        <input name="ruccliente" type="text" [disabled]="toggleButton" [(ngModel)]="guia.ruccliente" class="form-control">
+                      </div>
                     </div>
-                  </div>
-                  <div class="col-sm-6">
-                    <div class="form-group label-floating">
-                      <label class="control-label">RUC Organización Proveedora
-                      </label>
-                      <input name="rucproveedor" [disabled]="toggleButton" type="text" [(ngModel)]="guia.rucproveedor" class="form-control">
+                    <div class="col-sm-6">
+                      <div class="form-group label-floating">
+                        <label class="control-label">RUC Organización Proveedora</label>
+                        <input name="rucproveedor" [disabled]="toggleButton" type="text" [(ngModel)]="guia.rucproveedor" class="form-control">
+                      </div>
                     </div>
-                  </div>
-
-
-
                 </div>
                 <div class="row">
-
-                  <div class="col-sm-4">
-                    <div class="form-group label-floating">
-                      <label class="control-label">Motivo de Guía 
-                                          </label>
-                      <select id="motivoguia" name="motivoguia" class="form-control" [(ngModel)]="guia.motivoguia" [disabled]="toggleButton">
-                                            <option Value=""></option>
-                                            <option *ngFor="let opt of listMotivoGuiaCombo" value="{{opt.valor}}"> {{opt.desc}} </option>   
-                                          </select>
-                    </div>
-                  </div>
-                  <div class="col-sm-4">
-                    <div class="form-group label-floating">
-                      <label class="control-label">Número ERP de Documento Material 
-                                          </label>
-                      <input name="nroerpdocmaterial" type="text" [disabled]="toggleButton" [(ngModel)]="guia.nroerpdocmaterial" class="form-control">
-                    </div>
-                  </div>
-                  <div class="col-sm-4">
-                    <div class="form-group label-floating">
-                        <label class="control-label">Estado Web</label>
-                        <select id="estado" [(ngModel)]="guia.estado" name="estado" class="form-control" [disabled]="toggleButton">
-                            <option Value=""></option>
-                            <option *ngFor="let opt of listEstadoCombo" value="{{opt.valor}}"> {{opt.desc}} </option>   
-
+                    <div class="col-sm-4">
+                      <div class="form-group label-floating">
+                        <label class="control-label">Motivo de Guía</label>
+                        <select id="motivoguia" name="motivoguia" class="form-control" [(ngModel)]="guia.motivoguia" [disabled]="toggleButton">
+                          <option Value=""></option>
+                          <option *ngFor="let opt of listMotivoGuiaCombo" value="{{opt.valor}}"> {{opt.desc}} </option>   
                         </select>
+                      </div>
                     </div>
-                </div>
+                    <div class="col-sm-4">
+                      <div class="form-group label-floating">
+                        <label class="control-label">Número ERP de Documento Material</label>
+                        <input name="nroerpdocmaterial" type="text" [disabled]="toggleButton" [(ngModel)]="guia.nroerpdocmaterial" class="form-control">
+                      </div>
+                    </div>
+                    <!--
+                    <div class="col-sm-4">
+                      <div class="form-group label-floating">
+                          <label class="control-label">Estado Web</label>
+                          <select id="estado" [(ngModel)]="guia.estado" name="estado" class="form-control" [disabled]="toggleButton">
+                              <option Value=""></option>
+                              <option *ngFor="let opt of listEstadoCombo" value="{{opt.valor}}"> {{opt.desc}} </option>   
 
+                          </select>
+                      </div>
+                    </div>
+                    -->
                 </div>
                 <div class="row">
                   <div class="col-sm-4">
@@ -147,6 +133,17 @@
                   </div>
                 </div>
 
+                <div *ngIf="guia.motivoerrorsap" class="row" >
+                  <div class="col-sm-12">
+                    <div class="form-group label-floating">
+                      <label class="control-label">Motivo Error SAP
+                      </label>
+                      <textarea style="color:red;" name="motivoerrorsap" id="motivoerrorsap" [(ngModel)]="guia.motivoerrorsap" maxlength="200" class="form-control" [disabled]="toggleButton"></textarea>
+                      <span class="help-block" id="lblMotErrorSAP">200 caracteres máximo (0)</span>
+                    </div>
+                  </div>
+                </div>
+
               </div>
               <div class="card-header">
                 <h4 class="card-title">Datos Transportista</h4>
@@ -160,8 +157,7 @@
                           <label class="control-label">Tipo Documento</label>
                           <select id="tipodoctransporte" name="tipodoctransporte" class="form-control" [(ngModel)]="guia.tipodoctransporte" [disabled]="toggleButton">
                             <option Value=""></option>
-                            <option *ngFor="let opt of listTipoDocIdentidad" value="{{opt.valor}}"> {{opt.desc}} </option>   
-                            
+                            <option *ngFor="let opt of listTipoDocIdentidad" value="{{opt.valor}}"> {{opt.desc}} </option>
                           </select>
                         </div>
                       </div>
@@ -488,6 +484,11 @@
                 <tr *ngIf="guia.motivorechazosap" style="border:1px solid #999;">
                   <td colspan="12" bgcolor="#fff" align="left" valign="top" style="border:1px solid #999;">
                     <b>Motivo Rechazo SAP:</b><br> {{this.guia.motivorechazosap}}
+                  </td>
+                </tr>
+                <tr *ngIf="guia.motivoerrorsap" style="border:1px solid #999;">
+                  <td colspan="12" bgcolor="#fff" align="left" valign="top" style="border:1px solid #999;">
+                    <b>Motivo Error SAP:</b><br> {{this.guia.motivoerrorsap}}
                   </td>
                 </tr>
                 <tr style="border:1px solid #999;">

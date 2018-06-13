@@ -1,5 +1,4 @@
-import {Factura as Factura2} from "app/model/factura";
-
+import {Factura as Factura2 } from "app/model/factura";
 export class FacturaMS {
   FACUPLOADMQ: FACUPLOADMQ;
   factura?: Factura2;
@@ -16,14 +15,14 @@ export class FACUPLOADMQ{
   RazonSocialProveedor?: string;
   DireccionProveedor?: string;
   Factura?: Factura[];
-
+  
 }
 
 export class Factura{
   /*IdMoneda?: string;
   IdTipoDocumento?: string;
   TipoDocumento?: string;*/
-
+  
   NumeroFactura?: string;
   NumeroGuia?: string;
   NumeroOC?: string;
@@ -124,7 +123,7 @@ export class ItemFactura{
   IdTablaUnidad? : string;
   IdRegistroUnidad? : string;
   DocumentoMaterial?: DocumentoMaterial[];
-
+  
   //DocumentoMaterial?: string;
 }
 

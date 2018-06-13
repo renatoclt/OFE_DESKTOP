@@ -13,7 +13,7 @@ export class TipoPrecioVentaService {
   constructor( private httpClient: HttpClient,
                private servidores: Servidores,
                private _spinner: SpinnerService) {
-    this.url = this.servidores.HOSTLOCAL + this.url;
+    this.url = this.servidores.AFEDOCUQRY + this.url;
   }
 
   obtenerTodosTiposPrecioVenta(): BehaviorSubject<TipoPrecioVenta[]> {

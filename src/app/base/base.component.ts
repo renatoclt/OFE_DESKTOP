@@ -1,7 +1,7 @@
-import {ApplicationRef, Component, Injector, ViewChild} from '@angular/core';
-import {AppUtils} from '../utils/app.utils';
-import {MessageUtils} from '../utils/message.utils';
-import {UIUtils} from '../utils/ui.utils';
+import { Component, Injector, ViewChild,ApplicationRef } from '@angular/core';
+import { AppUtils } from '../utils/app.utils';
+import { MessageUtils } from '../utils/message.utils';
+import { UIUtils } from '../utils/ui.utils';
 
 
 @Component({

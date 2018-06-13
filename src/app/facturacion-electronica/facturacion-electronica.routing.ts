@@ -36,13 +36,5 @@ export const routes: Routes = [
   {
     path: 'resumen-boletas',
     loadChildren: './facturacion-electronica/resumen-boletas/resumen-boletas.module#ResumenBoletasModule'
-  },
-  {
-    path: 'sincronizacion',
-    loadChildren: './facturacion-electronica/sincronizacion/sincronizacion.module#SincronizacionModule'
-  },
-  {
-    path: 'sincronizacion',
-    loadChildren: './facturacion-electronica/sincronizacion/sincronizacion-bitacora/sincronizacion-bitacora.module#BitacoraModule'
   }
 ];

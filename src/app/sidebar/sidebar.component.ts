@@ -1,10 +1,14 @@
-import {AfterContentInit, AfterViewChecked, AfterViewInit, Component, Injector, OnInit} from '@angular/core';
-import {ROUTES} from './sidebar-routes.config';
-import {Organizacion, Usuario} from 'app/model/usuario';
-import {BaseComponent} from '../base/base.component';
-import {LoginService} from 'app/service/login.service';
+import { Component, OnInit, AfterViewInit, AfterViewChecked, AfterContentInit } from '@angular/core';
+import { ROUTES } from './sidebar-routes.config';
+import { Usuario, Organizacion } from 'app/model/usuario';
+import { BaseComponent } from '../base/base.component';
 
-declare var $, DatatableFunctions: any;
+import { Injector, NgZone } from '@angular/core';
+import { LoginService } from 'app/service/login.service';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Location } from '@angular/common';
+
+declare var $, DatatableFunctions: any, GlobalFunctions: any;
 var sidebarTimer;
 
 @Component({
@@ -13,15 +17,28 @@ var sidebarTimer;
     templateUrl: 'sidebar.component.html',
 })
 
-export class SidebarComponent extends BaseComponent implements OnInit {
+export class SidebarComponent extends BaseComponent implements OnInit, AfterViewInit {
     public menuItems: any[];
-    public usuarioActual: Usuario= new Usuario();
+    public usuarioSesion: Usuario;
     public menuLateral: any[];
-    loading: boolean = false;
+    public loading: boolean;
     public organizaciones: Organizacion[];
-    public PermitirCambiarOrganizacion: boolean = false;
-    constructor(injector: Injector, private loginService: LoginService) {
+
+    public nombreUsuarioConCambioDeLinea: String;
+    public nombreOrgActivaConCambioDeLinea: String;
+
+    public PermitirCambiarOrganizacion: boolean;
+    public PermitirCambiarTipoOrganizacion: boolean;
+    public selTipo_empresa: string;
+    public selOrganizacionActiva: string;
+
+    constructor(private location: Location, private zone:NgZone, injector: Injector, private router: Router,
+                private route: ActivatedRoute, private loginService: LoginService) {
         super(injector);
+
+        this.loading = false;
+        this.PermitirCambiarOrganizacion = false;
+        this.PermitirCambiarTipoOrganizacion = false;
     }
 
     isNotMobileMenu() {
@@ -30,24 +47,56 @@ export class SidebarComponent extends BaseComponent implements OnInit {
         }
         return true;
     }
-    getRUCOrganizacion() {
-        let usuarioActual = JSON.parse(localStorage.getItem('usuarioActual'));
-        return usuarioActual.org_url_image != null ? "" : usuarioActual.isopais_org + usuarioActual.ruc_org
 
+    getRUCOrganizacion() {
+       // let usuarioActual = JSON.parse(localStorage.getItem('usuarioActual'));
+        let usuarioSesion = new Usuario;
+        usuarioSesion.setearDatosDeObjJ(JSON.parse(localStorage.getItem('usuarioActual')));
+
+        return usuarioSesion.org_url_image != null ? '' : usuarioSesion.isopais_org + usuarioSesion.ruc_org;
     }
 
     ngOnInit() {
+
         DatatableFunctions.SetSidebarComponent(this);
 
-        this.usuarioActual = JSON.parse(localStorage.getItem('usuarioActual'));
-
+      //  this.usuarioActual = JSON.parse(localStorage.getItem('usuarioActual'));
+        this.usuarioSesion = new Usuario;
+        this.usuarioSesion.setearDatosDeObjJ(JSON.parse(localStorage.getItem('usuarioActual')));
+        /*
         if (this.usuarioActual) {
-            this.organizaciones = this.usuarioActual.organizaciones;
+            this.organizaciones = this.usuarioSesion.organizaciones;
             if (this.organizaciones && this.organizaciones.length > 1) {
-
                 this.PermitirCambiarOrganizacion = true;
             }
+            let org = this.usuarioSesion.organizaciones.find(a => a.id == this.usuarioSesion.org_id) as Organizacion;
+            if(org.tipo_empresa.split(',').length>1){
+                this.PermitirCambiarTipoOrganizacion = true;
+                this.selTipo_empresa = this.usuarioSesion.tipo_empresa;
+            }
         }
+        */
+
+
+        if (this.usuarioSesion) {
+            if (this.usuarioSesion.tipo_empresa === 'C') {
+                this.organizaciones = this.usuarioSesion.dameOrgComp();
+            }else {
+                this.organizaciones = this.usuarioSesion.dameOrgProv();
+            }
+
+            if (this.organizaciones && this.organizaciones.length > 1) {
+                this.PermitirCambiarOrganizacion = true;
+                this.selOrganizacionActiva = this.usuarioSesion.org_id;
+            }
+
+            let org = this.usuarioSesion.organizaciones.find(a => a.id == this.usuarioSesion.org_id) as Organizacion;
+            if ( org.tipo_empresa.split(',').length > 1 ) {
+                this.PermitirCambiarTipoOrganizacion = true;
+                this.selTipo_empresa = this.usuarioSesion.tipo_empresa;
+            }
+        }
+
         var isWindows = navigator.platform.indexOf('Win') > -1 ? true : false;
         if (isWindows) {
             // if we are on windows OS we activate the perfectScrollbar function
@@ -69,6 +118,9 @@ export class SidebarComponent extends BaseComponent implements OnInit {
         this.menuLateral = Object.keys(menu).map(function (k) { return menu[k] });
         console.log('this.menuLateral', this.menuLateral);
         this.finishLoading();
+
+        this.nombreUsuarioConCambioDeLinea=GlobalFunctions.AplicarCambioDeLinea(this.usuarioSesion.nombrecompleto,23);
+        this.nombreOrgActivaConCambioDeLinea=GlobalFunctions.AplicarCambioDeLinea(this.usuarioSesion.nombreOrgActiva,23);
     }
 
     ngAfterViewInit() {
@@ -117,6 +169,72 @@ export class SidebarComponent extends BaseComponent implements OnInit {
             1000);
         event.preventDefault();
     }
+
+    cambiarTipoOrganizacion($event) {
+        $('#navbar_toggle_main').click();
+        if (this.usuarioSesion.tipo_empresa === 'C') {
+            this.usuarioSesion.tipo_empresa = 'P';
+        }else {
+            this.usuarioSesion.tipo_empresa = 'C';
+        }
+
+        this.uiUtils.showOrHideLoadingScreen(true);
+        this.GuardarSession();
+        if (event) {
+            event.preventDefault();
+        }
+    }
+
+
+    GuardarSession() {
+        localStorage.setItem('username', this.usuarioSesion.nombreusuario);
+        localStorage.setItem('org_id', this.usuarioSesion.org_id);
+        localStorage.setItem('Ocp_Apim_Subscription_Key', this.usuarioSesion.keySuscripcion);
+        localStorage.setItem('org_nombre', this.usuarioSesion.nombreOrgActiva);
+        localStorage.setItem('org_ruc', this.usuarioSesion.ruc_org);
+        localStorage.setItem('tipo_empresa', this.usuarioSesion.tipo_empresa);
+
+        localStorage.setItem('usuarioActual', JSON.stringify(this.usuarioSesion));
+        let baseurl = $('#baseurl').attr('href');
+
+        let oSidebarComponent = DatatableFunctions.getSidebarComponent();
+        if (oSidebarComponent) {
+            oSidebarComponent.usuarioActual = JSON.parse(localStorage.getItem('usuarioActual'));
+        }
+
+        this.loginService.obtenerMenu()
+            // this.loginService.login(usuario.nombreusuario, usuario.contrasenha)
+                        .subscribe(
+                            data => {
+                                // let menu = data.menus;
+                                localStorage.setItem('menuLateral', JSON.stringify(data.menus));
+                                // this.router.navigate([data.moduloUriDefault], { relativeTo: this.route });
+                                let url = baseurl + data.moduloUriDefault;
+                                url = url.replace('//', '/');
+                                window.location.href = url;
+
+                       /*
+                                this.zone.run(() => {
+                                    console.log('enabled time travel');
+                                });
+                        */
+
+                        /*
+                                let menu = JSON.parse(localStorage.getItem('menuLateral'));
+                                this.menuLateral = Object.keys(menu).map(function (k) { return menu[k] });
+                                this.router.navigate([url], { relativeTo: this.route });
+                        */
+                                this.uiUtils.showOrHideLoadingScreen(false);
+                                // this.router.navigate([moduloUriDefault], { relativeTo: this.route });
+                            },
+                            error => {
+                                console.error(error);
+                            },
+                            () => { }
+                        );
+    }
+
+
 
 }
 
@@ -170,8 +288,9 @@ var mda: any = {
                     mda.sidebarMenuActive = $('.sidebar .nav-container .nav li.active a:not([data-toggle="collapse"])');
 
                     if (mda.isChild == true) {
-                        if (this.setParentCollapse)
+                        if (this.setParentCollapse) {
                             this.setParentCollapse();
+                        }
                     }
                     clearTimeout(sidebarTimer);
 
@@ -275,6 +394,7 @@ var mda: any = {
             }, 10);
         });
     },
+
     setParentCollapse: function () {
         if (mda.isChild == true) {
             var $sidebarParent = mda.sidebarMenuActive.parent().parent().parent();
@@ -291,6 +411,7 @@ var mda: any = {
                 });
         }
     },
+
     animateMovingTab: function () {
 
         clearTimeout(sidebarTimer);
@@ -316,6 +437,7 @@ var mda: any = {
             $movingTab.html(button_text);
         }, 10);
     },
+
     moveTab: function () {
         mda.movingTab.css({
             'transform': 'translate3d(0px,' + mda.distance + 'px, 0)',

@@ -1,6 +1,6 @@
-import {Guia} from "app/model/guia";
+import {Guia } from "app/model/guia";
 
-export class GuiaMS {
+  export class GuiaMS {
   GDUPLOADMQ: GDUPLOADMQ;
   id_doc?: string;
   guia?: Guia;

@@ -1,9 +1,11 @@
-import {Component, Directive, ElementRef, OnInit, Renderer, ViewChild} from '@angular/core';
-import {ROUTES} from '../.././sidebar/sidebar-routes.config';
-import {ActivatedRoute, Router} from '@angular/router';
-import {Location, LocationStrategy, PathLocationStrategy} from '@angular/common';
-import {Organizacion, Usuario} from 'app/model/usuario';
-import {LoginService} from 'app/service/login.service';
+import { Component, OnInit, Renderer, ViewChild, ElementRef, Directive } from '@angular/core';
+import { ROUTES } from '../.././sidebar/sidebar-routes.config';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Location, LocationStrategy, PathLocationStrategy } from '@angular/common';
+import { Usuario, Organizacion } from 'app/model/usuario';
+import { LoginService } from 'app/service/login.service';
+import { BaseComponent } from '../../base/base.component';
+import { Injector } from '@angular/core';
 
 var misc: any = {
     navbar_menu_visible: 0,
@@ -19,30 +21,77 @@ var oNavbarComponent: NavbarComponent;
     providers: [LoginService]
 })
 
-export class NavbarComponent implements OnInit {
+export class NavbarComponent  extends BaseComponent implements OnInit {
     private listTitles: any[];
     location: Location;
     private nativeElement: Node;
     private toggleButton;
     private org_id_original: string;
+    private tipo_org_original: string;
     private sidebarVisible: boolean;
     public organizaciones: Organizacion[];
-    public usuario: Usuario = new Usuario();
-    public PermitirCambiarOrganizacion: boolean = false;
-    @ViewChild("navbar-cmp") button;
+    public usuarioSesion: Usuario;
+    public PermitirCambiarOrganizacion: boolean;
+    public PermitirCambiarTipoOrganizacion: boolean;
+    public selTipo_empresa: string;
+    public selOrganizacionActiva: string;
+    public esNuevaOrgSel: boolean;
 
-    constructor(location: Location, private router: Router, private route: ActivatedRoute, private renderer: Renderer, private element: ElementRef, private loginService: LoginService) {
+    @ViewChild('navbar-cmp') button;
+
+    constructor(injector: Injector, location: Location, private router: Router, private route: ActivatedRoute,
+                private renderer: Renderer, private element: ElementRef, private loginService: LoginService) {
+        super(injector);
         this.location = location;
         this.nativeElement = element.nativeElement;
         this.sidebarVisible = false;
-        this.usuario = JSON.parse(localStorage.getItem('usuarioActual')) as Usuario;
-        if (this.usuario) {
-            this.organizaciones = this.usuario.organizaciones;
-            if (this.organizaciones && this.organizaciones.length > 1) {
 
+        // this.usuario = JSON.parse(localStorage.getItem('usuarioActual')) as Usuario;
+        this.usuarioSesion = new Usuario;
+        this.usuarioSesion.setearDatosDeObjJ(JSON.parse(localStorage.getItem('usuarioActual')));
+        this.selTipo_empresa='';
+        this.selOrganizacionActiva='';
+        this.esNuevaOrgSel=false;
+        this.PermitirCambiarOrganizacion = false;
+        this.PermitirCambiarTipoOrganizacion = false;
+
+        if (this.usuarioSesion) {
+            if (this.usuarioSesion.tipo_empresa === 'C') {
+                this.organizaciones = this.usuarioSesion.dameOrgComp();
+            }else{
+                this.organizaciones = this.usuarioSesion.dameOrgProv();
+            }
+
+            if (this.organizaciones && this.organizaciones.length > 1) {
                 this.PermitirCambiarOrganizacion = true;
+                this.selOrganizacionActiva = this.usuarioSesion.org_id;
+            }
+
+            let org = this.usuarioSesion.organizaciones.find(a => a.id == this.usuarioSesion.org_id) as Organizacion;
+            if (org.tipo_empresa.split(',').length > 1) {
+                this.PermitirCambiarTipoOrganizacion = true;
+                this.selTipo_empresa = this.usuarioSesion.tipo_empresa;
             }
         }
+
+
+
+        /*
+        if (this.usuario) {
+            this.organizaciones = this.usuario.organizaciones;
+
+            if (this.organizaciones && this.organizaciones.length > 1) {
+                this.PermitirCambiarOrganizacion = true;
+                this.selOrganizacionActiva = this.usuario.org_id;
+            }
+
+            let org = this.usuario.organizaciones.find(a => a.id == this.usuario.org_id) as Organizacion;
+            if(org.tipo_empresa.split(',').length>1){
+                this.PermitirCambiarTipoOrganizacion = true;
+                this.selTipo_empresa = this.usuario.tipo_empresa;
+            }
+        }
+        */
     }
 
     ngOnInit() {
@@ -82,14 +131,38 @@ export class NavbarComponent implements OnInit {
             }, 1000);
         });
 
-    }
+    };
+
+    ngAfterViewInit() {
+
+        setTimeout(function () {
+            $('input').each(function () {
+                $(this).keydown();
+                if (!$(this).val() && $(this).val() === '') {
+                    $(this.parentElement).addClass('is-empty');
+                }
+            });
+            $('select').each(function () {
+                $(this).keydown();
+                if (!$(this).val() && $(this).val() === '') {
+                    $(this.parentElement).addClass('is-empty');
+                }
+            });
+            $('textarea').each(function () {
+                $(this).keydown();
+                if (!$(this).val() && $(this).val() === '') {
+                    $(this.parentElement).addClass('is-empty');
+                }
+            });
+        }, 100);
+    };
 
     isMobileMenu() {
         if ($(window).width() < 991) {
             return false;
         }
         return true;
-    }
+    };
 
     sidebarToggle() {
         var toggleButton = this.toggleButton;
@@ -116,21 +189,19 @@ export class NavbarComponent implements OnInit {
 
     getTitle() {
         var titlee = this.location.prepareExternalUrl(this.location.path());
-        //console.log('titlee',titlee);
+        // console.log('titlee',titlee);
         if (titlee.charAt(0) === '#') {
             titlee = titlee.slice(2);
         }
-        //console.log('titlee',titlee);
-        //console.log('this.listTitles',this.listTitles);
+        // console.log('titlee',titlee);
+        // console.log('this.listTitles',this.listTitles);
 
         let selected = this.listTitles.find(a => a.path === titlee);
-        //console.log('selected',selected);
+        // console.log('selected',selected);
 
         if (selected && selected.title) {
             return selected.title;
-
-        }
-        else {
+        } else {
             selected = this.listTitles.find(a => EncontrarPath(a, titlee));
             if (selected && selected.title) {
                 return selected.title;
@@ -138,118 +209,173 @@ export class NavbarComponent implements OnInit {
             }
         }
         return 'Dashboard';
-    }
+    };
 
     getPath() {
         return this.location.prepareExternalUrl(this.location.path());
-    }
+    };
 
     logout(event) {
-        localStorage.clear();
-        // const baseurl = $('#baseurl').attr('href');
-        // window.location.href = baseurl;
-        console.log('LOGIN');
 
-        this.router.navigate([''], {relativeTo: this.route});
-        // this.router.navigateByUrl( '../../login' );
-
-        // oNavbarComponent.loginService.KillToken()
-        //     .subscribe(
-        //     response => {
-        //         console.log('response', response);
-        //         localStorage.clear();
-        //         let baseurl = $('#baseurl').attr('href');
-        //         //window.location.href = baseurl;
-        //     },
-        //     error => {
-        //         console.error('error', error);
-        //         localStorage.clear();
-        //         let baseurl = $('#baseurl').attr('href');
-        //         window.location.href = baseurl;
-        //     },
-        //     () => { }
-        //     );
-
-        // if (event)
-        //     event.preventDefault();
-
-    }
-
-    cambiarOrganizacion($event) {
-        this.usuario = JSON.parse(localStorage.getItem('usuarioActual')) as Usuario;
-
-        localStorage.setItem('org_id_original', this.usuario.org_id);
-        $('#mdlOrganizacion').modal('show');
-
-
-        event.preventDefault();
-    }
-    AceptarOrganizacion(event) {
-
-        console.log('AceptarOrganizacion');
-        this.org_id_original = localStorage.getItem('org_id_original');
-        if (this.org_id_original != this.usuario.org_id) {
-
-            this.GuardarSession();
-            let org = this.usuario.organizaciones.find(a => a.id == this.usuario.org_id) as Organizacion;
-            this.usuario.tipo_empresa = org.tipo_empresa;
-
-
-            // console.log(org);
-
-        }
-        $('#mdlOrganizacion').modal('toggle');
-        if (event)
-            event.preventDefault();
-    }
-
-    GuardarSession() {
-        localStorage.setItem('org_id', this.usuario.org_id);
-        localStorage.setItem("username", this.usuario.nombreusuario);
-
-        let org = this.usuario.organizaciones.find(a => a.id == this.usuario.org_id);
-
-        localStorage.setItem('tipo_empresa', this.usuario.tipo_empresa);
-        localStorage.setItem('Ocp_Apim_Subscription_Key', org.keySuscripcion);
-        localStorage.setItem('org_nombre', org.nombre);
-        localStorage.setItem('org_ruc', org.ruc);
-
-        this.usuario.ruc_org = org.ruc;
-        this.usuario.tipo_empresa = org.tipo_empresa;
-        this.usuario.org_url_image = org.url_image;
-        this.usuario.isopais_org = org.isoPais;
-
-        localStorage.setItem('usuarioActual', JSON.stringify(this.usuario));
-        let baseurl = $('#baseurl').attr('href');
-
-        let oSidebarComponent = DatatableFunctions.getSidebarComponent();
-        if (oSidebarComponent)
-            oSidebarComponent.usuarioActual = JSON.parse(localStorage.getItem('usuarioActual'));
-
-        this.loginService.obtenerMenu()
-            // this.loginService.login(usuario.nombreusuario, usuario.contrasenha)
+        oNavbarComponent.loginService.KillToken()
             .subscribe(
-            data => {
-
-
-                localStorage.setItem('menuLateral', JSON.stringify(data.menus));
-                //this.router.navigate([data.moduloUriDefault], { relativeTo: this.route });
-                let url = baseurl + data.moduloUriDefault;
-                url = url.replace('//', '/');
-                window.location.href = url;
-
+            response => {
+                console.log('response', response);
+                localStorage.clear();
+                let baseurl = $('#baseurl').attr('href');
+                window.location.href = baseurl;
             },
             error => {
-
-                console.error(error);
-
+                console.error('error', error);
+                localStorage.clear();
+                let baseurl = $('#baseurl').attr('href');
+                window.location.href = baseurl;
             },
             () => { }
             );
 
+        if (event) {
+            event.preventDefault();
+        }
+    };
 
 
+    cambiarOrganizacion($event) {
+     //   this.usuario = JSON.parse(localStorage.getItem('usuarioActual')) as Usuario;
 
+        localStorage.setItem('org_id_original', this.usuarioSesion.org_id);
+        $('#mdlOrganizacion').modal('show');
+
+        event.preventDefault();
+    };
+
+    AceptarOrganizacion(event) {
+        console.log('AceptarOrganizacion');
+        this.org_id_original = localStorage.getItem('org_id_original');
+        if (this.org_id_original != this.selOrganizacionActiva) {
+
+            this.usuarioSesion.org_id = this.selOrganizacionActiva;
+            // this.GuardarSession();
+            let org = this.usuarioSesion.organizaciones.find(a => a.id == this.usuarioSesion.org_id) as Organizacion;
+
+            this.usuarioSesion.org_id = org.id;
+            this.usuarioSesion.isopais_org = org.isoPais;
+            this.usuarioSesion.org_url_image = org.url_image;
+
+            this.usuarioSesion.keySuscripcion = org.keySuscripcion;
+            this.usuarioSesion.nombreOrgActiva = org.nombre;
+            this.usuarioSesion.ruc_org = org.ruc;
+
+            // this.usuario.tipo_empresa = this.org_id_original.ti
+            // this.GuardarSession();
+
+            this.uiUtils.showOrHideLoadingScreen(true);
+            oNavbarComponent.GuardarSession();
+
+            /*
+            if(org.tipo_empresa.split(',').length>1){
+                /// this.finishLoading();
+                this.esNuevaOrgSel = true;
+                $('#mdlTipoOrganizacion').modal('show');
+            }else{
+                this.usuario.tipo_empresa = org.tipo_empresa;
+                // this.GuardarSession();
+                setTimeout(function () { oNavbarComponent.GuardarSession(); }, 100);
+
+                //    this.finishLoading();
+            }
+            */
+            // this.usuario.tipo_empresa = org.tipo_empresa;
+            // setTimeout(function () { this.GuardarSession(); }, 100);
+
+            // console.log(org);
+        }
+        $('#mdlOrganizacion').modal('toggle');
+        if (event) {
+            event.preventDefault();
+        }
+    };
+
+
+    cambiarTipoOrganizacion($event) {
+
+        if (this.usuarioSesion.tipo_empresa === 'C') {
+            this.usuarioSesion.tipo_empresa = 'P';
+        }else {
+            this.usuarioSesion.tipo_empresa = 'C';
+        }
+
+        // = this.selTipo_empresa;
+        this.uiUtils.showOrHideLoadingScreen(true);
+        this.GuardarSession();
+
+        /*
+        return null;
+
+        this.usuarioSesion = JSON.parse(localStorage.getItem('usuarioActual')) as Usuario;
+
+        localStorage.setItem('tipo_org_original', this.usuarioSesion.tipo_empresa);
+        this.selTipo_empresa='';
+        this.esNuevaOrgSel=false;
+        setTimeout(function () { $('#mdlTipoOrganizacion').modal('show'); }, 100);
+
+        event.preventDefault();
+        */
+    };
+
+    AceptarTipoOrganizacion(event) {
+
+        console.log('AceptarTipoOrganizacion');
+        this.tipo_org_original = localStorage.getItem('tipo_org_original');
+
+        if (this.tipo_org_original != this.selTipo_empresa) {
+            this.usuarioSesion.tipo_empresa = this.selTipo_empresa;
+            this.GuardarSession();
+
+            // let org = this.usuario.organizaciones.find(a => a.id == this.usuario.org_id) as Organizacion;
+            // this.usuario.tipo_empresa = org.tipo_empresa;
+            // console.log(org);
+        }
+        $('#mdlTipoOrganizacion').modal('toggle');
+        if (event) {
+            event.preventDefault();
+        }
+    };
+
+    GuardarSession() {
+        localStorage.setItem('username', this.usuarioSesion.nombreusuario);
+        localStorage.setItem('org_id', this.usuarioSesion.org_id);        
+        localStorage.setItem('Ocp_Apim_Subscription_Key', this.usuarioSesion.keySuscripcion);
+        localStorage.setItem('org_nombre', this.usuarioSesion.nombreOrgActiva);
+        localStorage.setItem('org_ruc', this.usuarioSesion.ruc_org);
+        localStorage.setItem('tipo_empresa', this.usuarioSesion.tipo_empresa);
+
+        localStorage.setItem('usuarioActual', JSON.stringify(this.usuarioSesion));
+        let baseurl = $('#baseurl').attr('href');
+
+        let oSidebarComponent = DatatableFunctions.getSidebarComponent();
+        if (oSidebarComponent) {
+            oSidebarComponent.usuarioActual = JSON.parse(localStorage.getItem('usuarioActual'));
+        }
+
+        this.loginService.obtenerMenu()
+            // this.loginService.login(usuario.nombreusuario, usuario.contrasenha)
+                        .subscribe(
+                            data => {
+                                localStorage.setItem('menuLateral', JSON.stringify(data.menus));
+                                //this.router.navigate([data.moduloUriDefault], { relativeTo: this.route });
+                                let url = baseurl + data.moduloUriDefault;
+                                url = url.replace('//', '/');
+                                window.location.href = url;
+          //                      this.router.navigate([url], { relativeTo: this.route });
+
+                                this.uiUtils.showOrHideLoadingScreen(false);
+                            },
+                            error => {
+                                console.error(error);
+                            },
+                            () => { }
+                        );
     }
 }
 

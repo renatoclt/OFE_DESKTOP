@@ -15,20 +15,26 @@ export class CrearComponent implements OnInit {
 
   constructor( private router: Router,
                private route: ActivatedRoute
-              ) { }
+              ) {
+  }
   ngOnInit() {
-    const idruta = this.route.children[0]['data']['value']['id'];
-    console.log(this.route.children[0]['data']['value']['id']);
-    console.log(idruta);
-    if (idruta == this.constunitaria ) {
-        this.unitaria.nativeElement.className = 'active';
-        this.masiva.nativeElement.className = '';
-    } else {
-        this.masiva.nativeElement.className = 'active';
-        this.unitaria.nativeElement.className = '';
-    }
+    this.actualizarTabs();
+    this.router.events.subscribe(
+      ruta => {
+        this.actualizarTabs();
+      }
+    );
+  }
 
-    //cambiar por ngafterview
+  actualizarTabs() {
+    const idruta = this.route.children[0]['data']['value']['id'];
+    if (idruta === this.constunitaria ) {
+      this.unitaria.nativeElement.className = 'active';
+      this.masiva.nativeElement.className = '';
+    } else {
+      this.masiva.nativeElement.className = 'active';
+      this.unitaria.nativeElement.className = '';
+    }
   }
 
   llamar_unitaria() {

@@ -3,11 +3,12 @@ import {CorreoService} from '../services/correo/correo.service';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {ActivatedRoute, Params, Router} from '@angular/router';
 import {ArchivoService} from '../services/archivos/archivo.service';
-import {TipoArchivo, TIPOS_ARCHIVOS} from '../models/archivos/tipoArchivo';
+import {TIPO_ARCHIVO_PDF, TipoArchivo, TIPOS_ARCHIVOS} from '../models/archivos/tipoArchivo';
 import {TranslateService} from '@ngx-translate/core';
 import {ComprobantesService} from '../services/comprobantes/comprobantes.service';
 import {Subscription} from 'rxjs/Subscription';
 import {PadreComprobanteService} from '../../comprobantes/services/padre-comprobante.service';
+import {TiposService} from '../utils/tipos.service';
 
 declare var $, swal: any;
 @Component({
@@ -33,6 +34,7 @@ export class EmisionComprobanteComponent implements OnInit, OnDestroy {
               private router: Router,
               private _correoService: CorreoService,
               private _archivoServicio: ArchivoService,
+              private _tiposService: TiposService,
               private _translateService: TranslateService,
               private _comprobanteService: ComprobantesService,
               private _padreComprobanteService: PadreComprobanteService) {
@@ -79,6 +81,7 @@ export class EmisionComprobanteComponent implements OnInit, OnDestroy {
               ' screenY = 50, width = 800, height = 800';
             const htmlPop = '<embed width=100% height=100% type="application/pdf" src="data:application/pdf;base64,' + data + '"> </embed>';
             const printWindow = window.open('', 'PDF', winparams);
+            printWindow.document.close();
             printWindow.document.write(htmlPop);
           }
         }
@@ -148,7 +151,10 @@ export class EmisionComprobanteComponent implements OnInit, OnDestroy {
             if (that.comprobante !== undefined) {
               const serie = that.comprobante.vcSerie;
               const correlativo = that.comprobante.vcCorrelativo;
-              const tipoComprobante = that.comprobante.vcTipocomprobante;
+              let tipoComprobante = that.comprobante.vcTipocomprobante;
+              if (that._tiposService.TIPO_DOCUMENTO_PERCEPCION === that.comprobante.vcIdregistrotipocomprobante) {
+                tipoComprobante = 'Percepción';
+              }
               // const fechaEmision = new Date(that.comprobante.tsFechaemision).toISOString();
               const fechaEmision = that.comprobante.tsFechacreacion;
               const ubicacion = that.comprobante.inIdcomprobantepago + '-1.pdf';
@@ -175,13 +181,13 @@ export class EmisionComprobanteComponent implements OnInit, OnDestroy {
             () => {
               that.comprobanteSubscription = that._comprobanteService.buscarPorUuid(that.idComprobante).subscribe(
                 dataComprobante => {
-                  if (dataComprobante  !== null) {
+                  if (dataComprobante) {
                     that.comprobante = dataComprobante;
-                    this.deshabilitar.next(false);
+                    that.deshabilitar.next(false);
                   }
                 },
                 error2 => {
-                  this.deshabilitar.next(true);
+                  that.deshabilitar.next(true);
                 }
               );
             }, 2000
@@ -211,7 +217,20 @@ export class EmisionComprobanteComponent implements OnInit, OnDestroy {
     );
   }
 
-  guardarArchivo(archivo: TipoArchivo) {
-    this._archivoServicio.descargararchivotipo(this.idComprobante, archivo.idArchivo);
+  guardarArchivo(archivo: TipoArchivo, event: Event) {
+    if (event.target['parentElement'].className !== 'disabled') {
+      this._archivoServicio.descargararchivotipo(this.comprobante.inIdcomprobantepago, archivo.idArchivo);
+    }
+  }
+
+  habilitarTipoArchivo(archivo: TipoArchivo) {
+    if (
+      this.comprobante &&
+      Number(this.comprobante.chEstadocomprobantepago) === this._tiposService.TIPO_ESTADO_PENDIENTE_DE_ENVIO &&
+      archivo.idArchivo !== TIPO_ARCHIVO_PDF.idArchivo
+    ) {
+      return false;
+    }
+    return true;
   }
 }

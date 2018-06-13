@@ -11,12 +11,25 @@
                             <div class="row">
                                 <div class="col-sm-4">
                                     <div class="form-group label-floating">
-                                        <label class="control-label">Número de Aceptación de Servicio
-                                        </label>
+                                        <label class="control-label">Número de Aceptación de Servicio</label>
                                         <input [(ngModel)]="filtro.nroconformidadservicio" name="nroconformidadservicio" type="text" class="form-control">
                                     </div>
                                 </div>
-                             
+                                <div class="col-sm-4">
+                                    <div class="form-group label-floating">
+                                        <label class="control-label">Número de Orden de Servicio</label>
+                                        <input name="nroordenservicio" maxlength="13" [(ngModel)]="filtro.nroordenservicio" type="text" class="form-control" pattern="[0-9]+">
+                                    </div>
+                                </div>                                
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <div class="form-group label-floating">
+                                        <label class="control-label">Número de ERP
+                                        </label>
+                                        <input  name="nroerp" type="text" class="form-control"  [(ngModel)]="filtro.nroerp">
+                                    </div>
+                                </div>
                                 <div class="col-sm-4">
                                     <div class="form-group label-floating">
                                         <label class="control-label">Estado</label>
@@ -25,14 +38,7 @@
                                             <option *ngFor="let opt of listEstadoCombo" value="{{opt.valor}}"> {{opt.desc}} </option>
                                         </select>
                                     </div>
-                                </div>
-<div class="col-sm-4">
-                                    <div class="form-group label-floating">
-                                        <label class="control-label">Número de ERP
-                                        </label>
-                                        <input  name="nroerp" type="text" class="form-control"  [(ngModel)]="filtro.nroerp">
-                                    </div>
-                                </div>
+                                </div>                                
                             </div>
                             <div class="row">
                                 <div class="col-sm-4">

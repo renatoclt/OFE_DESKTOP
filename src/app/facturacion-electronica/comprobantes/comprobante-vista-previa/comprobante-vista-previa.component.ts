@@ -131,11 +131,11 @@ export class ComprobanteVistaPreviaComponent implements OnInit {
         this.vistaPreviaFormGroup.controls['txtTotalAnticipos'].setValue(this.formatearNumeroADecimales(this.comprobante.totalAnticipos));
         this.vistaPreviaFormGroup.controls['txtSumatoriaIsc'].setValue(this.formatearNumeroADecimales(this.comprobante.sumaIsc));
         this.vistaPreviaFormGroup.controls['txtSumatoriaIgv'].setValue(this.formatearNumeroADecimales(this.comprobante.sumaIgv));
-        this.vistaPreviaFormGroup.controls['txtSubTotal'].setValue(this.formatearNumeroADecimales(this.comprobante.subTotal));
+        this.vistaPreviaFormGroup.controls['txtSubTotal'].setValue(this.formatearNumeroADecimales(Number(this.comprobante.subTotalComprobanteConcepto)));
         this.vistaPreviaFormGroup.controls['txtImporteTotal'].setValue(this.formatearNumeroADecimales(this.comprobante.importeTotal));
         this.vistaPreviaFormGroup.controls['txtDetraccion'].setValue(this.formatearNumeroADecimales(this.comprobante.detraccion));
-        this.vistaPreviaFormGroup.controls['txtSumatoriaOtrosCargos'].setValue(this.formatearNumeroADecimales(this.comprobante.sumaOtrosCargos));
         this.vistaPreviaFormGroup.controls['txtSumatoriaOtrosTributos'].setValue(this.formatearNumeroADecimales(this.comprobante.sumaOtrosTributos));
+        this.vistaPreviaFormGroup.controls['txtSumatoriaOtrosCargos'].setValue(this.formatearNumeroADecimales(this.comprobante.sumaOtrosCargos));
     }
     public formatearNumeroADecimales(valor: number, numeroDecimales = 2): string {
         return valor.toFixed(numeroDecimales);
@@ -143,8 +143,6 @@ export class ComprobanteVistaPreviaComponent implements OnInit {
 
     public getFacturaVistaPrevia() {
         this.comprobante = this._persistencia.getFactura();
-        console.log('COMPROBANTE');
-        console.log(this.comprobante);
         this.listaItemsFactura = this.comprobante.detalleEbiz;
         this.getDocumentosRelacionados();
 
@@ -346,5 +344,9 @@ export class ComprobanteVistaPreviaComponent implements OnInit {
     ponerCeros(numero: number, cantidadZeros: number) {
         return '0'.repeat(cantidadZeros - numero.toString().length);
       }
+
+    convertirMonto(monto: string) {
+      return Number(monto).toFixed(2);
+    }
 
 }

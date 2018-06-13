@@ -1,0 +1,206 @@
+<div class="row col-md-12">
+  <div class="card">
+    <div class="card-header card-header-text" data-background-color="blue">
+      <h4 class="card-title">{{'vistaPrevia' | translate}}</h4>
+    </div>
+    <div class="card-content">
+
+        <div class="row">
+            <div class="col-md-4 left">
+                  <!-- Muestra de la empresa emisora, agregar metodo que recupera url del logo de localstorage, ver ejemplo menu -->
+                  <!-- <div class="logoVisualizar">
+                    <img src="{{urlLogo}}">
+                  </div> -->
+              <label>
+                <b>{{razonsocialemisor}}</b>
+              </label>
+              <br>
+              <label>
+                <b>{{domiciliofiscalemisor}}</b>
+              </label>
+            </div>
+            <div class="col-md-4 col-md-offset-4 center">
+              <div class="col-md-12 borde-simple">
+                <label>
+                  <b>{{'rucNumero'| translate}}: {{rucemisor}}</b>
+                </label>
+                <br>
+                <label>
+                  <b>{{'retencion' | translate | uppercase}} {{'baseComprobanteElectronica' | translate | uppercase}}</b>
+                </label>
+                <br>
+                <label>
+                    <b>{{'serie'| translate}}:  {{series}}</b>
+                </label>
+              </div>
+            </div>
+          </div>
+          <br>
+
+      
+      <!-- <div class="row">
+        <div class="col-md-4">
+          <label><h5><b>{{razonsocialemisor}}</b></h5></label>
+        </div>
+        <div class="col-md-4 col-md-offset-4">
+          <div class="row">
+            <div class="col-md-6">
+              <label><h4><b>RUC N°:</b></h4></label>
+            </div>
+            <div class="col-md-6">
+              <label><h5>{{rucemisor}}</h5></label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <label><h5><b>{{domiciliofiscalemisor}}</b></h5></label>
+        </div>
+        <div class="col-md-4 col-md-offset-4">
+          <label><h3><b>RETENCIÓN ELECTRÓNICA</b></h3></label>
+        </div>
+      </div>
+      <br>
+      <div class="row">
+        <div class="col-md-3 col-md-offset-8">
+          <div class="row">
+            <div class="col-md-12">
+              <label><h3><b>Serie: </b>{{series}}</h3></label>
+            </div>
+          </div>
+        </div>
+      </div> -->
+      <br>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="row">
+            <div class="col-md-6">
+              <label><b>Señor(es):</b></label>
+            </div>
+            <div class="col-md-6">
+              <label>{{razonsocialreceptor}}</label>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 col-md-offset-2">
+          <div class="row">
+            <div class="col-md-6">
+              <label><b>Tipo de Cambio:</b></label>
+            </div>
+            <div class="col-md-6">
+              <label>{{tipocambio}}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="row">
+            <div class="col-md-6">
+              <label><b>RUC:</b></label>
+            </div>
+            <div class="col-md-6">
+              <label>{{rucreceptor}}</label>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 col-md-offset-2">
+          <div class="row">
+            <div class="col-md-6">
+              <label><b>Banco</b></label>
+            </div>
+            <div class="col-md-6">
+              <label>{{banco}}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="row">
+            <div class="col-md-6">
+              <label><b>Domicilio Fiscal:</b></label>
+            </div>
+            <div class="col-md-6">
+              <label>{{domiciliofiscalreceptor}}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="row">
+            <div class="col-md-6">
+              <label><b>Fecha de Emisión:</b></label>
+            </div>
+            <div class="col-md-6">
+              <label>{{fechaemisiones}}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="row">
+            <div class="col-md-6">
+              <label><b>Tipo de Moneda:</b></label>
+            </div>
+            <div class="col-md-6">
+              <label>{{tipo_moneda}}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <br>
+      <app-data-table (iniciarData)="iniciarData($event)"
+                      #tablaNormal [idTabla]="'tabla1'"
+                      [ordenarPorElCampo]="'fechaEmisionDestino'"
+                      [columnas]="columnasTabla"></app-data-table>
+      <br>
+      <div class="row">
+        <div class="col-md-1 col-lg-1">
+          <label><b>Observación:</b></label>
+        </div>
+        <div class="col-md-1 col-lg-1"></div>
+        <div class="col-md-10 col-lg-10">
+          <label>{{observacion}}</label>
+        </div>
+      </div>
+      <br>
+      <div class="row">
+        <div class="col-md-2 col-md-offset-5">
+          <label><b>Total Importe :</b></label>
+        </div>
+        <div class="col-md-5">
+          <label>{{total_importe}}</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-2 col-md-offset-5">
+          <label><b> Total Importe Retención:</b></label>
+        </div>
+        <div class="col-md-5">
+          <label>{{totales}}</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-2 col-md-offset-5">
+          <label><b>Son:</b></label>
+        </div>
+        <div class="col-md-5">
+          <label>{{totalespalabaras | uppercase}}</label>
+        </div>
+      </div>
+      <br>
+      <br>
+    </div>
+    <div class="row">
+      <div class="col-md-12" align="right">
+        <button name="btnregresar" type="button" class="btn btn-default" style="right: 15px;" (click)="regresar()">Regresar </button>
+        <button name="btnemitir" type="button" class="btn btn-default" style="right: 15px;" (click)="emitir()">Emitir </button>
+      </div>
+    </div>
+  </div>
+</div>
+

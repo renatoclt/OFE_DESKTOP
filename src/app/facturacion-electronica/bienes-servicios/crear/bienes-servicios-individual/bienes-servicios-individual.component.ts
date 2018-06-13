@@ -111,16 +111,37 @@ export class BienesServiciosIndividualComponent implements OnInit {
       'txtISC': new FormControl('', [Validators.required])
     });
 
-    this.productosIndividualformGroup.controls['txtvalorunitario'].valueChanges.subscribe(
-      data => {
-        this.productosIndividualformGroup.controls['txtvalorunitario'].markAsTouched();
-      }
-    );
-    this.productosIndividualformGroup.controls['cmbcalculoISC'].valueChanges.subscribe(
-      data => {
-        this.seleccionarTipoIsc();
-      }
-    );
+    // this.productosIndividualformGroup.controls['txtvalorunitario'].valueChanges.subscribe(
+    //   data => {
+    //     this.productosIndividualformGroup.controls['txtvalorunitario'].markAsTouched();
+    //   }
+    // );
+    // this.productosIndividualformGroup.controls['cmbcalculoISC'].valueChanges.subscribe(
+    //   data => {
+    //     this.seleccionarTipoIsc();
+    //   }
+    // );
+  }
+
+  public cambioTipoItem() {
+    const tipo = this.productosIndividualformGroup.controls['cmbtipo'].value;
+    if (this.productoEditar) {
+      this.productosIndividualformGroup.controls['cmbunidadmedida'].reset(this.productoEditar.unidadMedida);
+      this._estilosServices.eliminarEstiloInput('cmbunidadmedida', 'is-empty');
+    } else {
+      this.productosIndividualformGroup.controls['cmbunidadmedida'].reset('');
+      this._estilosServices.agregarEstiloInput('cmbunidadmedida', 'is-empty');
+    }
+    if (tipo === 'B') {
+      this.productosIndividualformGroup.controls['cmbunidadmedida'].enable(true);
+      this.productosIndividualformGroup.controls['cmbunidadmedida'].setValidators([Validators.required]);
+      $('#' + 'cmbunidadmedida').parent().children('label').append('<span class=\'star\'>*</span>');
+    } else {
+      this.productosIndividualformGroup.controls['cmbunidadmedida'].disable(true);
+      this.productosIndividualformGroup.controls['cmbunidadmedida'].setValidators([]);
+      $('#' + 'cmbunidadmedida').parent().children('label').children('span').remove();
+      this._estilosServices.agregarEstiloInput('cmbunidadmedida', 'is-empty');
+    }
   }
 
   public seleccionarTipoIsc() {
@@ -201,10 +222,14 @@ export class BienesServiciosIndividualComponent implements OnInit {
   editar() {
     if (this.txtBotonEditar === 'editar') {
       this.productosIndividualformGroup.enable(true);
+      this.productosIndividualformGroup.markAsUntouched();
+      this.cambioTipoItem();
       this.txtBotonEditar = 'guardar';
     } else {
       this.fillProductoUpdate();
       this.productosServices.actualizarProducto(this.productoUpdate);
-    }
+      this.limpiar();
+      this.regresar();
+  }
   }
 }

@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Servidores} from '../servidores';
 import {HttpClient, HttpParams} from '@angular/common/http';
-import {TABLA_MAESTRA_TIPO_DOCUMENTO, TablaMaestra} from '../../models/documento/tablaMaestra';
+import {TABLA_MAESTRA_TIPO_DOCUMENTO, TablaMaestra, ID_ENTIDAD_DEFECTO, TABLA_MAESTRA_UNIDADES_MEDIDA} from '../../models/documento/tablaMaestra';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import { error } from 'util';
 import { SpinnerService } from 'app/service/spinner.service';
@@ -11,12 +11,13 @@ export class TablaMaestraService {
   private url: string = '/maestra';
   private buscar: string = '/search';
   private filtro: string = '/filtros';
+  private filtrosEspeciales: string = '/filtrosespeciales';
 
   constructor(private servidores: Servidores,
               private httpClient: HttpClient,
-private _spinner: SpinnerService) {
-    //this.url = this.servidores.AFEDOCUQRY + this.url;
-    this.url = "http://localhost:3000/v1" + this.url;
+              private _spinner: SpinnerService
+            ) {
+    this.url = this.servidores.AFEDOCUQRY + this.url;
   }
 
   obtenerTodoTablaMaestra(): BehaviorSubject<TablaMaestra[]> {
@@ -32,10 +33,24 @@ private _spinner: SpinnerService) {
 
   obtenerPorIdTabla(id: number): BehaviorSubject<TablaMaestra[]> {
     const listaTablaMaestra: BehaviorSubject<TablaMaestra[]> = new BehaviorSubject<TablaMaestra[]>([]);
-    const parametros = new HttpParams()
-      .set('tabla', id.toString());
+    // const parametros = new HttpParams()
+    //   .set('tabla', id.toString())
+    //   .set('idEntidadDefecto', ID_ENTIDAD_DEFECTO);
+
+    let parametros;
+    let urlConsulta: string;
+    if (id === TABLA_MAESTRA_UNIDADES_MEDIDA) {
+        parametros = new HttpParams()
+            .set('tabla', id.toString())
+            .set('idEntidadDefecto', ID_ENTIDAD_DEFECTO)
+        urlConsulta = this.url + this.buscar + this.filtrosEspeciales;
+    } else {
+        parametros = new HttpParams()
+            .set('tabla', id.toString());
+        urlConsulta = this.url + this.buscar + this.filtro;
+    }
     this._spinner.set(true);
-    this.httpClient.get<TablaMaestra[]>(this.url + this.buscar + this.filtro, {
+    this.httpClient.get<TablaMaestra[]>(urlConsulta, {
       params: parametros
     }).take(1).subscribe(
       data => {

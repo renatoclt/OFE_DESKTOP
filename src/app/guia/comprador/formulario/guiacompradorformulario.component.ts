@@ -1,15 +1,19 @@
-import {ActivatedRoute, Params, Router} from '@angular/router';
-import {AfterViewInit, ChangeDetectorRef, Component, OnChanges, OnInit, SimpleChanges} from '@angular/core';
-import {Guia} from "app/model/guia";
-import {Archivo} from "app/model/archivo";
-import {MasterService} from '../../../service/masterservice';
-import {GuiaService} from "app/service/guiaservice";
-import {AppUtils} from "../../../utils/app.utils";
-import {ComboItem} from "app/model/comboitem";
-import {AdjuntoService} from "app/service/adjuntoservice";
+import { Router, ActivatedRoute, Params } from '@angular/router';
+import { Component, OnInit, OnChanges, AfterViewInit, SimpleChanges } from '@angular/core';
+import { DetalleOrdenCompra } from "app/model/detalleordencompra";
+import { BuscarOrdenCompra } from "app/model/buscarordencompra";
+import { ClienteBuscar } from "app/model/cliente";
+import { Guia } from "app/model/guia";
+import { Archivo } from "app/model/archivo";
+import { MasterService } from '../../../service/masterservice';
+import { GuiaService } from "app/service/guiaservice";
+import { AppUtils } from "../../../utils/app.utils";
+import { ComboItem } from "app/model/comboitem";
+import { AdjuntoService } from "app/service/adjuntoservice";
 import '../../../../assets/js/plugins/jquery.PrintArea.js';
-import {LoginService} from '../../../service/login.service';
-import {Boton} from 'app/model/menu';
+import { LoginService } from '../../../service/login.service';
+import { Boton } from 'app/model/menu';
+import { ChangeDetectorRef } from '@angular/core';
 
 declare interface DataTable {
   headerRow: string[];
@@ -284,16 +288,17 @@ export class GuiaCompradorFormularioComponent implements OnInit, OnChanges, Afte
 function cargarOrdenCompraDT() {
 
   dtArticulos = $('#dtArticulos').DataTable({
-
-    /* ajax: {
+    order: [[1,"asc"],[2,"asc"]],
+     /*
+     ajax: {
        "url": "https://jsonplaceholder.typicode.com/posts",
        "dataSrc": ""
-     },*/
+     },
+     */
 
     "ajax": function (data, callback, settings) {
       let result = {
         data: oGuiaCompradorFormularioComponent.guia.articulos
-
       };
       callback(
         result
@@ -308,18 +313,11 @@ function cargarOrdenCompraDT() {
       { data: 'unidadmedida' },
       { data: 'cantidadpedido' },
       { data: 'cantidadrecibida' },
-      { data: 'cantidadpedido' },
+      { data: 'cantidaddespachada' },
       { data: 'unidadmedidadespacho' },
-
-
       { data: 'estado' },
-
-
-
-
     ],
     columnDefs: [
-
       { "className": "text-center", "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] },
     ]
   });

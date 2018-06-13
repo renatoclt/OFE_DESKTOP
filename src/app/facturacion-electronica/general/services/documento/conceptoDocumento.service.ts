@@ -4,7 +4,6 @@ import {Servidores} from '../servidores';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {ConceptoDocumento} from '../../models/documento/conceptoDocumento';
 import {TablaMaestra} from '../../models/documento/tablaMaestra';
-import { OrganizacionDTO } from '../../models/organizacion/entidad';
 
 @Injectable()
 export class ConceptoDocumentoService {
@@ -12,7 +11,7 @@ export class ConceptoDocumentoService {
 
   constructor( private httpClient: HttpClient,
                private servidores: Servidores) {
-    this.url = this.servidores.HOSTLOCAL + this.url;
+    this.url = this.servidores.AFEDOCUQRY + this.url;
   }
 
   obtenerTodosConceptosDocumentos(): BehaviorSubject<ConceptoDocumento[]> {
@@ -35,12 +34,5 @@ export class ConceptoDocumentoService {
       }
     );
     return listaNuevaItems;
-  }
-
-  public guardarOrganizacion(organizacion : OrganizacionDTO){
-    let urlGuardarOrganizacion: string =  this.servidores.HOSTLOCAL + '/entidad/guardarEntidad';
-    let organizacionRpta: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
-    this.httpClient.post<OrganizacionDTO>(urlGuardarOrganizacion, organizacion ).subscribe();
-    return organizacionRpta;
   }
 }

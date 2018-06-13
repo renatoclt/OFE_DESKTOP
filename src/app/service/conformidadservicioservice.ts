@@ -1,15 +1,15 @@
-import {Injectable} from '@angular/core';
-import {Headers, Http, RequestOptions, Response} from '@angular/http';
+import { Injectable } from '@angular/core';
+import { Http, Response, RequestOptions, Headers } from '@angular/http';
 import 'rxjs/add/operator/map'
-import {Observable} from 'rxjs/Observable';
+import { Observable } from 'rxjs/Observable';
 
-import {ConformidadServicio, Servicio} from "app/model/conformidadservicio";
+import { ConformidadServicio, Servicio } from "app/model/conformidadservicio";
+import { ResponseError } from '../model/responseerror';
 /*import { Configuration } from '../app.constants';*/
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
-import {AppUtils} from "app/utils/app.utils";
-import {URL_DETALLE_HAS} from 'app/utils/app.constants';
-
+import { AppUtils } from "app/utils/app.utils";
+import { URL_DETALLE_HAS } from 'app/utils/app.constants';
 declare var DatatableFunctions: any;
 @Injectable()
 export class ConformidadServicioService {
@@ -75,6 +75,7 @@ export class ConformidadServicioService {
           nroitem: (numItem++)+ '',
           nroordenservicio: item.NumeroOC?item.NumeroOC:'',
           nroitemordenservicio: item.NumeroItemOC?item.NumeroItemOC:'',
+          nroitemhas: item.NumeroItemHas?item.NumeroItemHas:'',
           descripcion: ('DescripcionItem' in item) ? item.DescripcionItem : ''  ,
           estado: item.Estado,
           cantidad: DatatableFunctions.FormatNumber(item.CantidadItem),
@@ -86,7 +87,7 @@ export class ConformidadServicioService {
           IdServicioxHAS: item.IdServicioxHAS,
           IdTablaUnidad: item.IdTablaUnidad,
           IdRegistroUnidad: item.IdRegistroUnidad,
-          NumeroParte: ('NumeroParte' in item) ? item.NumeroParte : '',
+          NumeroParte: ('NumeroParte' in item) ? item.NumeroParte : '', 
           IdHAS: item.IdHAS,
           cantidadatendida: ('CantidadAtendida' in item) ? item.CantidadAtendida : '',
           PrecioItem : item.PrecioItem
@@ -127,7 +128,7 @@ export class ConformidadServicioService {
   private handleError(error: Response | any) {
 
     console.error('handleError', error.message || error);
-    let  data= error ? error.json() || {} : {};
+    let  data= error ? error.json() || {} : {};     
     if (data && data.error && data.error === "invalid_token")
       DatatableFunctions.logout();
     return Observable.throw(error.message || error);
@@ -141,7 +142,7 @@ export class ConformidadServicioService {
     headers.append('Accept', 'application/json');
     headers.append('origen_datos', 'PEB2M');
     headers.append("tipo_empresa", localStorage.getItem('tipo_empresa'));
-    headers.append('org_id', localStorage.getItem('org_id'));
+    headers.append('org_id', localStorage.getItem('org_id'));    
     /*
     if (tipo_empresa != "") {
       headers.append("tipo_empresa", tipo_empresa);

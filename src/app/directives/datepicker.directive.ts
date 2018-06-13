@@ -1,5 +1,5 @@
-import {Directive, ElementRef, forwardRef, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
-import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
+import {Directive, ElementRef, forwardRef, OnInit} from '@angular/core';
+import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 
 declare var $: any;
 
@@ -11,18 +11,10 @@ declare var $: any;
     multi: true
   }]
 })
-export class DatePickerDirective implements OnInit, OnChanges, ControlValueAccessor {
+export class DatePickerDirective implements OnInit, ControlValueAccessor {
   value: string;
-  @Input('disabled') disabled;
-  constructor(protected el: ElementRef) {
-    this.disabled = false;
-  }
-  ngOnChanges(cambios: SimpleChanges) {
-    this.el.nativeElement.disabled = cambios.disabled.currentValue;
-  }
-
+  constructor(protected el: ElementRef) { }
   ngOnInit() {
-    this.el.nativeElement.disabled = this.disabled;
     $(this.el.nativeElement).datetimepicker({
       format: 'DD/MM/YYYY',
       showTodayButton: true,
@@ -73,25 +65,26 @@ export class DatePickerDirective implements OnInit, OnChanges, ControlValueAcces
         togglePeriod: 'Toggle Period',
         selectTime: 'Seleccionar Hora'
       }
-    }).on("dp.change",
-
+    }).on("dp.change", 
+    
     e => {
       this.onModelChange(e.target.value);
       $(e.target).keydown();
-
+     
       if (!(e.date))
         $(e.target.parentElement).addClass( "is-empty" )
     }
   );
   }
 
-  onModelChange: Function = () => {
-
+  onModelChange: Function = () => { 
+    
   };
 
   onModelTouched: Function = () => { };
 
   writeValue(val: string): void {
+
     if ($(this.el.nativeElement).data("DateTimePicker") && $(this.el.nativeElement).data("DateTimePicker").date)
       $(this.el.nativeElement).data("DateTimePicker").date(val);
     this.value = val;

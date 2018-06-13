@@ -8,6 +8,7 @@ import {BasePaginacion} from '../base.paginacion';
 import {ProductoQry} from '../../models/productos/producto';
 import {PrecioPipe} from '../../pipes/precio.pipe';
 import {ProductoUpdate} from '../../models/productos/producto-update';
+import {Observable} from 'rxjs/Observable';
 declare var swal: any;
 @Injectable()
 
@@ -38,7 +39,7 @@ export class ProductoServices {
                private _precioPipe: PrecioPipe) {
     this.itemAEditar = new BehaviorSubject(null);
     this.pathProductoCmd = '/productos';
-    this.urlProductoCmd = this.servidores.HOSTLOCAL + this.pathProductoCmd;
+    this.urlProductoCmd = this.servidores.INVECMD + this.pathProductoCmd;
 
     this.pathProductos = '/productos';
     this.pathSearch = '/search';
@@ -51,9 +52,9 @@ export class ProductoServices {
 
     this.TIPO_ATRIBUTO_FILTRO_QRY = 'productos';
 
-    this.urlCodigoQry = servidores.HOSTLOCAL + this.pathProductos + this.pathSearch + this.pathCodigos;
-    this.urlFiltroQry = this.servidores.HOSTLOCAL + this.pathProductos + this.pathSearch + this.pathFiltros;
-    this.urlEliminarProductos = this.servidores.HOSTLOCAL + this.pathEliminarProductos;
+    this.urlCodigoQry = servidores.INVEQRY + this.pathProductos + this.pathSearch + this.pathCodigos;
+    this.urlFiltroQry = this.servidores.INVEQRY + this.pathProductos + this.pathSearch + this.pathFiltros;
+    this.urlEliminarProductos = this.servidores.INVECMD + this.pathEliminarProductos;
   }
 
   subirProcutoIndividual(producto: ProductosIndividuales) {
@@ -68,7 +69,7 @@ export class ProductoServices {
             html:
               '<div class="text-center">El Producto se creó exitósamente.</div>',
             confirmButtonClass: 'btn btn-success',
-            confirmButtonText: 'Sí',
+            confirmButtonText: 'Continuar',
             buttonsStyling: false
           });
         },
@@ -84,20 +85,18 @@ export class ProductoServices {
       );
   }
 
-  buscarPorCodigo(codigo: string, pagina: number = this.paginaBusqueda, limite: number = this.limiteBusqueda): BehaviorSubject<ProductoQry[]> {
-    const productosLista = new BehaviorSubject<ProductoQry[]>([]);
+  buscarPorCodigo(codigo: string, tipoProducto: string, pagina: number = this.paginaBusqueda, limite: number = this.limiteBusqueda): Observable<ProductoQry[]> {
     const parametros = new HttpParams()
+      .set('identidad', localStorage.getItem('id_entidad'))
       .set('codigo', codigo)
-      .set('pagina', pagina.toString())
-      .set('limite', limite.toString())
-    this.httpClient.get<ProductoQry[]>(this.urlCodigoQry, {
+      .set('tipo_producto', tipoProducto);
+    return this.httpClient.get<ProductoQry[]>(this.urlCodigoQry, {
       params: parametros
-    }).subscribe(
+    }).map(
       data => {
-        productosLista.next(data['_embedded']['productos']);
+        return data['_embedded']['productos'];
       }
     );
-    return productosLista;
   }
 
   get<T>(
@@ -132,6 +131,27 @@ export class ProductoServices {
               item['precioUnitario'] = this._precioPipe.transform(item['precioUnitario']);
               item['montoIsc'] = this._precioPipe.transform(item['montoIsc']);
               item['unidadMedida'] = item['unidadMedida'].trim();
+              item['tipoProducto'] = (item['tipoProducto'] == 'B' )?'Bien': 'Servicio';
+              //item['tipoIsc'] = item['unidadMedida'].trim();
+              switch (item['idTipoCalc']) {
+                  case 1:
+                    item['idTipoCalc'] = "No tiene";
+                    break;
+                  case 2:
+                      item['idTipoCalc'] = "Sistema al Valor";
+                      break;
+                  case 3:
+                      item['idTipoCalc'] = "Aplicación del Monto Fijo ";
+                      break;
+                  case 4:
+                      item['idTipoCalc'] = "Sistema de Precios de Venta al Público";
+                      break;
+                  default:
+                      console.log('ID TIPO CALCULO');
+                      console.log(typeof (item['idTipoCalc']));
+                      console.log(item['idTipoCalc']);
+                      break;
+              }
             }
           );
           return data;
@@ -179,7 +199,7 @@ export class ProductoServices {
           html:
             '<div class="text-center">El Producto se guardo exitósamente.</div>',
           confirmButtonClass: 'btn btn-success',
-          confirmButtonText: 'Sí',
+          confirmButtonText: 'Continuar',
           buttonsStyling: false
         });
       },
@@ -217,7 +237,7 @@ export class ProductoServices {
           html:
             '<div class="text-center">Se eliminaron los productos.</div>',
           confirmButtonClass: 'btn btn-success',
-          confirmButtonText: 'Sí',
+          confirmButtonText: 'Continuar',
           buttonsStyling: false
         });
         respuesta.next(true);

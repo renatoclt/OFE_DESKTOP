@@ -1,15 +1,15 @@
-import {Injectable} from '@angular/core';
-import {Headers, Http, RequestOptions, Response} from '@angular/http';
+import { Injectable } from '@angular/core';
+import { Http, Response, RequestOptions, Headers } from '@angular/http';
 import 'rxjs/add/operator/map'
-import {Observable} from 'rxjs/Observable';
+import { Observable } from 'rxjs/Observable';
 
-import {Retenciones, Servicio} from "app/model/retenciones";
+import { Retenciones, Servicio } from "app/model/retenciones";
+import { ResponseError } from '../model/responseerror';
 /*import { Configuration } from '../app.constants';*/
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
-import {AppUtils} from "app/utils/app.utils";
-import {URL_DETALLE_RETENCIONES} from 'app/utils/app.constants';
-
+import { AppUtils } from "app/utils/app.utils";
+import { URL_DETALLE_RETENCIONES} from 'app/utils/app.constants';
 declare var DatatableFunctions: any;
 @Injectable()
 export class retencionesService {
@@ -47,10 +47,10 @@ export class retencionesService {
 
     let cs: Retenciones = {
 
+      
 
 
-
-
+     
     };
 
     if (objeto_json.data.ItemRetenciones) {
@@ -58,7 +58,7 @@ export class retencionesService {
       for (let item of objeto_json.data.ItemRetenciones) {
         let p: Servicio = {
 
-
+        
         }
 
         cs.productos.push(p);
@@ -67,7 +67,7 @@ export class retencionesService {
             p.tienesubitem=true;
             let sub: Servicio = {
 
-
+           
             }
 
             cs.productos.push(sub);
@@ -101,7 +101,8 @@ export class retencionesService {
 
     headers.append('org_id', sessionStorage.getItem('org_id'));
     headers.append('Authorization', 'Bearer ' + sessionStorage.getItem('token_oc'));
-    headers.append('Access-Control-Allow-Origin', '*');
+    // headers.append('Access-Control-Allow-Origin', '*');
+
     headers.append("Ocp-Apim-Subscription-Key", sessionStorage.getItem('Ocp_Apim_Subscription_Key'));
     return headers;
   }

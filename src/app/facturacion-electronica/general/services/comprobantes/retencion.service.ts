@@ -9,7 +9,6 @@ import { ArchivoMasiva } from '../../../percepcion-retencion/models/archivoMasiv
 import { ConsultaDocumentoQuery } from '../../models/consultaDocumentoQuery';
 import { SpinnerService } from 'app/service/spinner.service';
 import { error } from 'util';
-import { OrganizacionDTO } from '../../models/organizacion/entidad';
 
 
 @Injectable()
@@ -21,15 +20,13 @@ export class RetencionService {
     private urlConsultaDocumentos: string = '/ms-documentos-query/v1/archivosmasivos';
     private consultaDocumentos: string = '/search';
     private filtro: string = '/filtros';
-    private urlGuardarOrganizacion: string = '/entidad/guardarEntidad'
-   public dataArchivosMasiva: BehaviorSubject<ArchivoMasiva[]> = new BehaviorSubject<ArchivoMasiva[]>([]);
+    public dataArchivosMasiva: BehaviorSubject<ArchivoMasiva[]> = new BehaviorSubject<ArchivoMasiva[]>([]);
 
 
     constructor(private httpClient: HttpClient,
         private servidores: Servidores,
         public paginacion: BasePaginacion,
         public _spinner: SpinnerService) {
-            this.urlGuardarOrganizacion = this.servidores.HOSTLOCAL + this.urlGuardarOrganizacion;
     }
 
     get(params: HttpParams, url: string = this.url) {
@@ -132,15 +129,9 @@ export class RetencionService {
         const parametros = new HttpParams()
             .set('id', uuid);
 
-        let urlDefecto = this.servidores.HOSTLOCAL + this.url_documento;
+        let urlDefecto = this.servidores.DOCUQRY + this.url_documento;
         // 'http://192.168.70.21:8081/api/fe/ms-documentos-query/v1/documento';
         //  let urlDefecto = 'http://35.225.238.222:8081/api/fe/ms-documentos-query/v1/documento/query';
         return this.buscarDefecto(parametros, urlDefecto);
-    }
-
-    public guardarOrganizacion(organizacion : OrganizacionDTO){
-        let organizacionRpta: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
-        this.httpClient.post<OrganizacionDTO>(this.urlGuardarOrganizacion, organizacion ).subscribe();
-        return organizacionRpta;
     }
 }

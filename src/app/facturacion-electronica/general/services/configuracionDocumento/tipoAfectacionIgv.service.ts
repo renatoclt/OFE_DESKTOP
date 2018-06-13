@@ -16,7 +16,7 @@ export class TipoAfectacionIgvService {
                 private _spinner: SpinnerService,
                 private _mensaje: MensajeService
               ) {
-    this.url = this.servidores.HOSTLOCAL + this.url;
+    this.url = this.servidores.AFEDOCUQRY + this.url;
   }
 
   obtenerTodosTiposAfectacionIgv(): BehaviorSubject<TipoAfectacionIgv[]> {

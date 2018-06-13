@@ -7,6 +7,8 @@ import {Subscription} from 'rxjs/Subscription';
 import {SeriesQuery} from '../../models/series-query';
 import {SeriesCrear} from '../../models/series-crear';
 import {SeriesService} from '../../../general/services/configuracionDocumento/series.service';
+import {TiposService} from '../../../general/utils/tipos.service';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-series-crear-editar',
@@ -17,41 +19,73 @@ export class SeriesCrearEditarComponent implements OnInit, OnDestroy {
 
   public seriesFormGroup: FormGroup;
   @Input() idModal: string;
+  @Input() tituloModal: string;
+  @Input() idAccionModal: string;
   @ViewChild('modalEditar') modalEditar: ElementRef;
 
   nombreBotonGuardar: BehaviorSubject<string>;
   serieEditarSubscription: Subscription;
   editar: BehaviorSubject<boolean>;
   serieEditar: SeriesQuery;
+  esComprobanteRestringido: boolean;
 
   constructor(private _configuracionEmpresaService: ConfiguracionEmpresaService,
               private _seriesService: SeriesService,
+              private _tiposService: TiposService,
+              private route: ActivatedRoute,
               private _estilosService: EstilosServices) { }
 
   ngOnInit() {
     this.editar = new BehaviorSubject(false);
     this.nombreBotonGuardar = new BehaviorSubject('agregarItem');
-    this.iniciarFormGroup();
-    this.escucharEventos();
+    // this.iniciarFormGroup();
+    // this.escucharEventos();
     this.serieEditar = null;
+    this.route
+      .params
+      .subscribe(params => {
+        this.verificarComprobantes(params['id']);
+      });
     this.serieEditarSubscription = this._configuracionEmpresaService.serieEditar.subscribe(
       serie => {
-        this.limpiarFormGroup();
+        // this.limpiarFormGroup();
         if (serie) {
           this.serieEditar = serie;
           this.nombreBotonGuardar.next('editar');
           this.editar.next(true);
           this.cargarDatosEnFormGroup();
         } else {
+          this.limpiarFormGroup();
+          this.seriesFormGroup.controls['checkBoxTipoSerie'].setValue(true);
           this.nombreBotonGuardar.next('agregarItem');
           this.editar.next(false);
-          this.seriesFormGroup.enable(true);
+          if (!this.esComprobanteRestringido) {
+            this.seriesFormGroup.enable(true);
+          }
         }
       }
     );
   }
 
+  verificarComprobantes(tipoDocumento: string) {
+    console.log(tipoDocumento);
+    const seriesConRestricciones = [
+      this._tiposService.TIPO_DOCUMENTO_COMUNICACION_BAJA_RETENCIONES_PERCEPCIONES,
+      this._tiposService.TIPO_DOCUMENTO_RESUMEN_BOLETAS,
+      this._tiposService.TIPO_DOCUMENTO_COMUNICACION_BAJA_FACTURA_BOLETA_NOTAS
+    ];
+    this.esComprobanteRestringido = seriesConRestricciones.findIndex(item => item === tipoDocumento) !== -1;
+    if (this.esComprobanteRestringido) {
+      console.log('entro');
+      this.iniciarFormGroup(true);
+    } else {
+      this.iniciarFormGroup();
+      this.escucharEventos();
+    }
+  }
+
   escucharEventos() {
+    console.log('ENTRO VALIDACION TIPO SERIE')
     this.seriesFormGroup.controls['checkBoxTipoSerie'].valueChanges.subscribe(
       valor => {
         this.verificarTipoSerie();
@@ -68,7 +102,7 @@ export class SeriesCrearEditarComponent implements OnInit, OnDestroy {
         this.seriesFormGroup.controls['txtDireccionMac'].disable(true);
       }
     } else {
-      this.seriesFormGroup.controls['txtDireccionMac'].setValidators([Validators.required]);
+      // this.seriesFormGroup.controls['txtDireccionMac'].setValidators([Validators.required]);
       if (!this.editar.value) {
         this.seriesFormGroup.controls['txtDireccionMac'].enable(true);
         this.seriesFormGroup.controls['txtDireccionMac'].markAsTouched();
@@ -80,20 +114,27 @@ export class SeriesCrearEditarComponent implements OnInit, OnDestroy {
     if (this.serieEditarSubscription) {
       this.serieEditarSubscription.unsubscribe();
     }
+    this.limpiarFormGroup();
   }
 
-  iniciarFormGroup() {
+  iniciarFormGroup(esComprobanteRestringido: boolean = false) {
+    console.log('tipo ', esComprobanteRestringido);
     this.seriesFormGroup = new FormGroup({
-      txtNombreSerie: new FormControl('', Validators.required),
-      txtNombreSucursal: new FormControl('', Validators.required),
-      txtDireccionMac: new FormControl('', Validators.required),
-      txtCorrelativoInicial: new FormControl('', Validators.required),
-      checkBoxTipoSerie: new FormControl(false)
+      txtNombreSerie: new FormControl({value: '', disabled: false}, [Validators.required]),
+      txtNombreSucursal: new FormControl({value: '', disabled: this.esComprobanteRestringido}, this.esComprobanteRestringido ? [] : [Validators.required]),
+      // txtDireccionMac: new FormControl({value: '', disabled: this.esComprobanteRestringido}, this.esComprobanteRestringido ? [] : [Validators.required]),
+      txtDireccionMac: new FormControl({value: '', disabled: this.esComprobanteRestringido}),
+      txtCorrelativoInicial: new FormControl({value: this.esComprobanteRestringido ? '1' : '', disabled: this.esComprobanteRestringido}, this.esComprobanteRestringido ? [] : [Validators.required]),
+      checkBoxTipoSerie: new FormControl({value: false, disabled: this.esComprobanteRestringido})
     });
   }
 
   abrirModal() {
     $('#' + this.idModal).modal('show');
+  }
+
+  cerrarModal() {
+    $('#' + this.idModal).modal('hide');
   }
 
   limpiarFormGroup() {
@@ -126,12 +167,45 @@ export class SeriesCrearEditarComponent implements OnInit, OnDestroy {
     if (this.editar.value) {
       this.editar.next(false);
       this.nombreBotonGuardar.next('guardar');
-      this.seriesFormGroup.enable(true);
+      if (this.esComprobanteRestringido) {
+        this.seriesFormGroup.controls['txtNombreSerie'].enable(true);
+      } else {
+        this.seriesFormGroup.controls['txtNombreSucursal'].enable(true);
+        // this.seriesFormGroup.controls['txtNombreSucursal'].enable(true);
+        // this.seriesFormGroup.enable(true);
+      }
+      if (this.serieEditar.tipoSerie == 0) {
+        this.seriesFormGroup.controls['checkBoxTipoSerie'].enable();
+      }
     } else {
       if (this.serieEditar) {
-        this._seriesService.actualizarSerie(this.cargarDatosModificarSerie());
+        this._seriesService.actualizarSerie(this.cargarDatosModificarSerie()).subscribe(
+          data => {
+            if (data) {
+              this._configuracionEmpresaService.actualizarTabla.next(true);
+              this.cerrarModal();
+            } else {
+              this._configuracionEmpresaService.actualizarTabla.next(false);
+            }
+          },
+          error => {
+            this._configuracionEmpresaService.actualizarTabla.next(false);
+          }
+        );
       } else {
-        this._seriesService.crearSerie(this.cargarDatosCrearSerie());
+        this._seriesService.crearSerie(this.cargarDatosCrearSerie()).subscribe(
+          data => {
+            if (data) {
+              this._configuracionEmpresaService.actualizarTabla.next(true);
+              this.cerrarModal();
+            } else {
+              this._configuracionEmpresaService.actualizarTabla.next(false);
+            }
+          },
+          error => {
+            this._configuracionEmpresaService.actualizarTabla.next(false);
+          }
+        );
       }
     }
   }
@@ -141,22 +215,24 @@ export class SeriesCrearEditarComponent implements OnInit, OnDestroy {
     serie.idEntidad = Number(localStorage.getItem('id_entidad'));
     serie.correlativo = this.seriesFormGroup.controls['txtCorrelativoInicial'].value;
     serie.direccion = this.seriesFormGroup.controls['txtNombreSucursal'].value;
-    serie.direccionMac = this.seriesFormGroup.controls['txtDireccionMac'].value;
+    serie.direccionMac = this.seriesFormGroup.controls['txtDireccionMac'].value ? this.seriesFormGroup.controls['txtDireccionMac'].value : '';
     serie.idTipoDocumento = this._configuracionEmpresaService.tipoSerie.value;
     serie.serie = this.seriesFormGroup.controls['txtNombreSerie'].value;
-    serie.tipoSerie = this.seriesFormGroup.controls['checkBoxTipoSerie'].value;
+    serie.tipoSerie = this.seriesFormGroup.controls['checkBoxTipoSerie'].value ? 1 : 0;
     return serie;
   }
 
   cargarDatosModificarSerie() {
     const serie = new SeriesQuery();
     serie.idEntidad = Number(localStorage.getItem('id_entidad'));
+    serie.idSerie = this.serieEditar.idSerie;
+    serie.estado = this.serieEditar.estado;
     serie.correlativo = this.seriesFormGroup.controls['txtCorrelativoInicial'].value;
     serie.direccion = this.seriesFormGroup.controls['txtNombreSucursal'].value;
-    serie.direccionMac = this.seriesFormGroup.controls['txtDireccionMac'].value;
+    serie.direccionMac = this.seriesFormGroup.controls['txtDireccionMac'].value ? this.seriesFormGroup.controls['txtDireccionMac'].value : '';
     serie.idTipoDocumento = this._configuracionEmpresaService.tipoSerie.value;
     serie.serie = this.seriesFormGroup.controls['txtNombreSerie'].value;
-    serie.tipoSerie = this.seriesFormGroup.controls['checkBoxTipoSerie'].value;
+    serie.tipoSerie = this.seriesFormGroup.controls['checkBoxTipoSerie'].value ? 1 : 0;
     return serie;
   }
 

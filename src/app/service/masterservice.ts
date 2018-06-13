@@ -1,12 +1,13 @@
-import {Injectable} from '@angular/core';
-import {Headers, Http, RequestOptions, Response} from '@angular/http';
+import { Injectable } from '@angular/core';
+import { Http, Response, RequestOptions, Headers } from '@angular/http';
 import 'rxjs/add/operator/map'
-import {Observable} from 'rxjs/Observable';
+import { Observable } from 'rxjs/Observable';
+
+import { ResponseError } from '../model/responseerror';
 /*import { Configuration } from '../app.constants';*/
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
 import {BASE_URL} from 'app/utils/app.constants';
-
 declare var DatatableFunctions: any;
 @Injectable()
 export class MasterService {
@@ -16,7 +17,7 @@ export class MasterService {
   private urlList: string = BASE_URL +'maestro/msmaestro/v1/params/?idorganizacion=%s&idtabla=%s&portal=PEB2M';
   private urlListTipo: string = BASE_URL +'maestro/msmaestro/v1/params/?idorganizacion=%s&idtabla=%s&tipo=%s&portal=PEB2M';
   private urlListJerarquia: string = BASE_URL +'maestro/msmaestro/v1/params/?idorganizacion=%s&idtabla=%s&portal=PEB2M&idtablapadre=%s&idregistropadre=%s';
-
+  private url: string = BASE_URL+'administracion/msparambusqueda/v1/parametro/paramxregla/?Reglanegocio=FACTORING&column_names=NombreParametro,Idreglaxparametro'
 
 
   constructor(private http: Http) {
@@ -26,6 +27,14 @@ export class MasterService {
 
     let items$ = this.http
       .get(this.urlList.replace(/%s/, vc_org).replace(/%s/, vc_id_tabla), { headers: this.getHeaders() })
+      .map(this.extractData)
+      .catch(this.handleError);
+    return items$;
+  }
+
+  listarParametros(vc_org: string, vc_id_tabla: string): Observable<any> {
+    let items$ = this.http
+      .get(this.url.replace(/%s/, vc_org).replace(/%s/, vc_id_tabla), { headers: this.getHeaders() })
       .map(this.extractData)
       .catch(this.handleError);
     return items$;
@@ -64,7 +73,7 @@ export class MasterService {
   private handleError(error: Response | any) {
     //console.error(error.message || error);
     console.error('handleError', error.message || error);
-    let  data= error ? error.json() || {} : {};
+    let  data= error ? error.json() || {} : {};     
     if (data && data.error && data.error === "invalid_token")
       DatatableFunctions.logout();
     return Observable.throw(error.message || error);
@@ -75,11 +84,11 @@ export class MasterService {
     // will request text/html
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    headers.append('Accept', 'application/json');
+    headers.append('Accept', 'application/json');    
     headers.append('origen_datos', 'PEB2M');
     headers.append("tipo_empresa", localStorage.getItem('tipo_empresa'));
     headers.append('org_id', localStorage.getItem('org_id'));
-
+    
     headers.append('Authorization', 'Bearer ' + localStorage.getItem('access_token'));
     headers.append("Ocp-Apim-Subscription-Key", localStorage.getItem('Ocp_Apim_Subscription_Key'));
     return headers;

@@ -1,5 +1,4 @@
-import {Archivo} from "app/model/archivo";
-
+import { Archivo } from "app/model/archivo";
 export class Guia {
   constructor() {
     this.fechaemision = null;
@@ -13,6 +12,7 @@ export class Guia {
   }
   id: string;
   idorgcompradora?: string;
+  idorgcompradora2:string;
   nroguia: string;
   nroguia1: string;
   nroguia2: string;
@@ -27,6 +27,7 @@ export class Guia {
   motivoguia_text?: string;
   observaciones: string;
   motivorechazosap: string;
+  motivoerrorsap: string;
   tipodoctransporte: string;
   tipoguia?: string;
   tipodoctransporte_text?: string;
@@ -74,6 +75,7 @@ export class Articulo {
   cantidadatendida?: string;
   precioitemoc?: string;
   subtotalitemoc?: string;
+  subtotalitemguia?: string;
   cantidadrecibida?: string;
   cantidaddespachada?: string;
   unidadmedidadespacho?: string;
@@ -87,6 +89,7 @@ export class Articulo {
   destino?: string;
   estado: string;
   CodigoGuiaERP: string;
+  NumeroMaterial: string;
 
   atributos?: Atributo[];
   desccorta?: string;

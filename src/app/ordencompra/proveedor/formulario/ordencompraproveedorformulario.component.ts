@@ -1,16 +1,18 @@
-import {ActivatedRoute, Params, Router} from '@angular/router';
-import {AfterViewInit, ChangeDetectorRef, Component, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import { Router, ActivatedRoute, Params } from '@angular/router';
+import { Component, OnInit, OnChanges, AfterViewInit, SimpleChanges } from '@angular/core';
 
-import {MomentModule} from 'angular2-moment/moment.module';
-import {AppUtils} from "../../../utils/app.utils";
-import {MasterService} from '../../../service/masterservice';
-import {ComboItem} from "app/model/comboitem";
-import {Atributo, CambioEstado, OrdenCompra, Producto} from "app/model/ordencompra";
+import { MomentModule } from 'angular2-moment/moment.module';
+import { AppUtils } from "../../../utils/app.utils";
+import { MasterService } from '../../../service/masterservice';
+import { ComboItem } from "app/model/comboitem";
+import { OrdenCompra, CambioEstado, Atributo, Producto } from "app/model/ordencompra";
+import { AppSettings } from "app/base/appSettings";
 
 import '../../../../assets/js/plugins/jquery.PrintArea.js';
-import {OrdenCompraService} from "app/service/ordencompraservice";
-import {LoginService} from '../../../service/login.service';
-import {Boton} from 'app/model/menu';
+import { OrdenCompraService } from "app/service/ordencompraservice";
+import { LoginService } from '../../../service/login.service';
+import { Boton } from 'app/model/menu';
+import { ChangeDetectorRef } from '@angular/core';
 
 declare var moment: any;
 declare var swal: any;
@@ -100,7 +102,7 @@ export class OrdenCompraProveedorFormularioComponent implements OnInit, AfterVie
     swal({
       html: '¿Está seguro de rechazar la orden de compra? <br>' +
         'En Caso de aceptar el rechazo, por favor ingresar el motivo:<br/><br/>' +
-        '<p style="text-align:center;"/>  <textarea  id="comentarioproveedor_popup" name="comentarioproveedor_popup" style="resize: none;width:95%;  padding: 5px;min-height: 5em; overflow: auto;"' +
+        '<p style="text-align:center;"/>  <textarea  pattern="/^\s+|\s+$/" minlength="5" id="comentarioproveedor_popup" name="comentarioproveedor_popup" style="resize: none;width:95%;  padding: 5px;min-height: 5em; overflow: auto;"' +
         '    row="6"></textarea></p>',
       type: "warning",
       //html: true,
@@ -113,7 +115,7 @@ export class OrdenCompraProveedorFormularioComponent implements OnInit, AfterVie
     }).then(
       function () {
         oOrdenCompraProveedorFormularioComponent.item.comentarioproveedor = $('#comentarioproveedor_popup').val();
-        if (oOrdenCompraProveedorFormularioComponent.item.comentarioproveedor == '') {
+        if (oOrdenCompraProveedorFormularioComponent.item.comentarioproveedor == '' || /^\s+|\s+$/.test(oOrdenCompraProveedorFormularioComponent.item.comentarioproveedor) || oOrdenCompraProveedorFormularioComponent.item.comentarioproveedor.trim().length <5) {
           swal({
             text: "Por favor indique los motivos de su rechazo.",
             type: 'warning',
@@ -135,8 +137,6 @@ export class OrdenCompraProveedorFormularioComponent implements OnInit, AfterVie
                 $(this.parentElement).addClass("is-empty");
             });
           }, 100);
-
-
 
           let _cambioEstado: CambioEstado;
           _cambioEstado = new CambioEstado();
@@ -171,10 +171,6 @@ export class OrdenCompraProveedorFormularioComponent implements OnInit, AfterVie
             e => console.log(e),
             () => { });
         }
-
-
-
-
       },
       function (dismiss) {
       })

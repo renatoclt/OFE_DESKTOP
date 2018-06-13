@@ -6,7 +6,6 @@ import { SpinnerService } from "app/service/spinner.service";
 import { BehaviorSubject } from "rxjs";
 import { DocumentoQuery } from "app/facturacion-electronica/general/models/comprobantes";
 import { error } from "util";
-import { OrganizacionDTO } from "../../models/organizacion/entidad";
 
 
 @Injectable()
@@ -14,18 +13,15 @@ export class DocumentoQueryService {
 
     private urlDocumnetId: string;
     private url: string;
-    private documentoPorId: BehaviorSubject<DocumentoQuery>;
-    private urlGuardarOrganizacion: string = '/entidad/guardarEntidad'
-    
+
     constructor(
         private _httpClient: HttpClient,
         private _servidores: Servidores,
         public _paginacion: BasePaginacion,
         public _spinner: SpinnerService
     ){
-        this.url = this._servidores.HOSTLOCAL;
-        this.urlDocumnetId = '/documento?id=';
-        this.documentoPorId = '';
+        this.url = this._servidores.DOCUQRY;
+        this.urlDocumnetId = this.url + '/documento?id=';
     }
     public buscarPorUuid(uuid: string) {
         const parametros = new HttpParams()
@@ -58,34 +54,24 @@ export class DocumentoQueryService {
             },
             error => {
                 this._spinner.set(false);
-            });
+            }
+            );
         return comprobantes;
     }
     public buscarDocumenentoPorId(uuid: string): BehaviorSubject<DocumentoQuery> {
-        this.url = this.url + this.urlDocumnetId + uuid;
+        const documentoPorId: BehaviorSubject<DocumentoQuery> = new BehaviorSubject(null);
         this._spinner.set(true);
-        this._httpClient.get<DocumentoQuery>( this.url, 
-            // {responseType: 'text'}
-        )
+        this._httpClient.get<DocumentoQuery>(this.urlDocumnetId + uuid)
         .subscribe(
             data => {
                 this._spinner.set(false);
-                this.documentoPorId.next( data );
-                return this.documentoPorId;
+                documentoPorId.next(data);
             },
             error => {
                 this._spinner.set(false);
-                this.documentoPorId.next( error );
-                return this.documentoPorId;
+                documentoPorId.error(error);
             }
         );
-        return this.documentoPorId;
+        return documentoPorId;
     }
-
-    public guardarOrganizacion(organizacion : OrganizacionDTO){
-        let organizacionRpta: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
-        this._httpClient.post<OrganizacionDTO>(this.urlGuardarOrganizacion, organizacion ).subscribe();
-        return organizacionRpta;
-    }
-    
 }

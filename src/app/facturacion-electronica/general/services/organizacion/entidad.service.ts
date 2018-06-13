@@ -20,10 +20,10 @@ export class EntidadService {
                private servidores: Servidores,
                private _spinner: SpinnerService,
                private _translate: TranslateService) {
-    this.url = this.servidores.HOSTLOCAL + this.url;
+    this.url = this.servidores.ORGAQRY + this.url;
     this._translate.get('continuar').subscribe(data => this.labelContinuar = data);
   }
-//http://localhost:3000/v1/organizaciones/44734953?idTipoDocumento=
+
   buscar(parametros: HttpParams): BehaviorSubject<Entidad[]> {
     const entidades: BehaviorSubject<Entidad[]> = new BehaviorSubject<Entidad[]>([]);
     this.httpClient.get(this.url, {
@@ -50,15 +50,14 @@ export class EntidadService {
         }
       },
       error => {
-        console.log('habilitar');
         this._spinner.set(false);
-        // swal({
-        //   type: 'error',
-        //   title: 'No se encontró la organización. Inténtelo en otro momento.',
-        //   confirmButtonClass: 'btn btn-danger',
-        //   confirmButtonText: 'Sí',
-        //   buttonsStyling: false
-        // });
+        swal({
+          type: 'error',
+          title: 'No se encontró la organización. Inténtelo en otro momento.',
+          confirmButtonClass: 'btn btn-danger',
+          confirmButtonText: that.labelContinuar,
+          buttonsStyling: false
+        });
       }
     );
     return entidades;
@@ -108,7 +107,7 @@ export class EntidadService {
   actualizar_entidad(archivo: ArchivoSubir): BehaviorSubject<ArchivoSubir> {
     this._spinner.set(true);
     const that = this;
-    const DataPost: BehaviorSubject<ArchivoSubir> = new BehaviorSubject<ArchivoSubir>(null);
+    const dataRespuesta: BehaviorSubject<ArchivoSubir> = new BehaviorSubject<ArchivoSubir>(null);
     this.httpClient.put<ArchivoSubir>(this.url, JSON.stringify(archivo))
       .subscribe(
         data => {
@@ -125,7 +124,12 @@ export class EntidadService {
             confirmButtonClass: 'btn btn-success',
             confirmButtonText: that.labelContinuar,
             buttonsStyling: false
-          });
+          }).then(
+            (result) => {
+              dataRespuesta.next(data);
+            }, (dismiss) => {
+              dataRespuesta.next(null);
+            });
         },
         error => {
           this._spinner.set(false);
@@ -138,9 +142,10 @@ export class EntidadService {
             confirmButtonText: that.labelContinuar,
             buttonsStyling: false
           });
+          dataRespuesta.next(null);
         }
       );
-    return DataPost;
+    return dataRespuesta;
   }
 
 }

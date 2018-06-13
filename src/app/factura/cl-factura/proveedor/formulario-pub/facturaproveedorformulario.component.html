@@ -1,0 +1,1756 @@
+<div class="main-content">
+  <div class="container-fluid">
+    
+      <div class="row">
+          <div class="col-sm-12">
+            <div class="card"id="secCabecera">
+              
+                <div class="card-header card-header-text" data-background-color="blue">
+                  <h4 class="card-title">Comprobante de Pago</h4>
+                </div>
+                <div class="card-content" > <!--id="secCabecera"-->
+                  <div class="card-header">
+                    <h4 class="card-title">Comprobante de Pago Cabecera</h4>
+                  </div>
+                  <div class="card-content">
+                    <div class="row">
+                      <div class="col-sm-8 col-sm-offset-2">
+                        <div class="row">
+                          <div class="col-sm-10">
+                            <div class="form-group label-floating">
+                              <label class="control-label">RUC Organización Compradora <span class="star">*</span>
+                              </label>
+                              <input name="txtRucCliente" type="text" readonly="true" disabled [(ngModel)]="factura.ruccliente" class="form-control">
+                            </div>
+                          </div>
+                          <div class="col-sm-2">
+                            <button data-toggle="modal" data-target="#mdlBuscarCliente" class="btn btn-fill btn-default" (click)="buscarCliente($event)"
+                              [disabled]="toggleButton">Buscar</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-8 col-sm-offset-2">
+                            <div class="form-group label-floating">
+                              <label class="control-label">Nombre de Organización Compradora <span class="star">*</span>
+                              </label>
+                              <input name="txtRazonSocialCliente" type="text" readonly="true" disabled [(ngModel)]="factura.razonsocialcliente" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-8 col-sm-offset-2">
+                            <!--
+                            <div class="radio">
+                              <label style="color:#8c8b8a;font-weight: bolder;"> Guías de Material
+                              <input type="radio" [checked]="factura.esguiamaterial"  (change)="onEsMaterialChange($event)" name="tipofactura" >
+                              </label>
+                              <label style="color:#8c8b8a;font-weight: bolder;"> Hojas de Aceptación de Servicio
+                              <input type="radio"  [checked]="factura.eshas"  (change)="onEsHasChange($event)" name="tipofactura">
+                              </label>
+                            </div>
+                            -->
+                            <div class="col-sm-8 col-sm-offset-2">
+                                <div class="radio" >
+    
+                                  <label style="color:#8c8b8a;font-weight: bolder;"> Guías de Material
+                                    <input type="radio" [checked]="factura.esguiamaterial"  (change)="onCambioDeBaseFactura($event)" [(ngModel)]="factura.basefactura" name="tipofactura" value="guia" >
+                                  </label>
+                                  <label style="color:#8c8b8a;font-weight: bolder;"> Hojas de Aceptación de Servicio
+                                    <input type="radio"  [checked]="factura.eshas"  (change)="onCambioDeBaseFactura($event)" [(ngModel)]="factura.basefactura" name="tipofactura" value="has" >
+                                  </label>
+                                  <label style="color:#8c8b8a;font-weight: bolder;"> Ticket de Transporte
+                                    <input type="radio"  [checked]="factura.esticket"  (change)="onCambioDeBaseFactura($event)" [(ngModel)]="factura.basefactura" name="tipofactura" value="ticket" >
+                                  </label>
+    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-footer">
+                    <button type="button" class="btn btn-fill btn-default pull-right" routerLink="/cl-factura/proveedor/buscar">Regresar</button>
+                   
+                    <button type="button" class="btn btn-fill btn-default pull-right" (click)="registrarFactura($event)" *ngIf="botonRegistar.visible && (id=='0' && step==1)" [disabled]="!botonRegistar.habilitado || toggleButton"  >{{botonRegistar.Titulo}}</button>
+                    
+                  </div>
+    
+           
+            </div>
+          </div>
+        </div>
+
+
+
+
+
+
+
+
+<!--fin de pruebaaaa-->
+
+
+<div class="row">
+    <div class="col-sm-12">
+      <div class="card" id="secFactura">
+        <form method="#" action="#">
+          <div class="card-header card-header-text" data-background-color="blue">
+            <h4 class="card-title">Comprobante de Pago</h4>
+          </div>
+          <div class="card-content" ><!--id="secFactura"-->
+            <div class="card-header">
+              <h4 class="card-title">Comprobante de Pago Cabecera</h4>
+            </div>
+
+            <div class="card-content" *ngIf="esBorrador==='1'">
+              <div class='row'>
+                <div class="col-sm-4">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Tipo de Emisión
+                    </label>
+                    <div class="radio">
+                        <label> Físico
+                            <input type="radio" name="optionsCheckboxes" value="esFisico" [checked]="factura.esfisico" [disabled]="toggleButton"  (change)="onEsFisicoChange($event)">
+                        </label>
+                        <label> Electrónico
+                            <input type="radio" name="optionsCheckboxes" value="esElectronico" [checked]="factura.eselectronico" [disabled]="toggleButton" (change)="onEsElectronicolChange($event)">
+                        </label>
+                    </div>
+
+
+                  </div>
+                </div>
+
+              </div>
+
+              <div class="row">
+                <div class="col-sm-1">
+
+                  <div class="form-group label-floating">
+                    <label class="control-label">Serie <span class="star">*</span></label>
+                    <input name="nocomprobantepago1" id="nocomprobantepago1" [(ngModel)]="factura.nocomprobantepago1" pattern="[a-zA-Z0-9\s]+"
+                      type="text" maxlength="3" [disabled]="toggleButton" class="form-control">
+                  </div>
+                </div>
+
+                <div class="col-sm-3">
+
+                  <div class="form-group label-floating">
+                    <label class="control-label">N° Correlativo <span class="star">*</span></label>
+                    <input name="nocomprobantepago2" id="nocomprobantepago2" [(ngModel)]="factura.nocomprobantepago2" pattern="[a-zA-Z0-9\s]+"
+                      type="text" maxlength="7" [disabled]="toggleButton" class="form-control">
+
+                  </div>
+                </div>
+
+
+                <div class="col-sm-4">
+                  <div class="form-group label-floating">
+                    <label class="control-label">RUC Org. Compradora <span class="star">*</span>
+                                      </label>
+                    <input name="ruccliente" [(ngModel)]="factura.ruccliente" type="text" disabled class="form-control">
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Razón Social Org. Compradora <span class="star">*</span>
+                                      </label>
+                    <input name="razonsocialcliente" [(ngModel)]="factura.razonsocialcliente" type="text" disabled class="form-control">
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-sm-4">
+                  <div class="form-group label-floating">
+                      <label class="control-label">Fecha Emisión <span class="star">*</span></label>
+                      <input  name="fechaemision"  id="txtFechaEmision" [(ngModel)]="factura.fechaemision" datepicker type="text" class="form-control">
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="form-group label-floating">
+                      <label class="control-label">Tipo Documento <span class="star">*</span></label>
+                      <select name="tipodocumento" id="tipodocumento"  class="form-control" [(ngModel)]="factura.tipodocumento" [disabled]="toggleButton">
+                        <option disabled=""></option>
+                        <option *ngFor="let opt of listTipoComprobante" value="{{opt.valor}}"> {{opt.desc}} </option> 
+                      </select>
+                  </div>
+                </div>
+
+              </div>
+
+              <div class="row">
+                <div class="col-sm-4">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Moneda <span class="star">*</span>
+                                              </label>
+                    <select id="moneda" [(ngModel)]="factura.moneda" name="moneda" class="form-control" [disabled]="toggleButton">
+                                            <option disabled="" selected=""></option>
+                                            <option *ngFor="let opt of listMonedaCombo" value="{{opt.valor}}"> {{opt.desc}} </option>   
+                                          </select>
+
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="form-group label-floating">
+                    <label class="control-label">SubTotal 
+                                      </label>
+                    <input name="subtotal" [(ngModel)]="factura.subtotal" type="text" disabled class="form-control">
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Total Descuento 
+                                      </label>
+                    <input name="dsctomonto" maxlength="10"[(ngModel)]="factura.dsctomonto" type="text" [disabled]="toggleButton" class="form-control" pattern="^(((\d{1,3})(,\d{3})*)|(\d+))(.\d+)?$">
+                  </div>
+                </div>
+
+              </div>
+
+
+
+            </div>
+
+            <div class="card-content" *ngIf="esBorrador==='0'">
+
+
+              <div class="row">
+                <div class="col-sm-3">
+
+                  <div class="form-group label-floating">
+                    <label class="control-label">No. Comprobante de Pago</label>
+                    <input name="nocomprobantepago" id="nocomprobantepago" [(ngModel)]="factura.nocomprobantepago" type="text" [disabled]="toggleButton"
+                      class="form-control">
+                  </div>
+                </div>
+
+                <div class="col-sm-3">
+                  <div class="form-group label-floating">
+                    <label class="control-label">RUC Org. Proveedora
+                      </label>
+                    <input name="rucproveedor" [(ngModel)]="factura.rucproveedor" type="text" disabled class="form-control">
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Razón Social Org. Proveedora 
+                      </label>
+                    <input name="razonsocialproveedor" [(ngModel)]="factura.razonsocialproveedor" type="text" disabled class="form-control">
+                  </div>
+                </div>
+                <div class="col-sm-2">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Tipo Documento 
+                        </label>
+                    <select id="tipodocumento" name="tipodocumento" class="form-control" [(ngModel)]="factura.tipodocumento" [disabled]="toggleButton">
+                          <option disabled=""></option>
+                          <option *ngFor="let opt of listTipoComprobante" value="{{opt.valor}}"> {{opt.desc}} </option> 
+                        </select>
+                  </div>
+                </div>
+
+              </div>
+              <div class='row'>
+                <div class="col-sm-4">
+                  <div class="form-group label-floating">
+                    <label class="control-label">RUC Org. Compradora 
+                          </label>
+                    <input name="ruccliente" [(ngModel)]="factura.ruccliente" type="text" disabled class="form-control">
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Razón Social Org. Compradora 
+                          </label>
+                    <input name="razonsocialcliente" [(ngModel)]="factura.razonsocialcliente" type="text" disabled class="form-control">
+                  </div>
+                </div>
+
+                <div class="col-sm-4" *ngIf="id!=0">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Estado
+                          </label>
+                    <select id="estado" [(ngModel)]="factura.estado" name="estado" class="form-control" disabled>
+                            <option disabled="" selected=""></option>
+                            <option *ngFor="let opt of listEstadoCombo" value="{{opt.valor}}"> {{opt.desc}} </option>   
+                          </select>
+                  </div>
+                </div>
+
+
+
+              </div>
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Guías de Despacho
+                      </label>
+                    <input name="guiasdespacho" type="text" [(ngModel)]="factura.guiasdespacho" [disabled]="toggleButton" class="form-control">
+                  </div>
+                </div>
+
+              </div>
+              <div class="row">
+
+                <div class="col-sm-12">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Orden de Compra/Servicio/Contrato
+                                        </label>
+                    <input name="ordencompraserviciocontrato" [(ngModel)]="factura.ordencompraserviciocontrato" type="text" [disabled]="toggleButton"
+                      class="form-control">
+                  </div>
+                </div>
+
+              </div>
+              <div class="row">
+                <!--<div class="col-sm-4" >
+                  <div class="form-group label-floating">
+                    <label class="control-label">Fecha Vencimiento
+                    </label>
+                    <input name="txtFechaVencimiento" id="txtFechaProgPago" datepicker  disabled [(ngModel)]="factura.fechavencimiento" type="text" [disabled]="toggleButton"
+                      class="form-control">
+                  </div>
+                </div>-->
+                <div class="col-sm-3">
+                    <div class="form-group label-floating">
+                      <label class="control-label">Fecha Emisión 
+                      </label>
+                      <input name="fechaemision" [(ngModel)]="factura.fechaemision" id="txtFechaEmision" datepicker disabled type="text" [disabled]="toggleButton"
+                        class="form-control">
+                    </div>
+                  </div>
+                <div class="col-sm-3">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Fecha de Recepción
+                    </label>
+                    <input name="fecharecepcion" id="fecharecepcion" datepicker disabled [(ngModel)]="factura.fecharecepcion" type="text" [disabled]="toggleButton"
+                      class="form-control">
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Fecha de Registro
+                    </label>
+                    <input name="fecharegistro" id="fecharegistro" datepicker disabled [(ngModel)]="factura.fecharegistro" type="text" [disabled]="toggleButton"
+                      class="form-control">
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Fecha de Vencimiento
+                    </label>
+                    <input name="fechavencimiento" id="fechavencimiento" datepicker disabled [(ngModel)]="factura.fechavencimiento" type="text" [disabled]="toggleButton" class="form-control">
+                  </div>
+                </div>
+              </div>
+
+       
+              <div class="row">
+                <div class="col-sm-4" *ngIf="id!=0">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Documento ERP 
+                    </label>
+                    <input name="documentoerp" type="text" [(ngModel)]="factura.documentoerp" [disabled]="toggleButton" class="form-control">
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Forma de Pago
+                    </label>
+                    <input name="formapago" type="text" [(ngModel)]="factura.formapago" [disabled]="toggleButton" class="form-control">
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Moneda 
+                        </label>
+                    <select id="moneda" [(ngModel)]="factura.moneda" name="moneda" class="form-control" [disabled]="toggleButton">
+                      <option disabled="" selected=""></option>
+                      <option *ngFor="let opt of listMonedaCombo" value="{{opt.valor}}"> {{opt.desc}} </option>   
+                    </select>
+
+                  </div>
+                </div>
+              </div>
+          
+              
+              <div *ngIf="factura.motivorechazosap" class="row" >
+                <div class="col-sm-12">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Motivo Rechazo SAP
+                    </label>
+                    <textarea style="color:red;" name="motivorechazosap" id="motivorechazosap" [(ngModel)]="factura.motivorechazosap" maxlength="200" class="form-control" [disabled]="toggleButton"></textarea>
+                    <span class="help-block" id="lblMotRzoSAP">200 caracteres máximo (0)</span>
+                  </div>
+                </div>
+              </div>
+
+              <div *ngIf="factura.motivoerrorsap" class="row" >
+                <div class="col-sm-12">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Motivo Error SAP
+                    </label>
+                    <textarea style="color:red;" name="motivoerrorsap" id="motivoerrorsap" [(ngModel)]="factura.motivoerrorsap" maxlength="200" class="form-control" [disabled]="toggleButton"></textarea>
+                    <span class="help-block" id="lblMotErrorSAP">200 caracteres máximo (0)</span>
+                  </div>
+                </div>
+              </div>
+       
+
+              
+
+            </div>
+            <div class="card-header" *ngIf="esBorrador==='1'">
+              <h4 class="card-title">Tipo de Impuesto</h4>
+              <small style="color:rgb(189, 189, 189)"><b>El impuesto 1 se calcula por defecto al 18%</b></small>
+            </div>
+            <div class="card-content" *ngIf="esBorrador==='1'">
+              <div class="row">
+                <div class="col-sm-4">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Impuesto 1 <span class="star">*</span>
+                    </label>
+                    <input name="impuesto1" maxlength="15" pattern="^[0-9]+" type="text" [(ngModel)]="factura.impuesto1" disabled class="form-control">
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Impuesto 2 
+                    </label>
+                    <input name="impuesto2" maxlength="10" pattern="^[0-9]+" id="impuesto2" type="text" [(ngModel)]="factura.impuesto2" [disabled]="toggleButton" (change)="calcularTotal($event)" class="form-control"  pattern="^(((\d{1,3})(,\d{3})*)|(\d+))(.\d+)?$">
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Impuesto 3
+                    </label>
+                    <input name="impuesto3" maxlength="10"id="impuesto3" type="text" [(ngModel)]="factura.impuesto3" [disabled]="toggleButton" (change)="calcularTotal($event)" class="form-control" pattern="^(((\d{1,3})(,\d{3})*)|(\d+))(.\d+)?$">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-4">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Importe Total <span class="star">*</span>
+                    </label>
+                    <input name="importetotal" id="importetotal" type="text" [(ngModel)]="factura.importetotal" disabled class="form-control">
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Importe Referencial
+                    </label>
+                    <input name="importereferencial"  maxlength="10" type="text" [(ngModel)]="factura.importereferencial" [disabled]="toggleButton" class="form-control" pattern="^(((\d{1,3})(,\d{3})*)|(\d+))(.\d+)?$">
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Observaciones
+                    </label>
+                    <input name="observaciones" type="text" [(ngModel)]="factura.observaciones" [disabled]="toggleButton" class="form-control">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+
+
+
+            <!-- INICIO añadir Guía o HAS en comprobante electrónico-->
+            <!--<div class="card {{!factura.eselectronico ? 'hidden' : ''}}">-->
+                <div class="card">              
+                    <div class="card-header card-header-icon" data-background-color="blue">
+                      <i class="material-icons">assignment</i>
+                    </div>
+                      <div class="card-content">
+                          <h4 class="card-title">Detalle</h4>
+                          <div class="toolbar">
+                              <div class="row">
+                                <div class="col-sm-12">
+                                  <nav class="navbar navbar-info" role="navigation">
+                                    <div class="container-fluid">
+                                      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            
+                                      </div>
+                                    </div>
+                                  </nav>
+                                </div>
+                              </div>
+                          </div>
+                          <div class="row" *ngIf="!toggleButton">
+                              <div class="col-md-6 col-md-offset-2">
+    
+                                  <div class="form-group form-group-without-margin {{factura.esfisico ? '' : ''}}">
+                                      <div class="radio">
+                                          <label style="color:#8c8b8a;font-weight: bolder;"> Guías de Material
+                                            <input type="radio" [disabled]="toggleButton"  (change)="onCambioDeBaseFactura($event,'guia')" name="tipofactura" value="guia" [(ngModel)]="factura.basefactura">
+                                          </label>
+                                          <label style="color:#8c8b8a;font-weight: bolder;"> Hojas de Aceptación de Servicio
+                                            <input type="radio"  [disabled]="toggleButton"   (change)="onCambioDeBaseFactura($event,'has')" name="tipofactura" value="has" [(ngModel)]="factura.basefactura">
+                                          </label>
+                                          <label style="color:#8c8b8a;font-weight: bolder;"> Ticket de Transporte
+                                            <input type="radio"  [disabled]="toggleButton"   (change)="onCambioDeBaseFactura($event,'ticket')" name="tipofactura" value="ticket" [(ngModel)]="factura.basefactura">
+                                          </label>
+                                      </div>
+                                  </div>
+    
+                              </div>
+                              <div class="col-md-4">
+                                  <div class="form-group form-group-without-margin">
+                                      <button id="btnEliminarItemOC" [disabled]="toggleButton" class="btn btn-default pull-right" (click)="eliminarArticulos($event)">Eliminar</button>
+                                      <button id="btnAgregarItemOC" [disabled]="toggleButton" class="btn btn-default pull-right" (click)="AbrirAgregarGuiaoHAS($event)">Añadir</button>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="material-datatables table-responsive" style="display:block">
+                            <table id="dtArticulos" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+                              <thead>
+                                <tr>
+                                    <th class="disabled-sorting text-right">
+                                      <div class="checkbox text-right">
+                                        <label><input type="checkbox" name="optionsCheckboxes" class="checkall" ></label>
+                                      </div>
+                                    </th>
+                                    <th>Item</th>
+                                    <th>Guía / HAS / Ticket</th>
+                                    <th>O.C / O.S</th>
+                                    <!--
+                                    <th>No.Parte</th>
+                                    <th>Descripción P.</th>
+                                    <th>Cantidad</th>                         
+                                    <th>Importe<br/>Total</th>
+                                    <th>IGV</th>
+                                    <th>Importe<br/>IGV</th>
+                                    -->
+                                    <!-- <th>ISC</th>  -->
+                                    <!--
+                                    <th>Importe<br/>ISC</th>
+                                    -->
+                                    <!--
+                                    <th>No. Item</th>
+                                    <th>No. Guía</th>
+                                    <th>No. Orden de Compra</th>
+                                    -->
+                                    <th>No. Item OC</th>
+                                    <th>No. de Parte</th>
+                                    <th>Descripción del Producto</th>                         
+                                    <th>Cantidad</th>
+                                    <th>Precio Unitario Referencial</th>
+                                    <th>Importe Total Item</th>
+                                    <th>Estado</th>
+                                </tr>
+                              </thead>
+                            </table>
+                          </div>
+                  </div>
+                </div>
+                <!-- FIN añadir Guía o HAS en comprobante electrónico-->
+
+
+
+
+
+            <!-- INICIO añadir Guía-->
+            <!--<div class="card {{factura.eshas ? 'hidden' : 'hidden'}}">-->
+            <div class="card hidden">
+              <div class="card-header card-header-icon" data-background-color="blue">
+                <i class="material-icons">assignment</i>
+              </div>
+              <div class="card-content">
+                <h4 class="card-title">Detalle</h4>
+                <div class="toolbar">
+                  <div class="row">
+                    <div class="col-sm-12">
+                      <nav class="navbar navbar-info" role="navigation">
+                        <div class="container-fluid">
+                          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
+                          </div>
+                        </div>
+                      </nav>
+                    </div>
+                  </div>
+                </div>
+                <div class="row" *ngIf="!toggleButton">
+                  <div class="col-sm-12">
+                    <div class="form-group form-group-without-margin">
+                      <button id="btnEliminarItemOC" [disabled]="toggleButton" class="btn btn-default pull-right" (click)="eliminarArticulos($event)">Eliminar</button>
+                      <button id="btnAgregarItemOC" [disabled]="toggleButton" class="btn btn-default pull-right" (click)="AbrirAgregarGuia($event)">Añadir Guía</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="material-datatables table-responsive" style="display:block">
+                  <table id="dtArticulos" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+                    <thead>
+                      <tr>
+                          <th class="disabled-sorting text-right">
+                            <div class="checkbox text-right">
+                              <label><input type="checkbox" name="optionsCheckboxes" class="checkall" ></label>
+                            </div>
+                          </th>
+                          <th>No. Item</th>
+                          <th>No. Guía</th>
+                          <th>No. Orden de Compra</th>
+                          <th>No. Item OC</th>
+                          <th>No. de Parte</th>
+                          <th>Descripción del Producto</th>                         
+                          <th>Cantidad</th>
+                          <th>Precio Unitario Referencial</th>
+                          <th>Importe Total Item</th>
+                          <th>Estado</th>
+                      </tr>
+                    </thead>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <!-- FIN añadir Guía-->
+
+            <!-- INICIO añadir HAS-->
+            <!--<div class="card {{factura.esguiamaterial ? 'hidden' : 'hidden'}}">-->
+            <div class="card hidden">
+
+              <div class="card-header card-header-icon" data-background-color="blue">
+                <i class="material-icons">assignment</i>
+              </div>
+              <div class="card-content">
+
+                <h4 class="card-title">Detalle</h4>
+                <div class="toolbar">
+                  <div class="row">
+                    <div class="col-sm-12">
+                      <nav class="navbar navbar-info" role="navigation">
+                        <div class="container-fluid">
+                          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                          </div>
+                        </div>
+                      </nav>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row" *ngIf="!toggleButton">
+                  <div class="col-sm-12">
+                    <div class="form-group form-group-without-margin">
+                      <button id="btnEliminarItemOC" [disabled]="toggleButton" class="btn btn-default pull-right" (click)="eliminarArticulos($event)">Eliminar</button>
+                      <button id="btnAgregarItemOC" [disabled]="toggleButton" class="btn btn-default pull-right" (click)="AbrirAgregarAceptacionServicio($event)">Añadir Hoja de Aceptación de Servicio</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="material-datatables table-responsive" style="display:block">
+                  <table id="dtArticulosHAS" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+                    <thead>
+                      <tr>
+                          <th class="disabled-sorting text-right">
+                            <div class="checkbox text-right">
+                              <label><input type="checkbox" name="optionsCheckboxes" class="checkall" ></label>
+                            </div>
+                          </th>
+                          <th>No. Item</th>
+                          <th>No. HAS</th>
+                          <th>No. Orden de Compra</th>
+                          <th>No. Item OC</th>
+                          <th>No. de Parte</th>
+                          <th>Descripción del Producto</th>
+                          <th>Cantidad</th>
+                          <th>Precio Unitario Referencial</th>
+                          <th>Importe Total Item</th>
+                          <th>Estado</th>
+                      </tr>
+                    </thead>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <!-- FIN añadir HAS-->
+
+
+
+
+
+            <div class="row rowEditar" *ngIf="esBorrador==='0'">
+              <div class="col-sm-4 col-sm-offset-8">
+                <div class="form-group label-floating">
+                  <label class="control-label">Sub-Total
+                  </label>
+                  <input name="subtotal" type="text" [(ngModel)]="factura.subtotal" [disabled]="toggleButton" class="form-control">
+                </div>
+              </div>
+            </div>
+            <div class="row rowEditar" *ngIf="esBorrador==='0'">
+              <div class="col-sm-4 col-sm-offset-8">
+                <div class="form-group label-floating">
+                  <label class="control-label">IGV
+                  </label>
+                  <input name="igv" type="text" [(ngModel)]="factura.igv" [disabled]="toggleButton" class="form-control">
+                </div>
+              </div>
+            </div>
+            <div class="row rowEditar" *ngIf="esBorrador==='0'">
+              <div class="col-sm-4 col-sm-offset-8">
+                <div class="form-group label-floating">
+                  <label class="control-label">Total
+                  </label>
+                  <input name="total" type="text" [(ngModel)]="factura.total" [disabled]="toggleButton" class="form-control">
+                </div>
+              </div>
+            </div>
+
+            <div class="row rowEditar" *ngIf="esBorrador==='0'">
+              <div class="col-sm-12">
+                <div class="form-group label-floating">
+
+                  <label class="control-label"><h4>SON: {{factura.totaltexto}}</h4></label>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header card-header-icon" data-background-color="blue">
+                <i class="material-icons">assignment</i>
+              </div>
+              <div class="card-content">
+                <h4 class="card-title">Archivos Adjuntos</h4>
+                <div class="toolbar">
+                  <div class="row">
+                    <div class="col-sm-12">
+                      <nav class="navbar navbar-info" role="navigation">
+                        <div class="container-fluid">
+                          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
+                          </div>
+                        </div>
+                      </nav>
+                    </div>
+                  </div>
+                </div>
+                <div class="row" *ngIf="!toggleButton">
+                  <div class="col-sm-12">
+                    <div class="form-group form-group-without-margin">
+                      <button class="btn btn-default pull-right" (click)="eliminarArchivos($event)">Eliminar</button>
+                      <button class="btn btn-default pull-right" data-toggle="modal" (click)="agregarArchivo($event)" data-target="#mdlArchivosAdjuntos">Agregar</button>
+
+                    </div>
+                  </div>
+                </div>
+                <div class="material-datatables table-responsive">
+                  <table id="dtArchivos" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+                    <thead>
+                      <tr>
+                        <th class="disabled-sorting text-right">
+                          <div class="checkbox text-right">
+                            <label><input type="checkbox" name="optionsCheckboxes" class="checkall" ></label>
+                          </div>
+                        </th>
+                        <th width="20%">Nombre</th>
+                        <th width="60%">Descripción</th>
+                        <th class="disabled-sorting text-center" width="20%">Acciones</th>
+                      </tr>
+                    </thead>
+
+
+                  </table>
+                </div>
+              </div>
+              <!-- end content-->
+            </div>
+            <div class="card-content rowEditar" *ngIf="esBorrador==='0'">
+
+
+
+
+              <div class="card-header">
+                <h4 class="card-title">Datos de Pago</h4>
+              </div>
+              <div class="card-content">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <div class="form-group label-floating">
+                      <label class="control-label">Tipo Pago
+                      </label>
+                      <input name="tipopago" type="text" [(ngModel)]="factura.tipopago" [disabled]="toggleButton" class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group label-floating">
+                      <label class="control-label">Nro. Documento  
+                      </label>
+                      <input name="nrodocumento" type="text" [(ngModel)]="factura.nrodocumento" [disabled]="toggleButton" class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group label-floating">
+                      <label class="control-label">Banco 
+                      </label>
+                      <input name="banco" type="text" [(ngModel)]="factura.banco" [disabled]="toggleButton" class="form-control">
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-4">
+                    <div class="form-group label-floating">
+                      <label class="control-label">Fecha de Pago
+                      </label>
+                      <input name="fechapago" type="text" datepicker disabled  [(ngModel)]="factura.fechapago" [disabled]="toggleButton" class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group label-floating">
+                      <label class="control-label">Monto
+                      </label>
+                      <input name="monto" type="text" [(ngModel)]="factura.monto" [disabled]="toggleButton" class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group label-floating">
+                      <label class="control-label">Moneda 
+                      </label>
+                      <input name="datospagomoneda" type="text" [(ngModel)]="factura.datospagomoneda" [disabled]="toggleButton" class="form-control">
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-4">
+                    <div class="form-group label-floating">
+                      <label class="control-label">Nro. Cheque
+                      </label>
+                      <input name="nrocheque" type="text" [(ngModel)]="factura.nrocheque" [disabled]="toggleButton" class="form-control">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card-header">
+                <h4 class="card-title">Datos de Descuento por Retención o Detracción</h4>
+              </div>
+              <div class="card-content">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="form-group label-floating">
+                      <label class="control-label">Tipo Descuento
+                      </label>
+                      <input name="tipodescuento" type="text" [(ngModel)]="factura.tipodescuento" [disabled]="toggleButton" class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group label-floating">
+                      <label class="control-label">Nro. Comprobante
+                      </label>
+                      <input name="nrocomprobante" type="text" [(ngModel)]="factura.nrocomprobante" [disabled]="toggleButton" class="form-control">
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="form-group label-floating">
+                      <label class="control-label">Monto
+                      </label>
+                      <input name="dsctomonto" type="text" [(ngModel)]="factura.dsctomonto" [disabled]="toggleButton" class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group label-floating">
+                      <label class="control-label">Moneda
+                      </label>
+                      <input name="dsctomoneda" type="text" [(ngModel)]="factura.dsctomoneda" [disabled]="toggleButton" class="form-control">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card-header">
+                <h4 class="card-title">Observaciones Comprobante de Pago</h4>
+              </div>
+              <div class="card-content">
+                <div class="row">
+                  <div class="col-sm-12">
+                      <div [innerHTML]="factura.observaciones" style="text-align: left;">
+                        </div>
+                  
+                  </div>
+                </div>
+              </div>
+              <div class="card-header">
+                <h4 class="card-title">Observaciones de Pago</h4>
+              </div>
+              <div class="card-content">
+                <div class="row">
+                  <div class="col-sm-12">
+                    <div [innerHTML]="factura.obscomprobantepago" style="text-align: left;">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <div class="card-footer">
+                <button type="button" class="btn btn-fill btn-default pull-right" routerLink="/cl-factura/proveedor/buscar">Regresar</button>
+                <button class="btn btn-fill btn-default pull-right" (click)="print($event)" *ngIf="botonImprimir.visible && id!='0' &&  esBorrador=='0'" [disabled]="!botonImprimir.habilitado" >{{botonImprimir.Titulo}}</button>
+    
+                <button type="button" class="btn btn-fill btn-default pull-right" 
+                  (click)="enviarFactura($event)" *ngIf="botonEnviar.visible && ((id!='0' && esBorrador=='1') || (id=='0'&& step==2))" [disabled]="!botonEnviar.habilitado || toggleButton" >{{botonEnviar.Titulo}}</button>
+                <button type="button" class="btn btn-fill btn-default pull-right" (click)="guardarFactura($event)"
+                   *ngIf="botonGuardar.visible && ((id=='0' || esBorrador=='1') && step==2)" [disabled]="!botonGuardar.habilitado || toggleButton" >{{botonGuardar.Titulo}}</button>
+                <button type="button" class="btn btn-fill btn-default pull-right" (click)="descartarBorrador($event)"  *ngIf="botonDescartar.visible && (id!=='0' && esBorrador=='1')" [disabled]="!botonDescartar.habilitado || toggleButton" >{{botonDescartar.Titulo}}</button>
+                <button (click)="habilitarEdicion($event)" class="btn btn-fill btn-default pull-right" 
+                *ngIf="botonEdicion.visible && (((id!='0' && esBorrador=='1') || (id!='0' && esBorrador=='1' && step==2)))" [disabled]="!botonEdicion.habilitado">{{botonEdicion.Titulo}}</button>
+              </div>
+          </div>
+
+          
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+  </div><!--fin container-->
+
+
+
+
+
+
+  <div id="mdlBuscarCliente" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+
+          <table>
+            <tr>
+              <td>
+                <div class="card-header card-header-icon" data-background-color="blue">
+                  <i class="material-icons">assignment</i>
+                </div>
+              </td>
+              <td class="cell-title">
+                <div class="card-content">
+                  <h4 class="card-title modal-title">Buscar Organización Compradora</h4>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group label-floating">
+                <label class="control-label">Nombre de Organización Compradora</label>
+                <input type="text" id="txtBuscarNroOC" name="txtBuscarNroOC" [(ngModel)]="filtroCliente.razonsocial" class="form-control"
+                  value="" [disabled]="toggleButton">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-10">
+              <div class="form-group label-floating">
+                <label class="control-label">RUC</label>
+                <input type="text" id="txtBuscarCodCliente" [(ngModel)]="filtroCliente.ruc" name="txtBuscarCodCliente" class="form-control"
+                  value="" [disabled]="toggleButton">
+              </div>
+            </div>
+            <div class="col-sm-2">
+              <div class="form-group label-floating">
+                <label class="control-label"></label>
+                <button type="button" class="btn btn-default" (click)="buscarClienteDT($event)">Buscar</button>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="material-datatables table-responsive">
+                <table id="dtBuscarCliente" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+                  <thead>
+                    <tr>
+                      <th class="disabled-sorting text-right"></th>
+                      <th style="width:50%">Nombre de Organización Compradora</th>
+                      <th style="width:50%">RUC</th>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" (click)="SeleccionarCliente($event)" [disabled]="btnSeleccionar">Seleccionar</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+
+  <!--INICIO MODAL mdlGuias-->
+  <div id="mdlGuias" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <table>
+            <tr>
+              <td>
+                <div class="card-header card-header-icon" data-background-color="blue">
+                  <i class="material-icons">assignment</i>
+                </div>
+              </td>
+              <td class="cell-title">
+                <div class="card-content">
+                  <h4 class="card-title modal-title">Buscar Guía</h4>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group label-floating">
+                    <label class="control-label">Nro. Guía</label>
+                    <input type="text" id="txtBuscarNroOC" [(ngModel)]="filtroGuia.nroguia" name="txtBuscarNroOC" class="form-control" value=""
+                      [disabled]="toggleButton">
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group label-floating">
+                    <label class="control-label">Estado</label>
+                    <select name="cmbBuscarEstado" class="form-control" [(ngModel)]="filtroGuia.estado" [disabled]="toggleButton">
+                        <option value="NONE">TODOS</option>
+                        <option *ngFor="let optEstado of listEstadoGuia" value="{{optEstado.valor}}"> {{optEstado.desc}} </option>
+                    </select>
+                </div>
+              </div>
+          </div>
+          <div class="row">
+              <div class="col-sm-5">
+                <div class="form-group label-floating">
+                    <label class="control-label">Emitida/Enviada después de</label>
+                    <input type="text" id="txtGuiaEmitidaDesde" [(ngModel)]="filtroGuia.fechaemitidadesde" name="txtGuiaEmitidaDesde" datepicker
+                      class="form-control" value="" [disabled]="toggleButton">
+                </div>
+              </div>
+              <div class="col-sm-5">
+                <div class="form-group label-floating">
+                    <label class="control-label">Emitida/Enviada antes de</label>
+                    <input type="text" id="txtGuiaEmitidaHasta" [(ngModel)]="filtroGuia.fechaemitidahasta" name="txtGuiaEmitidaHasta" datepicker
+                      class="form-control" value="" [disabled]="toggleButton">
+                </div>
+              </div>
+              <div class="col-sm-2">
+                <div class="form-group label-floating">
+                    <label class="control-label"></label>
+                    <button type="button" class="btn btn-default" (click)="buscarGuiaDT($event)">Buscar</button>
+                </div>
+              </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="material-datatables table-responsive">
+                <table id="dtBuscarGuia" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+                  <thead>
+                      <tr>
+                        <th class="disabled-sorting text-right">
+                          <div class="checkbox text-right">
+                            <label><input type="checkbox" name="optionsCheckboxes" class="checkall" ></label>
+                          </div>
+                        </th>
+                        <th>N° Guía</th>
+                        <th>Estado</th>
+                        <th>Organización Compradora</th>
+                        <th>Fecha de Emisión</th>
+                        <th>Fecha de Inicio de Traslado</th>
+                        <th>Fecha Probable de Arribo</th>
+                      </tr>
+                  </thead>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" (click)="AgregarArticulosGuia($event)" [disabled]="btnSeleccionar">Añadir</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!--FIN MODAL mdlGuias-->
+
+
+  <!--INICIO MODAL mdlArchivosAdjuntos-->
+  <div id="mdlArchivosAdjuntos" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+
+
+          <table>
+            <tr>
+              <td>
+                <div class="card-header card-header-icon" data-background-color="blue">
+                  <i class="material-icons">assignment</i>
+                </div>
+              </td>
+              <td class="cell-title">
+                <div class="card-content">
+                  <h4 class="card-title modal-title">Archivo Adjunto</h4>
+                  <!--<h4 class="modal-title">Archivo Adjunto</h4>-->
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <div class="fileinput fileinput-new input-group" data-provides="fileinput">
+                  <div class="form-control" data-trigger="fileinput">
+                    <i class="material-icons fileinput-exists">attach_file</i>
+                    <span class="fileinput-filename"></span>
+                  </div>
+                  <span class="input-group-addon btn btn-default btn-file">
+                      <span class="fileinput-new">Seleccionar Archivo</span>
+                  <span class="fileinput-exists">Seleccionar Archivo</span>
+                  <input type="file" name="..." (change)="onChangeFile($event)" id="txtArchivo">
+                  <a href="#" class="input-group-addon btn btn-default fileinput-exists" style="display:none" data-dismiss="fileinput" id="btnEliminarAA">Remover</a>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group label-floating">
+                <textarea name="descripcion" placeholder="Descripción" [(ngModel)]="archivo.descripcion" class="form-control" rows="4" [disabled]="toggleButton"></textarea>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" (click)="grabarArchivoAdjunto()" [disabled]="toggleButton">Adjuntar</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+         
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!--FIN MODAL mdlArchivosAdjuntos-->
+
+
+  <!--INICIO MODAL mdlConformidadServicio-->
+  <div id="mdlConformidadServicio" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+
+          <table>
+            <tr>
+              <td>
+                <div class="card-header card-header-icon" data-background-color="blue">
+                  <i class="material-icons">assignment</i>
+                </div>
+              </td>
+              <td class="cell-title">
+                <div class="card-content">
+                  <h4 class="card-title modal-title">Buscar Aceptación de Servicio</h4>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-sm-4">
+              <div class="form-group label-floating">
+                <label class="control-label">Número de Aceptación de Servicio
+                    </label>
+                <input [(ngModel)]="filtrohas.nroconformidadservicio" name="nroconformidadservicio" type="text" class="form-control">
+              </div>
+            </div>
+
+            <div class="col-sm-4">
+              <div class="form-group label-floating">
+                <label class="control-label">Estado</label>
+                <select [(ngModel)]="filtrohas.estado" name="estado" class="form-control">
+                    <option value="NONE" selected>TODOS</option>
+                    <option *ngFor="let opt of listEstadoHAS" value="{{opt.valor}}"> {{opt.desc}} </option>   
+                </select>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group label-floating">
+                <label class="control-label">Nro ERP</label>
+                <input [(ngModel)]="filtrohas.nroerp" name="nroerp" type="text" class="form-control">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-4">
+              <div class="form-group label-floating">
+                <label class="control-label">Fecha Creación Del</label>
+                <input type="text" [(ngModel)]="filtrohas.fechacreacioninicio" name="fechacreacioninicio" class="form-control" datepicker
+                />
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group label-floating">
+                <label class="control-label">al</label>
+                <input type="text" [(ngModel)]="filtrohas.fechacreacionfin" name="fechacreacionfin" class="form-control" datepicker/>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <button class="btn btn-default" (click)="BuscarHasClicked($event)">Buscar</button>
+              </div>
+            </div>
+          </div>
+          <nav class="navbar navbar-info" role="navigation">
+            <div class="container-fluid">
+              <div class="navbar-header">
+                <span class="navbar-brand">Resultados</span>
+              </div>
+            </div>
+          </nav>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="material-datatables table-responsive">
+                <table id="dtBuscarAceptacionServicio" class="table table-striped table-no-bordered table-hover"
+                       cellspacing="0" width="100%" style="width:100%">
+                    <thead>
+                      <tr>
+                        <th class="disabled-sorting text-right">
+                          <div class="checkbox text-right">
+                            <label><input type="checkbox" name="optionsCheckboxes" class="checkall" ></label>
+                          </div>
+                        </th>
+                        <th>Nro. Aceptación de Servicio</th>
+                        <th>N°ERP</th>
+                        <th>Estado</th>
+                        <th>Organización Compradora</th>
+                        <th>Fecha de Aceptación</th>
+                      </tr>
+                    </thead>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" (click)="AgregarArticulosHAS($event)">Añadir</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!--FIN MODAL mdlConformidadServicio-->
+
+  
+  <!--INICIO MODAL mdlTicketTransporte-->
+  <div id="mdlTicketTransporte" class="modal fade" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <table>
+                <tr>
+                  <td>
+                    <div class="card-header card-header-icon" data-background-color="blue">
+                      <i class="material-icons">assignment</i>
+                    </div>
+                  </td>
+                  <td class="cell-title">
+                    <div class="card-content">
+                      <h4 class="card-title modal-title">Buscar Ticket de Transporte</h4>
+                    </div>
+                  </td>
+                </tr>
+            </table>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+                <div class="col-sm-4">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Nro. Referencia
+                        </label>
+                    <input [(ngModel)]="filtroticket.documentoERP" name="documentoerp" type="text" class="form-control">
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group label-floating">
+                      <label class="control-label">Nro. Guía
+                          </label>
+                      <input [(ngModel)]="filtroticket.nroguia" name="nroguia" type="text" class="form-control">
+                    </div>
+                  </div>              
+                <div class="col-sm-4">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Estado</label>
+                    <select [(ngModel)]="filtroticket.estado" name="estado" class="form-control">
+                            <option value="NONE" selected>TODOS</option>
+                            <option *ngFor="let opt of listEstadoTicket" value="{{opt.valor}}"> {{opt.desc}} </option>
+                    </select>
+                  </div>
+                </div>
+  
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Fecha Aceptación Del</label>
+                    <input type="text" [(ngModel)]="filtroticket.fechacreacioninicio" name="fechacreacioninicio" class="form-control" datepicker
+                    />
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="form-group label-floating">
+                    <label class="control-label">al</label>
+                    <input type="text" [(ngModel)]="filtroticket.fechacreacionfin" name="fechacreacionfin" class="form-control" datepicker/>
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="form-group">
+                    <button class="btn btn-default" (click)="BuscarTicketClicked($event)">Buscar</button>
+  
+                  </div>
+                </div>
+            </div>
+            <nav class="navbar navbar-info" role="navigation">
+              <div class="container-fluid">
+                  <div class="navbar-header">
+                    <span class="navbar-brand">Resultados</span>
+                  </div>
+              </div>
+            </nav>
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="material-datatables table-responsive">
+                  <table id="dtBuscarTicketTransporte" class="table table-striped table-no-bordered table-hover"
+                         cellspacing="0" width="100%" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th class="disabled-sorting text-right">
+                              <div class="checkbox text-right">
+                                <label><input type="checkbox" name="optionsCheckboxes" class="checkall" ></label>
+                              </div>
+                            </th>
+                            <th>Nro. Referencia</th>
+                            <th>Estado</th>
+                            <th>Razón Social Org. Compradora</th>
+                            <th>RUC Org. Compradora</th>
+                            <th>Fecha de Aceptación</th>
+                        </tr>
+                    </thead>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" (click)="AgregarArticulosTicket($event)">Añadir</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+          </div>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+    </div>
+  <!--FIN MODAL mdlTicketTransporte-->
+
+</div>
+
+<div style="display:none">
+  <div id="print-section" style='font-family: Arial, Helvetica, sans-serif;color: #000;font-size: 12px;'>
+    <table width="100%" cellpadding="0" cellspacing="0" align="center" bgcolor="#ffffff" style='font-family: Arial, Helvetica, sans-serif;color: #000;font-size: 12px;'>
+      <tbody>
+        <tr>
+          <td align="center">
+
+
+            <table width="900" cellpadding="0" cellspacing="0" border="0" bgcolor="#fff">
+              <tbody>
+                <tr>
+                  <td colspan="2" bgcolor="#fff" align="center" valign="middle">
+                    Imprimir Comprobante de Pago Nº{{factura.nocomprobantepago}}<br/><br/>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="2" bgcolor="#fff" align="center" valign="top" style="font-size: 20px">
+                    <b>IMPRESION DE COMPROBANTE DE PAGO</b><br><br>
+                  </td>
+                </tr>
+
+
+
+
+              </tbody>
+            </table>
+
+            <table width="900" class="print-table" cellpadding="5" border='0' style="border:0px solid #999;border-collapse: collapse;"
+              cellspacing="0" bgcolor="#fff">
+              <tbody>
+
+                <tr style="border:1px solid #999;">
+                  <td colspan="4" bgcolor="#fff" align="center" valign="middle" style="border:1px solid #999;">
+
+                  </td>
+                  <td colspan="4" bgcolor="#fff" align="center" valign="middle" style="border:1px solid #999;">
+                    {{factura.razonsocialproveedor}}
+                  </td>
+                  <td colspan="4" bgcolor="#fff" align="center" valign="middle" style="border:1px solid #999;">
+                    RUC N° {{factura.rucproveedor}}<br/> {{factura.tipodocumento_text}}
+                    <br/>
+                    <b> {{factura.nocomprobantepago}}</b><br/>
+
+                  </td>
+                </tr>
+                <tr style="border:1px solid #999;">
+                  <td colspan="12" bgcolor="#fff" align="left" valign="top" style="border:1px solid #999;font-size: 20px">
+                    <b style="font-size: 20px; color:#0067a3">Datos Generales:</b>
+                  </td>
+                </tr>
+                <tr style="border:1px solid #999;">
+                  <td colspan="1" bgcolor="#fff" align="left" valign="middle" style="border:1px solid #999;">
+                    <b> Cliente:</b>
+                  </td>
+
+                  <td colspan="3" bgcolor="#fff" align="left" valign="middle" style="border:1px solid #999;">
+                    {{factura.razonsocialcliente}}
+                  </td>
+
+                  <td colspan="1" bgcolor="#fff" align="left" valign="middle" style="border:1px solid #999;">
+                    <b>  RUC N°:</b>
+                  </td>
+
+                  <td colspan="3" bgcolor="#fff" align="left" valign="middle" style="border:1px solid #999;">
+                    {{factura.ruccliente}}
+                  </td>
+
+                  <td colspan="1" bgcolor="#fff" align="left" valign="middle" style="border:1px solid #999;">
+                    <b> Estado:</b>
+                  </td>
+                  <td colspan="3" bgcolor="#fff" align="left" valign="middle" style="border:1px solid #999;">
+                    {{factura.estado_text}}
+                  </td>
+                </tr>
+                <tr style="border:1px solid #999;">
+                  <td colspan="1" bgcolor="#fff" align="left" valign="middle" style="border:1px solid #999;">
+                    <b> Guias de Despacho:</b>
+                  </td>
+                  <td colspan="11" bgcolor="#fff" align="left" valign="middle" style="border:1px solid #999;">
+                    {{factura.guiasdespacho}}
+                  </td>
+                </tr>
+                <tr style="border:1px solid #999;">
+                    <td colspan="12" bgcolor="#fff" align="left" valign="top" style="border:1px solid #999;">
+                      <b>Orden de Compra/Servicio/Contrato:</b> {{factura.ordencompraserviciocontrato}}
+                    </td>
+                </tr>
+
+                <tr style="border:1px solid #999;">
+                  
+                  <td colspan="3" bgcolor="#fff" align="left" valign="middle" style="border:1px solid #999;">
+                    <b> Fecha de Emision:</b> <br> {{factura.fechaemision}}
+                  </td>
+                  <!-- <td colspan="4" bgcolor="#fff" align="left" valign="middle" style="border:1px solid #999;">
+                    <b> Fecha de Vencimiento:</b> {{factura.fecharegistro}}
+                  </td>-->
+                  <td colspan="3" bgcolor="#fff" align="left" valign="middle" style="border:1px solid #999;">
+                    <b>  Fecha de Recepcion:</b> {{factura.fecharecepcion}}
+                  </td>
+                  <td colspan="3" bgcolor="#fff" align="left" valign="middle" style="border:1px solid #999;">
+                    <b> Fecha de Registro:</b> {{factura.fecharegistro}}
+                  </td>
+                  <td colspan="3" bgcolor="#fff" align="left" valign="middle" style="border:1px solid #999;">
+                    <b> Fecha de Vencimiento:</b> {{factura.fechavencimiento}}
+                  </td>
+                </tr>
+
+
+                <tr style="border:1px solid #999;">
+                  <td colspan="4" bgcolor="#fff" align="left" valign="middle" style="border:1px solid #999;">
+                    <b> Documento ERP:</b> {{factura.documentoerp}}
+                  </td>
+                  <td colspan="4" bgcolor="#fff" align="left" valign="middle" style="border:1px solid #999;">
+                    <b>  Forma de Pago:</b> {{factura.formapago}}
+                  </td>
+                  <td colspan="4" bgcolor="#fff" align="left" valign="middle" style="border:1px solid #999;">
+                    <b> Moneda:</b> {{factura.moneda_text}}
+                  </td>
+                </tr>
+
+
+                <tr *ngIf="factura.motivorechazosap" style="border:1px solid #999;">
+                  <td colspan="12" bgcolor="#fff" align="left" valign="top" style="border:1px solid #999;">
+                    <b>Motivo Rechazo SAP:</b><br> {{this.factura.motivorechazosap}}
+                  </td>
+                </tr>
+                <tr *ngIf="factura.motivoerrorsap" style="border:1px solid #999;">
+                  <td colspan="12" bgcolor="#fff" align="left" valign="top" style="border:1px solid #999;">
+                    <b>Motivo Error SAP:</b><br> {{this.factura.motivoerrorsap}}
+                  </td>
+                </tr>
+
+
+                <tr style="border:0px solid #999;">
+                  <td colspan="12" bgcolor="#fff" align="left" valign="top" style="border:0px solid #999;">
+                    &nbsp;
+                  </td>
+                </tr>
+                <tr style="border:1px solid #999;">
+                  <td colspan="12" bgcolor="#fff" align="center" valign="top" style="border:1px solid #999;font-size: 20px">
+                    <b style="font-size: 20px; color:#0067a3">Detalle</b>
+                  </td>
+                </tr>
+
+                <tr style="border:1px solid #999;">
+                  <td colspan="1" bgcolor="#fff" align="center" valign="middle" style="border:1px solid #999;">
+                    <b>No. <br>Item</b>
+                  </td>
+                  <td colspan="1" bgcolor="#fff" align="center" valign="middle" style="border:1px solid #999;">
+                    <b>Num. Guía</b>
+                  </td>
+
+                  <td colspan="1" bgcolor="#fff" align="center" valign="middle" style="border:1px solid #999;">
+                    <b>Num. OC</b>
+                  </td>
+                  <td colspan="1" bgcolor="#fff" align="center" valign="middle" style="border:1px solid #999;">
+                    <b>Num. Item OC</b>
+                  </td>
+                  <td colspan="4" bgcolor="#fff" align="center" valign="middle" style="border:1px solid #999;">
+                    <b>Descripción del Producto</b>
+                  </td>
+
+                  <td colspan="1" bgcolor="#fff" align="center" valign="middle" style="border:1px solid #999;">
+                    <b>Cantidad</b>
+                  </td>
+
+                  <td colspan="2" bgcolor="#fff" align="center" valign="middle" style="border:1px solid #999;">
+                    <b>Precio Unitario Referencial</b>
+                  </td>
+
+                  <td colspan="1" bgcolor="#fff" align="center" valign="middle" style="border:1px solid #999;">
+                    <b>Importe Total Item</b>
+                  </td>
+
+
+                </tr>
+
+                <tr *ngFor="let row of factura.detallefactura" style="border:1px solid #999;">
+                  <td colspan="1" bgcolor="#fff" align="center" valign="middle" style="border:1px solid #999;">
+                    {{row.noitem}}
+                  </td>
+                  <td colspan="1" bgcolor="#fff" align="center" valign="middle" style="border:1px solid #999;">
+                    {{row.noguia}}
+                  </td>
+
+                  <td colspan="1" bgcolor="#fff" align="center" valign="middle" style="border:1px solid #999;">
+                    {{row.nooc}}
+                  </td>
+                  <td colspan="1" bgcolor="#fff" align="center" valign="middle" style="border:1px solid #999;">
+                    {{row.noitemoc}}
+                  </td>
+                  <td colspan="4" bgcolor="#fff" align="center" valign="middle" style="border:1px solid #999;">
+
+                    <div [innerHTML]="row.descproducto" style="text-align: center;">
+                    </div>
+                  </td>
+
+                  <td colspan="1" bgcolor="#fff" align="center" valign="middle" style="border:1px solid #999;">
+                    {{row.cantidad}}
+                  </td>
+
+                  <td colspan="2" bgcolor="#fff" align="center" valign="middle" style="border:1px solid #999;">
+                    {{row.preciounitreferencial}}
+                  </td>
+
+                  <td colspan="1" bgcolor="#fff" align="center" valign="middle" style="border:1px solid #999;">
+                    {{row.importetotalitem}}
+                  </td>
+
+
+                </tr>
+                <tr style="border:0px solid #999;">
+                  <td colspan="12" bgcolor="#fff" align="left" valign="top" style="border:0px solid #999;">
+                    &nbsp;
+                  </td>
+                </tr>
+                <tr style="border:0px solid #999;">
+                  <td colspan="7" bgcolor="#fff" align="center" valign="middle" style="border:0px solid #999;">
+                    &nbsp;
+                  </td>
+
+                  <td colspan="2" bgcolor="#fff" align="center" valign="middle" style="border:1px solid #999;">
+                    <b> Sub-Total:</b>
+                  </td>
+
+                  <td colspan="1" bgcolor="#fff" align="center" valign="middle" style="border:1px solid #999;">
+                    {{factura.moneda}}
+                  </td>
+
+                  <td colspan="2" bgcolor="#fff" align="center" valign="middle" style="border:1px solid #999;">
+                    {{factura.subtotal}}
+                  </td>
+
+
+                </tr>
+
+                <tr style="border:0px solid #999;">
+                  <td colspan="7" bgcolor="#fff" align="center" valign="middle" style="border:0px solid #999;">
+                    &nbsp;
+                  </td>
+
+                  <td colspan="2" bgcolor="#fff" align="center" valign="middle" style="border:1px solid #999;">
+                    <b> IGV:</b>
+                  </td>
+
+                  <td colspan="1" bgcolor="#fff" align="center" valign="middle" style="border:1px solid #999;">
+                    {{factura.moneda}}
+                  </td>
+
+                  <td colspan="2" bgcolor="#fff" align="center" valign="middle" style="border:1px solid #999;">
+                    {{factura.igv}}
+                  </td>
+
+
+                </tr>
+
+                <tr style="border:0px solid #999;">
+                  <td colspan="7" bgcolor="#fff" align="center" valign="middle" style="border:0px solid #999;">
+                    &nbsp;
+                  </td>
+
+                  <td colspan="2" bgcolor="#fff" align="center" valign="middle" style="border:1px solid #999;">
+                    <b> Total:</b>
+                  </td>
+
+                  <td colspan="1" bgcolor="#fff" align="center" valign="middle" style="border:1px solid #999;">
+                    {{factura.moneda}}
+                  </td>
+
+                  <td colspan="2" bgcolor="#fff" align="center" valign="middle" style="border:1px solid #999;">
+                    {{factura.total}}
+                  </td>
+
+
+                </tr>
+
+                <tr style="border:0px solid #999;">
+                  <td colspan="12" bgcolor="#fff" align="left" valign="top" style="border:0px solid #999;">
+                      SON: {{factura.totaltexto}} 
+                  </td>
+                </tr>
+
+                <tr style="border:1px solid #999;">
+                  <td colspan="12" bgcolor="#fff" align="left" valign="top" style="border:1px solid #999;font-size: 20px">
+                    <b style="font-size: 20px; color:#0067a3">Datos de Pago:</b>
+                  </td>
+                </tr>
+
+                <tr style="border:1px solid #999;">
+                  <td colspan="4" bgcolor="#fff" align="left" valign="middle" style="border:1px solid #999;">
+                    <b> Tipo Pago:</b> {{factura.tipopago}}
+                  </td>
+                  <td colspan="4" bgcolor="#fff" align="left" valign="middle" style="border:1px solid #999;">
+                    <b> Nro. Documento:</b> {{factura.nrodocumento}}
+                  </td>
+                  <td colspan="4" bgcolor="#fff" align="left" valign="middle" style="border:1px solid #999;">
+                    <b> Banco:</b> {{factura.banco}}
+                  </td>
+
+                </tr>
+
+                <tr style="border:1px solid #999;">
+                  <td colspan="4" bgcolor="#fff" align="left" valign="middle" style="border:1px solid #999;">
+                    <b> Fecha de Pago:</b> {{factura.fechapago}}
+                  </td>
+                  <td colspan="4" bgcolor="#fff" align="left" valign="middle" style="border:1px solid #999;">
+                    <b> Monto:</b> {{factura.monto}}
+                  </td>
+                  <td colspan="4" bgcolor="#fff" align="left" valign="middle" style="border:1px solid #999;">
+                    <b> Moneda:</b> {{factura.datospagomoneda}}
+                  </td>
+
+                </tr>
+                <tr style="border:1px solid #999;">
+                  <td colspan="12" bgcolor="#fff" align="left" valign="middle" style="border:1px solid #999;">
+                    <b> Nro. Cheque:</b> {{factura.nrocheque}}
+                  </td>
+                </tr>
+
+                <tr style="border:1px solid #999;">
+                  <td colspan="12" bgcolor="#fff" align="left" valign="top" style="border:1px solid #999;font-size: 20px">
+                    <b style="font-size: 20px; color:#0067a3">Datos de Descuentos por Retención o Detracción:</b>
+                  </td>
+                </tr>
+                <tr style="border:1px solid #999;">
+                  <td colspan="4" bgcolor="#fff" align="left" valign="middle" style="border:1px solid #999;">
+                    <b> Tipo Descuento:</b> {{factura.tipodescuento}}
+                  </td>
+                  <td colspan="8" bgcolor="#fff" align="left" valign="middle" style="border:1px solid #999;">
+                    <b>Nro. Comprobante:</b> {{factura.nrocomprobante}}
+                  </td>
+                </tr>
+
+                <tr style="border:1px solid #999;">
+                  <td colspan="4" bgcolor="#fff" align="left" valign="middle" style="border:1px solid #999;">
+                    <b> Monto:</b> {{factura.dsctomonto}}
+                  </td>
+                  <td colspan="8" bgcolor="#fff" align="left" valign="middle" style="border:1px solid #999;">
+                    <b>Moneda:</b> {{factura.dsctomoneda}}
+                  </td>
+                </tr>
+                <tr style="border:0px solid #999;">
+                  <td colspan="12" bgcolor="#fff" align="left" valign="top" style="border:0px solid #999;">
+                    &nbsp;
+                  </td>
+                </tr>
+
+                <tr style="border:1px solid #999;">
+                  <td colspan="12" bgcolor="#fff" align="left" valign="top" style="border:1px solid #999;font-size: 20px">
+                    <b style="font-size: 20px; color:#0067a3">Observaciones Comprobante de Pago:</b>
+                    <div [innerHTML]="factura.observaciones" style="text-align: left;">
+                      </div>
+                  </td>
+                </tr>
+
+                <tr style="border:1px solid #999;" cellpadding="0">
+                  <td colspan="12" bgcolor="#fff" cellpadding="0" align="left" valign="top" style="border:1px solid #999;font-size: 20px">
+                    <b style="font-size: 20px; color:#0067a3">Observaciones de Pago:</b>
+
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div [innerHTML]="factura.obscomprobantepago" style="text-align: left; align-content:center; width:900px;">
+            </div>
+
+
+
+
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+</div>

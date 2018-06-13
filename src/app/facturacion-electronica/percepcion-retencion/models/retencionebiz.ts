@@ -1,0 +1,50 @@
+export class Retencionebiz {
+  id: string;
+  usuarioCreacion: string;
+  usuarioModificacion: string;
+  estado: number;
+  idDocumentoOrigen: string;
+  idDocumentoDestino: string;
+  tipoDocumentoOrigen: string;
+  tipoDocumentoDestino: string;
+  serieDocumentoDestino: string;
+  correlativoDocumentoDestino: string;
+  fechaEmisionDestino: string;
+  deTotMoneDes: string;
+  totalImporteDestino: string;
+  totalImporteAuxiliarDestino: string;
+  totalPorcentajeAuxiliarDestino: number;
+  tipoDocumentoOrigenDescripcion: string;
+  tipoDocumentoDestinoDescripcion: string;
+  monedaDestino: string;
+  idMoneda: string;
+  totalMonedaDestino: number;
+  auxiliar1: string;
+  auxiliar2: string;
+  polizaFactura: string;
+  anticipo: number;
+  observaciones: string;
+  vcPolizaFactura: string;
+    constructor() {
+    this.idDocumentoOrigen = "";
+    this.idDocumentoDestino = "";
+    this.tipoDocumentoOrigen = "";
+    this.tipoDocumentoDestino = "";
+    this.serieDocumentoDestino = "";
+    this.correlativoDocumentoDestino = "";
+    this.totalImporteDestino = '';
+    this.totalImporteAuxiliarDestino = '';
+    this.totalPorcentajeAuxiliarDestino = 0;
+    this.deTotMoneDes = '';
+    this.tipoDocumentoOrigenDescripcion = "RETENCION";
+    this.tipoDocumentoDestinoDescripcion = "";
+    this.monedaDestino = "";
+    this.totalMonedaDestino = 0;
+    this.auxiliar1 = '';
+    this.polizaFactura = "";
+    this.anticipo = 0;
+    this.fechaEmisionDestino = "";
+    this.observaciones = '';
+    this.vcPolizaFactura = '';
+  }
+}

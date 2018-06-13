@@ -75,7 +75,7 @@
           </div>
           <div class="col-md-4">
             <div class="form-group label-floating">
-              <label  class="control-label">{{'tipoCambio' | translate}}</label>
+              <label  class="control-label">{{'tipoCambio' | translate}}<span class="star">*</span> </label>
               <input precioDirectiva id="txtTipoCambio" formControlName="txtTipoCambio" autocomplete="off" class="form-control" type="text" (keyup)="ready()" >
               <span *ngIf="!itemFormGroup.get('txtTipoCambio').valid && itemFormGroup.get('txtTipoCambio').touched">
                 <span *ngIf="itemFormGroup.controls['txtTipoCambio'].hasError('required')"  class="text-danger">{{'campoRequerido' | translate}}</span>

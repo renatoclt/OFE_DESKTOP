@@ -25,6 +25,7 @@ import {PersistenciaServiceRetencion} from '../services/persistencia.service';
 import {ArchivoMasivaService} from '../services/archivoMasiva.service';
 import {EstadoArchivoService} from '../../general/utils/estadoArchivo.service';
 import {VistapreviaRetencionComponent} from './vistaprevia-retencion.component';
+import {UtilsService} from '../../general/utils/utils.service';
 //import {SpinnerService} from '../../../service/spinner.service';
 
 @NgModule({
@@ -65,6 +66,7 @@ import {VistapreviaRetencionComponent} from './vistaprevia-retencion.component';
     ComprobantesService,
     RetencionService,
     PercepcionRetencionReferenciasService,
+    UtilsService
   //  SpinnerService
   ]
 })

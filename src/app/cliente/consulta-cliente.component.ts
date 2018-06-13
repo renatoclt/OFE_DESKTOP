@@ -212,7 +212,7 @@ export class ConsultaClienteComponent implements OnInit {
                     this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_DNI,
                     this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_CARNET_EXTRANJERIA,
                     this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_PASAPORTE,
-                    this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_CEDULA_DIPLOMATICA_IDENTIDAD,
+                    // this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_CEDULA_DIPLOMATICA_IDENTIDAD,
                     this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_OTROS
                 ];
                 break;
@@ -279,7 +279,7 @@ export class ConsultaClienteComponent implements OnInit {
             this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_DNI,
             this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_CARNET_EXTRANJERIA,
             this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_PASAPORTE,
-            this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_CEDULA_DIPLOMATICA_IDENTIDAD,
+            // this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_CEDULA_DIPLOMATICA_IDENTIDAD,
             this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_OTROS
         ];
         this.consultaFormGroup.controls['cmbTipoDocumento'].enable();

@@ -19,6 +19,7 @@ import {NuevoDocumentoBajaService} from '../general/services/documento/nuevoDocu
 import {TokenInterceptorService} from '../general/services/tokenInterceptor.service';
 import { PersistenciaService } from 'app/facturacion-electronica/comprobantes/services/persistencia.service';
 import {UtilsService} from '../general/utils/utils.service';
+import {EstilosServices} from '../general/utils/estilos.services';
 
 
 @NgModule({
@@ -41,6 +42,7 @@ import {UtilsService} from '../general/utils/utils.service';
   ],
   providers: [
     TiposService,
+    EstilosServices,
     ComprobantesService,
     Servidores,
     ArchivoService,

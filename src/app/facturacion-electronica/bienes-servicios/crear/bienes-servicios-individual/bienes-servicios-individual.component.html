@@ -5,7 +5,7 @@
         <div class="col-xs-12 col-sm-4 col-md-4">
           <div class="form-group label-floating">
             <label class="control-label"> {{'codigo' | translate}} <span class="star">*</span></label>
-            <input  id="txtcodigo" formControlName="txtcodigo" class="form-control" type="text" autocomplete="off">
+            <input  codigoDirective id="txtcodigo" formControlName="txtcodigo" class="form-control" type="text" autocomplete="off">
             <span *ngIf="!productosIndividualformGroup.get('txtcodigo').valid && productosIndividualformGroup.get('txtcodigo').touched">
               <span *ngIf="productosIndividualformGroup.controls['txtcodigo'].hasError('required')" class="text-danger">{{'campoRequerido' | translate}}</span>
             </span>
@@ -23,7 +23,7 @@
         <div class="col-xs-12 col-sm-4 col-md-4">
           <div class="form-group label-floating">
             <label class="control-label"> {{'tipo' | translate}} <span class="star">*</span></label>
-            <select id="cmbtipo" name="cmbtipo" formControlName="cmbtipo" class="form-control">
+            <select id="cmbtipo" name="cmbtipo" formControlName="cmbtipo" class="form-control" (change)="cambioTipoItem()">
               <option *ngFor="let tipo of tipoBienServicios" [value]="tipo.codigo"> {{tipo.descripcion}}</option>
             </select>
             <span *ngIf="!productosIndividualformGroup.get('cmbtipo').valid && productosIndividualformGroup.get('cmbtipo').touched">
@@ -35,7 +35,7 @@
       <div class="row">
         <div class="col-xs-12 col-sm-4 col-md-4">
           <div class="form-group label-floating">
-            <label class="control-label"> {{'unidadMedida' | translate}} <span class="star">*</span></label>
+            <label class="control-label"> {{'unidadMedida' | translate}}</label>
             <select id="cmbunidadmedida" name="cmbunidadmedida" formControlName="cmbunidadmedida" class="form-control">
               <option *ngFor="let unidad of unidadesDeMedida | async" [value]="unidad.iso"> {{unidad.descripcionCorta}}</option>
             </select>

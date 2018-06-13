@@ -507,9 +507,8 @@ export class DataTableComponent<T> implements OnInit, AfterViewInit, OnDestroy {
     if (this.checkTodos) {
       if (this.usaServicio) {
         this.eliminar.emit(this.itemsSeleccionados);
-        this.dataTemporal.next([]);
+        // this.dataTemporal.next([]);
         this.itemsSeleccionados = [];
-        this.cargarData();
       } else {
         this.checkTodos = false;
         this.dataTableServicio.eliminarTodos();
@@ -522,9 +521,8 @@ export class DataTableComponent<T> implements OnInit, AfterViewInit, OnDestroy {
     } else {
       if (this.usaServicio) {
         this.eliminar.emit(this.itemsSeleccionados);
-        this.dataTemporal.next([]);
+        // this.dataTemporal.next([]);
         this.itemsSeleccionados = [];
-        this.cargarData();
       } else {
         this.dataTableServicio.eliminarMasa(this.itemsSeleccionados, this.nombreIdDelItem);
         const dataNueva = this.dataTableServicio.getData();
