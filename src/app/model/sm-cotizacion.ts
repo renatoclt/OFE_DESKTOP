@@ -1,7 +1,7 @@
-import { Archivo } from "app/model/archivo";
-import { RFQCompradoBuscar/*, AtributoxProducto*/ } from "app/model/sm-rfqcomprador";
+import { Archivo } from 'app/model/archivo';
+import { RFQCompradoBuscar/*, AtributoxProducto*/ } from 'app/model/sm-rfqcomprador';
 
-    export class CotizacionFiltro{  
+    export class CotizacionFiltro{
         nsolicitud:string;
         nseguimiento:string;
         estado:string;
@@ -12,9 +12,9 @@ import { RFQCompradoBuscar/*, AtributoxProducto*/ } from "app/model/sm-rfqcompra
         constructor() {
             this.nsolicitud='';
             this.nseguimiento='';
-            this.estado='';       
+            this.estado='';
             this.fechainicio=null;
-            this.fechafin=null;            
+            this.fechafin=null;
             this.publicada = false;
         }
         */
@@ -34,30 +34,30 @@ import { RFQCompradoBuscar/*, AtributoxProducto*/ } from "app/model/sm-rfqcompra
     export class Cotizacion {
         id_doc?: string;
         IdBorrador?:string;
-        //id: string;
-        //qtreferencia:string;
-        idrfq:string;
-        numerorfq:string;        
-        version:string;
-        orgpro:string;
-        orgcom:string;
-        nomorgcom:string; 
-        nomorgpro :string;
-        nomusucom:string;
-        nomusupro:string;
-        fechacreacion?:Date;
-        fechaemision?:Date;
-        numeroseguimiento:string;
-        area:string;
-        estado?:string;
+        // id: string;
+        // qtreferencia:string;
+        idrfq: string;
+        numerorfq: string;
+        version: string;
+        orgpro: string;
+        orgcom: string;
+        nomorgcom: string; 
+        nomorgpro: string;
+        nomusucom: string;
+        nomusupro: string;
+        fechacreacion?: Date;
+        fechaemision?: Date;
+        numeroseguimiento: string;
+        area: string;
+        estado?: string;
         estadorfqcomprador: string;
-        //estado_txt?:string;
+        // estado_txt?:string;
         estadolargo:string;
         idmoneda:string;
-        //idmoneda_txt:string;
+        // idmoneda_txt:string;
         mensaje:string;
-        //habilitado:number;
-      
+        // habilitado:number;
+
         atributos: Primero[];
         productos: Producto[];
         docadjuntos?: Archivo[];
@@ -65,9 +65,9 @@ import { RFQCompradoBuscar/*, AtributoxProducto*/ } from "app/model/sm-rfqcompra
         constructor() {
             this.fechacreacion = null;
             this.fechaemision = null;
-            //this.fchentregapro = null;
-            //this.fechainicio=null;
-            //this.fechafin=null;
+            // this.fchentregapro = null;
+            // this.fechainicio=null;
+            // this.fechafin=null;
             this.docadjuntos = [];
             this.atributos = [];
             this.productos =[];
@@ -77,13 +77,13 @@ import { RFQCompradoBuscar/*, AtributoxProducto*/ } from "app/model/sm-rfqcompra
 
     export class Primero{
         idatributo: string;
-        nombreatributo:string;
-        valorenviado:string;
-        nombreunidad:string;
-        modificable:string;
-        mandatorio:string;
-        atributovalortipodato:string;
-        //habilitado: number;
+        nombreatributo: string;
+        valorenviado: string;
+        nombreunidad: string;
+        modificable: string;
+        mandatorio: string;
+        atributovalortipodato: string;
+        // habilitado: number;
     }
 
     export class Atributo {
@@ -92,9 +92,9 @@ import { RFQCompradoBuscar/*, AtributoxProducto*/ } from "app/model/sm-rfqcompra
         valor: string;
         unidad: string;
         obligatorio: string;
-        atributovalortipodato:string;
+        atributovalortipodato: string;
     }
-    
+
     export class Producto {
         constructor() {
         //    this.fechaentrega = null; 

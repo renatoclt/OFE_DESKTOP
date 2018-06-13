@@ -41,6 +41,10 @@ export class SidebarComponent extends BaseComponent implements OnInit, AfterView
         this.PermitirCambiarTipoOrganizacion = false;
     }
 
+    public navigate(nav) {
+        this.router.navigate(nav, { relativeTo: this.route });
+    }
+
     isNotMobileMenu() {
         if ($(window).width() > 991) {
             return false;
@@ -60,7 +64,7 @@ export class SidebarComponent extends BaseComponent implements OnInit, AfterView
 
         DatatableFunctions.SetSidebarComponent(this);
 
-      //  this.usuarioActual = JSON.parse(localStorage.getItem('usuarioActual'));
+        // this.usuarioActual = JSON.parse(localStorage.getItem('usuarioActual'));
         this.usuarioSesion = new Usuario;
         this.usuarioSesion.setearDatosDeObjJ(JSON.parse(localStorage.getItem('usuarioActual')));
         /*
@@ -76,7 +80,6 @@ export class SidebarComponent extends BaseComponent implements OnInit, AfterView
             }
         }
         */
-
 
         if (this.usuarioSesion) {
             if (this.usuarioSesion.tipo_empresa === 'C') {
@@ -143,13 +146,13 @@ export class SidebarComponent extends BaseComponent implements OnInit, AfterView
             response => {
                 console.log('response', response);
                 localStorage.clear();
-                let baseurl = $('#baseurl').attr('href');
+                const baseurl = $('#baseurl').attr('href');
                 window.location.href = baseurl;
             },
             error => {
                 console.error('error', error);
                 localStorage.clear();
-                let baseurl = $('#baseurl').attr('href');
+                const baseurl = $('#baseurl').attr('href');
                 window.location.href = baseurl;
             },
             () => { }
@@ -160,7 +163,7 @@ export class SidebarComponent extends BaseComponent implements OnInit, AfterView
 
     cambiarOrganizacion($event) {
         $('#navbar_toggle_main').click();
-        let usuario = JSON.parse(localStorage.getItem('usuarioActual')) as Usuario;
+        const usuario = JSON.parse(localStorage.getItem('usuarioActual')) as Usuario;
         localStorage.setItem('org_id_original', usuario.org_id);
         setTimeout(
             function () {
@@ -195,11 +198,12 @@ export class SidebarComponent extends BaseComponent implements OnInit, AfterView
         localStorage.setItem('tipo_empresa', this.usuarioSesion.tipo_empresa);
 
         localStorage.setItem('usuarioActual', JSON.stringify(this.usuarioSesion));
-        let baseurl = $('#baseurl').attr('href');
+        const baseurl = $('#baseurl').attr('href');
 
-        let oSidebarComponent = DatatableFunctions.getSidebarComponent();
+        const oSidebarComponent = DatatableFunctions.getSidebarComponent();
         if (oSidebarComponent) {
-            oSidebarComponent.usuarioActual = JSON.parse(localStorage.getItem('usuarioActual'));
+            oSidebarComponent.usuarioSesion.setearDatosDeObjJ(JSON.parse(localStorage.getItem('usuarioActual')));
+            // oSidebarComponent.usuarioActual = JSON.parse(localStorage.getItem('usuarioActual'));
         }
 
         this.loginService.obtenerMenu()
@@ -374,8 +378,7 @@ var mda: any = {
             var $currentActive = mda.sidebarMenuActive;
             try {
                 mda.distance = $currentActive.parent().position().top - 10;
-            }
-            catch (ex) { }
+            } catch (ex) { }
 
             if ($currentActive.closest('.collapse').length != 0) {
                 var parent_distance = $currentActive.closest('.collapse').parent().position().top;
@@ -398,9 +401,9 @@ var mda: any = {
     setParentCollapse: function () {
         if (mda.isChild == true) {
             var $sidebarParent = mda.sidebarMenuActive.parent().parent().parent();
-            var collapseId = $sidebarParent.siblings('a').attr("href");
+            var collapseId = $sidebarParent.siblings('a').attr('href');
 
-            $(collapseId).collapse("show");
+            $(collapseId).collapse('show');
 
             $(collapseId).collapse()
                 .on('shown.bs.collapse', () => {

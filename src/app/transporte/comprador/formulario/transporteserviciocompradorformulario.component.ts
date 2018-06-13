@@ -1,16 +1,20 @@
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Component, OnInit, OnChanges, AfterViewInit, SimpleChanges, ChangeDetectorRef, Inject } from '@angular/core';
 import { MomentModule } from 'angular2-moment/moment.module';
-import { AppUtils } from '../../../utils/app.utils';
-import { MasterService } from '../../../service/masterservice';
-import { ComboItem } from '../../../model/comboitem';
-import { TransporteServicio, Transporte, Entrega} from '../../../model/transporteservicio';
-import { TransporteServicioService } from '../../../service/transporteservicioservice';
+import { ComboItem } from 'app/model/comboitem';
+
+import { LoginService } from 'app/service/login.service';
+import { AppUtils } from 'app/utils/app.utils';
+import { MasterService } from 'app/service/masterservice';
+
+import { TransporteServicio, Transporte, Entrega} from 'app/model/transporteservicio';
+import { TransporteServicioService } from 'app/service/transporteservicio.service';
 
 import '../../../../assets/js/plugins/jquery.PrintArea.js';
-import { LoginService } from '../../../service/login.service';
-import { Boton } from '../../../model/menu';
-import { Producto } from '../../../model/sm-requerimiento';
+import { Boton } from 'app/model/menu';
+import { Producto } from 'app/model/sm-requerimiento';
+
+// import { MOSTRAR_PAGINACION, PAGINA_INICIO, MOSTRAR_PRIMEROS, MOSTRAR_RESULTADOS } from "app/utils/app.constants";
 declare var moment: any;
 declare var swal: any;
 
@@ -20,62 +24,81 @@ declare interface DataTable {
   dataRows: string[][];
 }
 
-declare var $, DatatableFunctions: any;
+declare var $;
 var oTransporteServicioCompradorFormularioComponent: TransporteServicioCompradorFormularioComponent;
 
 @Component({
   moduleId: module.id,
   selector: 'transporteserviciocompradorformulario-cmp',
   templateUrl: './transporteserviciocompradorformulario.component.html',
-  providers: [TransporteServicioService, MasterService, LoginService]
+  providers:
+    [
+      TransporteServicioService,
+      MasterService,
+      LoginService,
+    ]
 })
 
 export class TransporteServicioCompradorFormularioComponent implements OnInit, AfterViewInit {
 
-  transportes = [];
-  public entregas: Entrega[];
-
   public toggleButton: boolean = true;
-  public id: string = '0';
+  public id: string = '';
   public botonImprimir: Boton = new Boton();
 
-  util: AppUtils;
   public listMonedaCombo: ComboItem[];
   public listUnidadMedidaCombo: ComboItem[];
   public listEstadoCombo: ComboItem[];
+
   public item: TransporteServicio;
   public transporte: TransporteServicio;
   public transporteproducto: Transporte;
+  private TransporteServicioService: TransporteServicioService;
 
-  // public sortOrder = 'asc';
+  transportes = [];
+  public entregas: Entrega[];
+
   public url_main_module_page = '/transporte/comprador/buscar';
+  // Paginación
+  // paginas: any = [];
+  // paginaSeleccionada: any = PAGINA_INICIO;
+  // mostrarResultados: any = MOSTRAR_PAGINACION;
+  // mostrar: number = MOSTRAR_RESULTADOS;
 
+
+  // loading = false;
+  ordenar: string;
+  ordenarCount: number = 1;
+
+
+  util: AppUtils;
+  public navigate(nav) {
+    this.router.navigate(nav, { relativeTo: this.activatedRoute });
+  }
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
-    private _masterService: MasterService,
-    private _dataService: TransporteServicioService,
-    private _securityService: LoginService,
+    private masterService: MasterService,
+    private dataService: TransporteServicioService,
+    private securityService: LoginService,
     private cdRef: ChangeDetectorRef
     ) {
-    this.util = new AppUtils(this.router, this._masterService);
+    this.util = new AppUtils(this.router, this.masterService);
 
     this.item = new TransporteServicio();
-    this.transporte = new TransporteServicio();
     this.entregas = [];
   }
 
   obtenerBotones() {
-    let botones = this._securityService.ObtenerBotonesCache(this.url_main_module_page) as Boton[];
+    let botones = this.securityService.ObtenerBotonesCache(this.url_main_module_page) as Boton[];
     if (botones) {
       console.log('ObtenerBotonesCache', botones);
       this.configurarBotones(botones);
     } else {
-      this._securityService.obtenerBotones(this.url_main_module_page).subscribe(
+      this.securityService.obtenerBotones(this.url_main_module_page).subscribe(
         botones => {
           console.log('obtenerBotones', botones);
           oTransporteServicioCompradorFormularioComponent.configurarBotones(botones);
-          oTransporteServicioCompradorFormularioComponent._securityService.guardarBotonesLocalStore(this.url_main_module_page, botones);
+          oTransporteServicioCompradorFormularioComponent.securityService.guardarBotonesLocalStore(this.url_main_module_page, botones);
         },
         e => console.log(e),
         () => { }
@@ -112,52 +135,58 @@ export class TransporteServicioCompradorFormularioComponent implements OnInit, A
 
   }
 
-  Ordenar(ordenarPor) {
-    console.log('hola');
+  ordenarResultados(cabecera) {
+    if (this.ordenar === cabecera) {
+      this.ordenarCount++;
+      // console.log('aquí viene ordenarCount cuando es igual a cabecera: ', this.ordenarCount);
+      if (this.ordenarCount === 1) {
+        const transportesOrdenados = this.transportes.sort((a, b) => {
+          return a.numerotransporte < b.numerotransporte ? -1 : a.numerotransporte > b.numerotransporte ? 1 : 0;
+        });
+      }
+      if (this.ordenarCount === 2) {
+        const transportesOrdenados = this.transportes.reverse().sort((a, b) => {
+          return a.numerotransporte < b.numerotransporte ? 1 : a.numerotransporte > b.numerotransporte ? -1 : 0;
+        });
+      }
+      if ( this.ordenarCount >= 3 ) {
+        this.ordenarCount = 0;
+        // console.log('aquí viene ordenarCount cuando es mayor e igual a 3: ', this.ordenarCount);
+        this.ordenar = '';
+      }
+    }else {
+      this.ordenar = cabecera;
+      // console.log('aquí viene ordenar igual a cabecera: ', this.ordenar);
+    }
+  }
+
+  /* Ordenar(ordenarPor) {
+    console.log('viene cabecera', ordenarPor);
 
     switch (ordenarPor) {
       case 'numeroT' :
         const transportesOrdenados = this.transportes.sort((a, b) => {
-          // if (a.numerotransporte < b.numerotransporte) {
-          //   return -1;
-          // }
-          // if (a.numerotransporte > b.numerotransporte) {
-          //   return 1;
-          // }
-          // return 0;
           return a.numerotransporte < b.numerotransporte ? -1 : a.numerotransporte > b.numerotransporte ? 1 : 0;
         });
         this.transportes = transportesOrdenados;
-      break;
+        break;
 
-      case 'placa' :
+        case 'placa' :
         const placasOrdenadas = this.transportes.sort((a, b) => {
-          if (a.placa < b.placa) {
-            return -1;
-          }
-          if (a.placa > b.placa) {
-            return 1;
-          }
-          return 0;
+          return a.placa < b.placa ? -1 : a.placa > b.placa ? 1 : 0;
         });
         this.transportes = placasOrdenadas;
-      break;
+        break;
 
-      case 'costo' :
+        case 'costo' :
         const costosOrdenados = this.transportes.sort((a, b) => {
-          if (a.costoproveedor < b.costoproveedor) {
-            return -1;
-          }
-          if (a.costoproveedor > b.costoproveedor) {
-            return 1;
-          }
-          return 0;
+          return a.costo < b.costo ? -1 : a.costo > b.costo ? 1 : 0;
         });
         this.transportes = costosOrdenados;
       break;
     }
+  } */
 
-  }
 
   ngOnInit(): void {
 
@@ -186,7 +215,7 @@ export class TransporteServicioCompradorFormularioComponent implements OnInit, A
 
   ngAfterViewInit() {
 
-    this._dataService
+    this.dataService
       .obtener(this.id)
       .subscribe(
       p => {

@@ -164,6 +164,18 @@ export class UsuarioAdminEbizFormularioComponent implements OnInit{
   }
 
   agregarOpcion(opcion){
+    opcion = opcion.replace(/á/gi,"a");
+    opcion = opcion.replace(/é/gi,"e");
+    opcion = opcion.replace(/í/gi,"i");
+    opcion = opcion.replace(/ó/gi,"o");
+    opcion = opcion.replace(/ú/gi,"u");
+    opcion = opcion.replace(/ñ/gi,"n");
+    opcion = opcion.replace(/Á/gi,"a");
+    opcion = opcion.replace(/É/gi,"e");
+    opcion = opcion.replace(/Í/gi,"i");
+    opcion = opcion.replace(/Ó/gi,"o");
+    opcion = opcion.replace(/Ú/gi,"u");
+    opcion = opcion.replace(/Ñ/gi,"n");
     opcion = opcion.replace(/ /gi, '');
     opcion = opcion.toUpperCase();
     let posicion = this.opcionesUsuario.indexOf(opcion);

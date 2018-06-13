@@ -59,6 +59,14 @@ export const AppRoutes: Routes = [
 
 
             {
+                path: 'confcalendarios',
+                loadChildren: './factoring/calendarios/calendarios.module#CalendariosModule',
+                canActivate: [AuthGuardService]
+            },
+
+
+
+            {
                 path: 'egp-requerimiento',
                 loadChildren: './egp-requerimiento/requerimiento.module#RequerimientoModule',
                 canActivate: [AuthGuardService]
@@ -174,10 +182,14 @@ export const AppRoutes: Routes = [
                 loadChildren: './indicadores/indicadores.module#IndicadoresModule',
                 canActivate: [AuthGuardService]
             },
-
             {
-                path: 'indicadores',
-                loadChildren: './indicadores/indicadores.module#IndicadoresModule',
+                path: 'facelecebiz',
+                loadChildren: './administracion/facturacion-electronica/ebiz/facelec.module#FacelecModule',
+                canActivate: [AuthGuardService]
+            },
+            {
+                path: 'facelecsunat',
+                loadChildren: './administracion/facturacion-electronica/sunat/facelec.module#FacelecModule',
                 canActivate: [AuthGuardService]
             },
 
@@ -211,7 +223,8 @@ export const AppRoutes: Routes = [
                 loadChildren: './administracion/recuperarpassword/recuperarpassword.module#RecuperarModule'
             },
         ]
-    }*/
+    }
+    */
 
-    
+
 ];

@@ -16,12 +16,3 @@ export class Param {
     counterLastUpdate: number;
     deleted: number;
 }
-
-export class Parametros {
-    Idreglaxparametro:string;
-    Valor:string;
-    constructor(){
-        this.Idreglaxparametro='';
-        this.Valor='';
-    }
-}

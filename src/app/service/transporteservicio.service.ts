@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Http, Response, RequestOptions, Headers } from '@angular/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Observable';
+import { Header } from 'app/@core/header';
 
 import { TransporteServicio, Transporte, Entrega } from 'app/model/transporteservicio';
 
@@ -15,8 +17,13 @@ import { URL_DETALLE_TRANSPORTE } from 'app/utils/app.constants';
 declare var DatatableFunctions: any;
 @Injectable()
 export class TransporteServicioService {
+  private header: Header;
   util: AppUtils;
-  constructor(private http: Http) {
+  constructor(
+    private http: Http,
+    private httpClient: HttpClient
+  ) {
+      this.header = new Header();
   }
 
   convertStringToDate(strDate: string): Date {
@@ -119,6 +126,15 @@ export class TransporteServicioService {
     headers.append('Authorization', 'Bearer ' + localStorage.getItem('access_token'));
     headers.append('Ocp-Apim-Subscription-Key', localStorage.getItem('Ocp_Apim_Subscription_Key'));
     return headers;
+  }
+
+   /**
+   * extractData
+   * @param response
+   */
+  private extractData(response: Response) {
+    let body = response.json();
+    return body || {};
   }
 
 }

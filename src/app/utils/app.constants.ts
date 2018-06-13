@@ -182,7 +182,9 @@ export const URL_BUSCAR_PERMISOS_USUARIO =  BASE_URL + 'organizacion/msorganizac
 // TRANSPORTE
 export const URL_BUSCAR_TRANSPORTE = BASE_URL + 'transporte/mstranslistar/v1/transportes/';
 export const URL_DETALLE_TRANSPORTE =  BASE_URL + 'transporte/mstranslistar/v1/transportes/';
-
+// export const PAGINA_INICIO: number = 0;
+// export const MOSTRAR_PAGINACION: any = [10, 20, 50, 100];
+// export const MOSTRAR_PRIMEROS: number = 10;
 
 // REPORTE
 // -----HAS------
@@ -201,11 +203,15 @@ export const URL_BUSCAR_RFQS = BASE_URL + 'reporte/msrfqbusqueda/v1/rfqs/reporte
 
 // FACTORING
 // PARAMETROS
-
+export const CODMODPARAMETRO='MCONFPA';
 export const URL_PARAMETROS_FACTORING = BASE_URL + 'administracion/msparambusqueda/v1/parametro/paramxregla/?draw=10&start=0&length=100&Reglanegocio=FACTORING&column_names=NombreParametro,Idreglaxparametro';
 
-// LISTAR PARAMETROS
-export const URL_BUSCAR_PARAMETROS = BASE_URL + 'administracion/msparambusqueda/v1/parametro/paramxorg/';
+//LISTAR PARAMETROS
+export const URL_BUSCAR_PARAMETROS = BASE_URL + 'administracion/msparambusqueda/v1/parametro/paramxorg/'
+ 
+//EDITAR PARAMETROS
+export const URL_EDITAR_PARAMETROS = BASE_URL + 'administracion/msproductor/v1/comandos/parametro/'
 
-// EDITAR PARAMETROS
-export const URL_EDITAR_PARAMETROS = BASE_URL + 'administracion/msproductor/v1/comandos/parametro/';
+//LISTAR CALENDARIO
+export const URI_CALENDARIO_CREAR = BASE_URL + 'calendario/msproductor/v1/comandos/calendario'
+export const URI_CALENDARIO_LISTA = BASE_URL + 'calendario/mscallectura/v1/calendarios/'

@@ -1,0 +1,117 @@
+<div class="main-content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="card">          
+              <div class="card-header card-header-text" data-background-color="blue">
+                  <h4 class="card-title">{{title}}</h4>
+              </div>
+              <div class="card-content"> 
+
+                  <div class="col-xs-5 col-sm-2 col-md-2 col-lg-2 text-left">
+                  </div>
+                  <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 text-right">
+                      <a class="btn btn-default btn-sm" [ngClass]="{'hidden':!mostrarBotonCrear}" (click)="formularioCrearCalendario()">Crear</a>
+                  </div>
+  
+                  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                      <div class="table-responsive">							
+                          <table class="table" height="100px">
+                              <thead>
+                                  <tr>
+                                      <th class="text-center cursor-pointer">Calendario</th>
+                                      <th class="text-center">Acciones</th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                  <div class="container-loading" [ngClass]="{invisible: loading}">
+                                      <div class="lds-ripple"><div></div><div></div></div>
+                                  </div>
+                                  <tr *ngFor="let calendario of calendarios">
+                                      <td class="text-center">
+                                        <div class="form-group label-floating">
+                                            <label class="control-label">Nombre de calendario<span class="star">*</span>
+                                            </label>
+                                            <input [id]="calendario.IdCalendario" type="text" class="form-control" [(ngModel)]="calendario.NombreCalendario" [disabled]="!idEditarCalendario" (keyup.enter)="guardarCalendario(calendario)">
+                                        </div>
+                                    </td>
+                                    <td class="td-actions text-center">                                        
+                                        <button [ngClass]="{'hidden': calendario.IdCalendario == idEditarCalendario}" rel="tooltip" type="button"
+                                        class="btn btn-warning btn-round" (click)="editarCalendario(calendario.IdCalendario)"
+                                        title="Editar">
+                                            <i class="material-icons">create</i>
+                                            <div class="ripple-container"></div>
+                                        </button>
+                                        <button [ngClass]="{'hidden': !(calendario.IdCalendario == idEditarCalendario)}" rel="tooltip" type="button"
+                                        class="btn btn-success btn-round" (click)="guardarCalendario(calendario)" title="Guardar">
+                                            <i class="material-icons">save</i>
+                                            <div class="ripple-container"></div>
+                                        </button>
+                                        <button [ngClass]="{'hidden': !(calendario.IdCalendario == idEditarCalendario)}" rel="tooltip" type="button"
+                                        class="btn btn-danger btn-round" (click)="cancelarCalendario()" title="Cancelar">
+                                            <i class="material-icons">clear</i>
+                                            <div class="ripple-container"></div>
+                                        </button>
+                                        <button rel="tooltip" type="button" class="btn btn-default btn-round" [routerLink]="['/confcalendarios/comprador/detalle', calendario.IdCalendario]" title="Ver/Editar">
+                                            <i class="material-icons">visibility</i>
+                                            <div class="ripple-container"></div>
+                                        </button>
+                                        <button rel="tooltip" type="button" class="btn btn-danger btn-round" (click)="confimarInhabilitarCalendario(calendario)" title="Eliminar">
+                                            <i class="material-icons">delete_forever</i>
+                                            <div class="ripple-container"></div>
+                                        </button>
+                                    </td>
+                                  </tr>
+                                  <tr [ngClass]="{'hidden':!mostrarFormularioNuevoCalendario}">
+                                    <td>
+                                      <div class="form-group label-floating">
+                                        <label class="control-label">Nombre de calendario<span class="star">*</span>
+                                        </label>
+                                        <input id="nombre-calendario" type="text" class="form-control" [(ngModel)]="nombre" (keyup.enter)="crearCalendario()">
+                                      </div>
+                                    </td>
+                                    <td class="td-actions text-center">
+                                        <button rel="tooltip" type="button"
+                                          class="btn btn-success btn-round"  title="Guardar" (click)="crearCalendario()">
+                                          <i class="material-icons">save</i>
+                                          <div class="ripple-container"></div>
+                                        </button>
+                                        <button  rel="tooltip" type="button"
+                                          class="btn btn-warning btn-round" title="Cancelar" (click)="cancelarCrearCalendario()">
+                                          <i class="material-icons">remove</i>
+                                          <div class="ripple-container"></div>
+                                        </button>
+                                      </td>
+                                  </tr>
+                              </tbody>
+                          </table>
+                      </div>
+                  </div>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+<!-- Confirmacion - Inhabilitar Grupo Empresarial -->
+<div id="confirmar-inhabilitar" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="gridSystemModalLabel">Aviso</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">¿Desea eliminar calendario: <b>{{calendarioHabilitado.NombreCalendario}}</b>?</div>
+                </div>            
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secundary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-default" (click)="inhabilitarCalendario()">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>

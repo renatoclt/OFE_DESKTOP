@@ -4,17 +4,19 @@ import {NgControl} from '@angular/forms';
 @Directive({
   selector: '[SerieDirective]',
   host: {
-    '(input)': 'toUpperCase($event.target.value)',
-    '(keydown)': 'onKeyDown($event)'
+      '(input)': 'toUpperCase($event.target.value)',
+      '(keydown)': 'onKeyDown($event)',
+      '(keypress)': 'onKeyPress($event)'
   }
 
 })
 export class SerieDirective  {
 
-  @Input('SerieDirective') allowUpperCase: boolean;
-  @Output() ngModelChange = new EventEmitter();
-  @Output() fxChange = new EventEmitter();
-  private maxTamanio: number;
+    @Input('SerieDirective') allowUpperCase: boolean;
+    @Output() ngModelChange = new EventEmitter();
+    @Output() fxChange = new EventEmitter();
+    private maxTamanio: number;
+    private validador: boolean;
 
   constructor(private ref: ElementRef,
               private control: NgControl) {
@@ -32,32 +34,34 @@ export class SerieDirective  {
   }
 
   onKeyDown(evento: Event) {
-    const caracterEvento = evento['which'];
-    const e = <KeyboardEvent> event;
-    const tamanio = this.control.value.length;
-
-    if ((e.shiftKey && e.keyCode < 65 ) || ( e.shiftKey && e.keyCode > 90) ) {
-      e.preventDefault();
+      const caracterEvento = evento['which'];
+      const e = <KeyboardEvent> event;
+      let tmp = false;
+      //  Caracteres de recorrido izq, der, ini, fin, supr
+      if (e.keyCode == 8 || e.keyCode == 9 || e.keyCode == 35 || e.keyCode == 36 || e.keyCode == 37 || e.keyCode == 39 || e.keyCode == 46) {
+          return true;
+      }
+      if (this.control.value.length > (this.maxTamanio - 1)) {
+          e.preventDefault();
+      }
+      //  Formato alfanumerico
+      if ( e.keyCode > 47 && e.keyCode < 106 ) {
+          console.log('------------------------------');
+      } else {
+          e.preventDefault();
+      }
+      //  Validación Shift
+      if ((e.shiftKey && e.keyCode < 65 ) || ( e.shiftKey && e.keyCode > 90) ) {
+          e.preventDefault();
+      }
     }
-    if ((e.keyCode == 219) || (e.keyCode == 221) || (e.keyCode == 186) || (e.keyCode == 187) || (e.keyCode == 222) || (e.keyCode == 191) || (e.keyCode == 188) || (e.keyCode == 190) || (e.keyCode == 189) {
-      e.preventDefault();
+    //  Permite validar ALT + num, tilde + vocal
+    onKeyPress(evento: Event) {
+        const e = <KeyboardEvent> event;
+        if ( e.keyCode >= 48 && e.keyCode < 58 || e.keyCode > 65 && e.keyCode < 94 || e.keyCode > 96 && e.keyCode < 123 ) {
+            console.log('------------------------------');
+        } else {
+            e.preventDefault();
+        }
     }
-    // if (tamanio > this.maxTamanio - 1 ) {
-    //   if (this.control.value) {
-    //
-    //   } else {
-    //       e.preventDefault();
-    //   }
-    // }
-    this.setFormato();
-  }
-
-  public setFormato () {
-    let cadena: string;
-    cadena = this.control.value;
-    if ( cadena.length - 1 > this.maxTamanio  - 2) {
-      cadena = (cadena.substr(0, this.maxTamanio - 1));
-    }
-    this.control.reset( cadena );
-  }
 }

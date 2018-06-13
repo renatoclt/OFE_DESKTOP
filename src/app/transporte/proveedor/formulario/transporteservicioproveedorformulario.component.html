@@ -86,13 +86,29 @@
                       <table class="row-border table table-responsive table-hover" cellspacing="0" style="width:100%">
                         <thead>
                           <tr>
-                            <th style="width: 80px"></th>
-                            <th (click)="Ordenar('numeroT')">Nro. Transporte</th>
+                            <th style="width: 90px"></th>
+                            <th class="text-center cursor-pointer" (click)="ordenarResultados('numeroT')">Nro. Transporte
+                              <span [ngClass]="{'hidden':ordenar != 'numeroT'}">
+                                <i class="material-icons" [ngClass]="{'hidden':ordenarCount != 1}">arrow_drop_down</i>
+                                <i class="material-icons" [ngClass]="{'hidden':ordenarCount != 2}">arrow_drop_up</i>
+                              </span>
+                            </th>
                             <th>Fecha de Inicio</th>
-                            <th (click)="Ordenar('placa')">Placa</th>
+                            <th class="text-center cursor-pointer" (click)="ordenarResultados('placa')">Placa
+                              <span [ngClass]="{'hidden':ordenar != 'placa'}">
+                                <i class="material-icons" [ngClass]="{'hidden':ordenarCount != 1}">arrow_drop_down</i>
+                                <i class="material-icons" [ngClass]="{'hidden':ordenarCount != 2}">arrow_drop_up</i>
+                              </span>
+                            </th>
+                                    
                             <th>Conf. Veh&iacute;culo</th>
                             <th>Peso Total</th>
-                            <th (click)="Ordenar('costo')">Costo Provedor</th>
+                            <th class="text-center cursor-pointer" (click)="ordenarResultados('costo')">Costo Provedor
+                              <span [ngClass]="{'hidden':ordenar != 'costo'}">
+                                <i class="material-icons" [ngClass]="{'hidden':ordenarCount != 1}">arrow_drop_down</i>
+                                <i class="material-icons" [ngClass]="{'hidden':ordenarCount != 2}">arrow_drop_up</i>
+                              </span>
+                            </th>
                             <th>Costo Referencial</th>
                 
                           </tr>

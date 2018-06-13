@@ -62,6 +62,87 @@ export class LoginComponent extends BaseComponent implements OnInit, AfterViewIn
     }
 
 
+    ngOnInit() {
+
+        GlobalFunctions.StopTimer();
+        DatatableFunctions.DisconnectWebsockets();
+
+        this.logoOrganizacion = './assets/img/logos/default/logo.jpg';
+        this.fondoOrganizacion = 'cunamas';
+
+        this.sub = this.route.params.subscribe(params => {
+            this.id = +params['id']; // (+) converts string 'id' to a number
+
+            console.log(this.id);
+           // alert(params);
+            // In a real app: dispatch action to load the details here.
+        });
+
+        this.checkFullPageBackgroundImage();
+        setTimeout(function () {
+            // after 1000 ms we add the class animated to the login/register card
+            $('.card').removeClass('card-hidden');
+        }, 700)
+
+        setTimeout(function () {
+            $('select').each(function () {
+                $(this).keydown();
+                if (!$(this).val() && $(this).val() === '') {
+                    $(this.parentElement).addClass('is-empty');
+                }
+            });
+        }, 100);
+    }
+
+    ngAfterViewInit() {
+
+      //  $('#fondoLogin').attr('data-image','./assets/img/logos/panamericanos/login.jpg')
+
+        DatatableFunctions.ModalSettings();
+        this.uiUtils.addOrRemoveBodyBackGround(true, 'bckgrd-50percent-login');
+        this.uiUtils.addOrRemoveStyleFooter(true, 'fixed_full');
+        $('#txtUsuario').focus();
+
+        // this.usuario.tipo_empresa='C';
+        // $('select[name*=tipo_org] option[value=C]').prop('selected',true);
+        // $("#tipo_org").prop('checked', true);
+
+        setTimeout(function () {
+            $('input').each(function () {
+                $(this).keydown();
+                if (!$(this).val() && $(this).val() === '') {
+                    $(this.parentElement).addClass('is-empty');
+                }
+            });
+            $('select').each(function () {
+                $(this).val('');
+                $(this).keydown();
+                $(this.parentElement).addClass('is-empty');
+
+                /*
+                $(this).keydown();
+                if (!$(this).val() && $(this).val() == '')
+                    $(this.parentElement).addClass("is-empty");
+                */
+
+            });
+            $('textarea').each(function () {
+            $(this).keydown();
+            if (!$(this).val() && $(this).val() === '') {
+                $(this.parentElement).addClass('is-empty');
+            }
+            });
+        }, 100);
+
+    }
+
+    ngOnDestroy() {
+        this.uiUtils.addOrRemoveBodyBackGround(false, 'bckgrd-50percent-login');
+        this.uiUtils.addOrRemoveStyleFooter(false, 'fixed_full');
+
+        this.sub.unsubscribe();
+    }
+
     iniciarSesion() {
 
         if (this.loginModel.username === '') {
@@ -147,6 +228,8 @@ export class LoginComponent extends BaseComponent implements OnInit, AfterViewIn
             this.usuario.avatar_blob = this.adjuntoService.DescargarArchivo(archivo).toPromise();
         }
 
+        console.log(this.usuario);
+
         const orgComp = this.usuario.dameOrgComp();
         const orgProv = this.usuario.dameOrgProv();
         const orgFinan = this.usuario.dameOrgFinan();
@@ -180,7 +263,7 @@ export class LoginComponent extends BaseComponent implements OnInit, AfterViewIn
             this.organizaciones = orgProv;
             this.usuario.tipo_empresa = 'P';
             if (this.organizaciones.length == 1) {
-                let org = this.organizaciones[0];
+                const org = this.organizaciones[0];
                 this.usuario.org_id = org.id;
                 this.usuario.isopais_org = org.isoPais;
                 this.usuario.org_url_image = org.url_image;
@@ -467,19 +550,17 @@ export class LoginComponent extends BaseComponent implements OnInit, AfterViewIn
 
             const usuarioAutenticado = this.usuario.nombreusuario.trim().toUpperCase();
 
-            if(usuarioAutenticado === 'CEGP'){
+            if ( usuarioAutenticado === 'CEGP') {
                 let menuLateral = '[{"front":"PEB2M","logoFront":"https://sab2md.blob.core.windows.net/public-dev/org/logos/b2mining-ico.png","icon":"assignment","title":"Comprador","modulos":[{"idModulo":"03797780-2568-4da5-92a1-0ef545bf8290","moduloUri":"/egp-requerimiento/comprador/buscar","moduloDesc":"Requerimiento","mini":"RFQ","default":true,"botones":[{"habilitado":true,"visible":true,"idBoton":"43fee381-4cd8-4a57-b5d8-ae074f3cec0a","nombre":"registrarguia","Desc":"Botón de registro de guia","Titulo":"REGISTRAR GUÍA"},{"habilitado":true,"visible":true,"idBoton":"5a5e3e43-73db-457e-aaa1-9cb1989c7654","nombre":"imprimir","Desc":"Botón de impresión","Titulo":"IMPRIMIR"},{"habilitado":true,"visible":true,"idBoton":"5a5e3e43-73db-457e-aaa2-9cb1989c7654","nombre":"detalle","Desc":"Botón de ver detalle","Titulo":"DETALLE"},{"habilitado":true,"visible":true,"idBoton":"5a5e3e43-73db-457e-aaa5-9cb1989c7654","nombre":"habilitaredicion","Desc":"Botón de edición","Titulo":"HABILITAR EDICIÓN"},{"habilitado":true,"visible":true,"idBoton":"5a5e3e43-73db-457e-aaa6-9cb1989c7654","nombre":"guardar","Desc":"Botón de guardado","Titulo":"GUARDAR"},{"habilitado":true,"visible":true,"idBoton":"5a5e3e43-73db-457e-aaa7-9cb1989c7654","nombre":"enviar","Desc":"Botón de envío","Titulo":"ENVIAR"},{"habilitado":true,"visible":true,"idBoton":"5a5e3e43-73db-457e-aaa8-9cb1989c7654","nombre":"descartarborrador","Desc":"Botón de descarte de borrador","Titulo":"DESCARTAR BORRADOR"},{"habilitado":true,"visible":true,"idBoton":"5a5e3e43-73db-457e-aaaa-9cb1989c7654","nombre":"buscar","Desc":"Botón de búsqueda","Titulo":"BUSCAR"}]},{"idModulo":"5f57907e-d343-415b-820b-18219986219f","moduloUri":"/egp-ordencompra/comprador/buscar","moduloDesc":"Orden de Compra","mini":"OC","default":false},{"idModulo":"080a018f-b407-40cd-91ab-408f5d0fc069","moduloUri":"/egp-calificacion/proveedor/buscar","moduloDesc":"Calificación","mini":"CA","default":false}]}]';
                 let moduloUriDefault = '/egp-requerimiento/comprador/buscar';
                 console.log('************************* Comprador e-GP ***************');
                 localStorage.setItem('menuLateral', menuLateral);
                 this.router.navigate([moduloUriDefault], { relativeTo: this.route });
                 //   this.uiUtils.showOrHideLoadingScreen(false);
-            } else
-
-            if(usuarioAutenticado === 'PEGP'){
+            } else if ( usuarioAutenticado === 'PEGP') {
                 let menuLateral = '[{"front":"PEB2M","logoFront":"https://sab2md.blob.core.windows.net/public-dev/org/logos/b2mining-ico.png","icon":"assignment","title":"Proveedor","modulos":[{"idModulo":"080a018f-b407-40cd-91ab-408f5d0fc069","moduloUri":"/egp-requerimiento/proveedor/buscar","moduloDesc":"Requerimiento","mini":"RFQ","default":true,"botones":[{"habilitado":true,"visible":true,"idBoton":"43fee381-4cd8-4a57-b5d8-ae074f3cec0a","nombre":"registrarguia","Desc":"Botón de registro de guia","Titulo":"REGISTRAR GUÍA"},{"habilitado":true,"visible":true,"idBoton":"5a5e3e43-73db-457e-aaa1-9cb1989c7654","nombre":"imprimir","Desc":"Botón de impresión","Titulo":"IMPRIMIR"},{"habilitado":true,"visible":true,"idBoton":"5a5e3e43-73db-457e-aaa2-9cb1989c7654","nombre":"detalle","Desc":"Botón de ver detalle","Titulo":"DETALLE"},{"habilitado":true,"visible":true,"idBoton":"5a5e3e43-73db-457e-aaa5-9cb1989c7654","nombre":"habilitaredicion","Desc":"Botón de edición","Titulo":"HABILITAR EDICIÓN"},{"habilitado":true,"visible":true,"idBoton":"5a5e3e43-73db-457e-aaa6-9cb1989c7654","nombre":"guardar","Desc":"Botón de guardado","Titulo":"GUARDAR"},{"habilitado":true,"visible":true,"idBoton":"5a5e3e43-73db-457e-aaa7-9cb1989c7654","nombre":"enviar","Desc":"Botón de envío","Titulo":"ENVIAR"},{"habilitado":true,"visible":true,"idBoton":"5a5e3e43-73db-457e-aaa8-9cb1989c7654","nombre":"descartarborrador","Desc":"Botón de descarte de borrador","Titulo":"DESCARTAR BORRADOR"},{"habilitado":true,"visible":true,"idBoton":"5a5e3e43-73db-457e-aaaa-9cb1989c7654","nombre":"buscar","Desc":"Botón de búsqueda","Titulo":"BUSCAR"}]},{"idModulo":"03797780-2568-4da5-92a1-0ef545bf8290","moduloUri":"/egp-cotizacion/proveedor/buscar","moduloDesc":"Cotización","mini":"CO","default":false},{"idModulo":"5f57907e-d343-415b-820b-18219986219f","moduloUri":"/egp-ordencompra/proveedor/buscar","moduloDesc":"Orden de Compra","mini":"OC","default":false}]}]';
                 let moduloUriDefault = '/egp-requerimiento/proveedor/buscar';
-                console.log('************************* Proveedor e-GP ***************');                    
+                console.log('************************* Proveedor e-GP ***************');
                 localStorage.setItem('menuLateral', menuLateral);
                 this.router.navigate([moduloUriDefault], { relativeTo: this.route });
 
@@ -500,10 +581,14 @@ export class LoginComponent extends BaseComponent implements OnInit, AfterViewIn
             if ( usuarioAutenticado === '20268214527' || usuarioAutenticado === '20537358433' ||
                 usuarioAutenticado === '20111740438' || usuarioAutenticado === '20100202396' ||
                 /*usuarioAutenticado === '20100028698' ||*/ usuarioAutenticado === '20100049181') {
+
+                GlobalFunctions.setup(true, TIME_INACTIVE);
+                DatatableFunctions.ConnectWebsockets(URL_CONSUMER);
+
                 const menuLateral = '[{"front":"PEB2M","logoFront":"https://sab2md.blob.core.windows.net/public-dev/org/logos/b2mining-ico.png","icon":"assignment","title":"Proveedor", "modulos" : [  { "idModulo" : "01134ee2-c8e3-4f3d-a4c7-aaabbbccc001", "moduloUri" : "/sm-requerimiento/proveedor/buscar", "moduloDesc" : "Solicitud Cotización", "mini" : "S", "default" : true, "botones" : [ { "idBoton" : "43fee381-4cd8-6a57-b5d8-ae074f3cec0a", "nombre" : "registrarsolicitudcotiza", "Desc" : "Botón de registro de solicitud de cotización", "habilitado" : 1, "visible": true, "Titulo" : "REGISTRAR COTIZACIÓN" }, { "idBoton" : "5a5e3e43-73db-457e-aaa2-9cb1989c7654", "nombre" : "detalle", "Desc" : "Botón de ver detalle", "habilitado" : 1, "visible": true, "Titulo" : "DETALLE" }, { "idBoton" : "5a5e3e43-73db-457e-aaaa-9cb1989c7654", "nombre" : "buscar", "Desc" : "Botón de búsqueda", "habilitado" : 1, "visible": true, "Titulo" : "BUSCAR" } ] }, { "idModulo" : "01134ee2-c8e3-4f3d-a4c7-aaabbbccc002", "moduloUri" : "/sm-cotizacion/proveedor/buscar", "moduloDesc" : "Cotizaciones", "mini" : "C", "default" : false, "botones" : [ { "idBoton" : "5a5e3e43-73db-457e-aaa2-9cb1989c7654", "nombre" : "detalle", "Desc" : "Botón de ver detalle", "habilitado" : 1, "visible": true, "Titulo" : "DETALLE" }, { "idBoton" : "5a5e3e43-73db-457e-aaaa-9cb1989c7654", "nombre" : "buscar", "Desc" : "Botón de búsqueda", "habilitado" : 1, "visible": true, "Titulo" : "BUSCAR" } ] }, { "idModulo" : "01134ee2-c8e3-4f3d-a4c7-aaabbbccc005", "moduloUri" : "/sm-ordencompra/proveedor/buscar", "moduloDesc" : "Orden de Compra", "mini" : "OC", "default" : false, "botones" : [ { "idBoton" : "5a5e3e43-73db-457e-aaa1-9cb1989c7654", "nombre" : "imprimir", "Desc" : "Botón de impresión", "habilitado" : 1, "visible": true, "Titulo" : "IMPRIMIR" }, { "idBoton" : "5a5e3e43-73db-457e-aaa2-9cb1989c7654", "nombre" : "detalle", "Desc" : "Botón de ver detalle", "habilitado" : 1, "visible": true, "Titulo" : "DETALLE" }, { "idBoton" : "5a5e3e43-73db-457e-aaa3-9cb1989c7654", "nombre" : "aceptar", "Desc" : "Botón de aceptación", "habilitado" : 1, "visible": true, "Titulo" : "ACEPTAR" }, { "idBoton" : "5a5e3e43-73db-457e-aaa4-9cb1989c7654", "nombre" : "rechazar", "Desc" : "Botón de rechazo", "habilitado" : 1, "visible": true, "Titulo" : "RECHAZAR" }, { "idBoton" : "5a5e3e43-73db-457e-aaa9-9cb1989c7654", "nombre" : "limpiar", "Desc" : "Botón de limpiar", "habilitado" : 1, "visible": true, "Titulo" : "LIMPIAR" }, { "idBoton" : "5a5e3e43-73db-457e-aaaa-9cb1989c7654", "nombre" : "buscar", "Desc" : "Botón de búsqueda", "habilitado" : 1, "visible": true, "Titulo" : "BUSCAR" } ] }, { "idModulo" : "01134ee2-c8e3-4f3d-a4c7-aaabbbccc006", "moduloUri" : "/sm-guia/proveedor/buscar", "moduloDesc" : "Guías", "mini" : "G", "default" : false, "botones" : [ { "idBoton" : "43fee381-4cd8-4a57-b5d8-ae074f3cec0a", "nombre" : "registrarguia", "Desc" : "Botón de registro de guia", "habilitado" : 1, "visible": true, "Titulo" : "REGISTRAR GUÍA" }, { "idBoton" : "5a5e3e43-73db-457e-aaa1-9cb1989c7654", "nombre" : "imprimir", "Desc" : "Botón de impresión", "habilitado" : 1, "visible": true, "Titulo" : "IMPRIMIR" }, { "idBoton" : "5a5e3e43-73db-457e-aaa2-9cb1989c7654", "nombre" : "detalle", "Desc" : "Botón de ver detalle", "habilitado" : 1, "visible": true, "Titulo" : "DETALLE" }, { "idBoton" : "5a5e3e43-73db-457e-aaa5-9cb1989c7654", "nombre" : "habilitaredicion", "Desc" : "Botón de edición", "habilitado" : 1, "visible": true, "Titulo" : "HABILITAR EDICIÓN" }, { "idBoton" : "5a5e3e43-73db-457e-aaa6-9cb1989c7654", "nombre" : "guardar", "Desc" : "Botón de guardado", "habilitado" : 1, "visible": true, "Titulo" : "GUARDAR" }, { "idBoton" : "5a5e3e43-73db-457e-aaa7-9cb1989c7654", "nombre" : "enviar", "Desc" : "Botón de envío", "habilitado" : 1, "visible": true, "Titulo" : "ENVIAR" }, { "idBoton" : "5a5e3e43-73db-457e-aaa8-9cb1989c7654", "nombre" : "descartarborrador", "Desc" : "Botón de descarte de borrador", "habilitado" : 1, "visible": true, "Titulo" : "DESCARTAR BORRADOR" }, { "idBoton" : "5a5e3e43-73db-457e-aaa9-9cb1989c7654", "nombre" : "limpiar", "Desc" : "Botón de limpiar", "habilitado" : 1, "visible": true, "Titulo" : "LIMPIAR" }, { "idBoton" : "5a5e3e43-73db-457e-aaaa-9cb1989c7654", "nombre" : "buscar", "Desc" : "Botón de búsqueda", "habilitado" : 1, "visible": true, "Titulo" : "BUSCAR" } ] }, { "idModulo" : "5f57907e-d343-415b-820b-18219986219f", "moduloUri" : "/conformidadservicio/proveedor/buscar", "moduloDesc" : "Hoja de Aceptación", "mini" : "HAS", "default" : false, "botones" : [ { "idBoton" : "5a5e3e43-73db-457e-aaa1-9cb1989c7654", "nombre" : "imprimir", "Desc" : "Botón de impresión", "habilitado" : 1, "visible": true, "Titulo" : "IMPRIMIR" }, { "idBoton" : "5a5e3e43-73db-457e-aaa2-9cb1989c7654", "nombre" : "detalle", "Desc" : "Botón de ver detalle", "habilitado" : 1, "visible": true, "Titulo" : "DETALLE" }, { "idBoton" : "5a5e3e43-73db-457e-aaa9-9cb1989c7654", "nombre" : "limpiar", "Desc" : "Botón de limpiar", "habilitado" : 1, "visible": true, "Titulo" : "LIMPIAR" }, { "idBoton" : "5a5e3e43-73db-457e-aaaa-9cb1989c7654", "nombre" : "buscar", "Desc" : "Botón de búsqueda", "habilitado" : 1, "visible": true, "Titulo" : "BUSCAR" } ] }, { "idModulo" : "01134ee2-c8e3-4f3d-a4c7-aaabbbccc007", "moduloUri" : "/sm-factura/proveedor/buscar", "moduloDesc" : "Comprobante de Pago", "mini" : "CP", "default" : false, "botones" : [ { "idBoton" : "5a5e3e43-73db-457e-aaa1-9cb1989c7654", "nombre" : "imprimir", "Desc" : "Botón de impresión", "habilitado" : 1, "visible": true, "Titulo" : "IMPRIMIR" }, { "idBoton" : "5a5e3e43-73db-457e-aaa2-9cb1989c7654", "nombre" : "detalle", "Desc" : "Botón de ver detalle", "habilitado" : 1, "visible": true, "Titulo" : "DETALLE" }, { "idBoton" : "5a5e3e43-73db-457e-aaaa-9cb1989c7654", "nombre" : "buscar", "Desc" : "Botón de búsqueda", "habilitado" : 1, "visible": true, "Titulo" : "BUSCAR" }, { "idBoton" : "d5f78ab9-a8c6-4191-bdee-c4d7f84835b8", "nombre" : "registrarcomprobante", "Desc" : "Botón de registro de comprobante", "habilitado" : 1, "visible": true, "Titulo" : "REGISTRAR COMPROBANTE" } ] },{ "idModulo" : "01134ee2-c8e3-4f3d-a4c7-aaabbbccc003", "moduloUri" : "/sm-retencion/proveedor/buscar", "moduloDesc" : "Retenciones", "mini" : "R", "default" : false, "botones" : [ { "idBoton" : "5a5e3e43-73db-457e-aaa2-9cb1989c7654", "nombre" : "detalle", "Desc" : "Botón de ver detalle", "habilitado" : 1, "visible": true, "Titulo" : "DETALLE" }, { "idBoton" : "5a5e3e43-73db-457e-aaaa-9cb1989c7654", "nombre" : "buscar", "Desc" : "Botón de búsqueda", "habilitado" : 1, "visible": true, "Titulo" : "BUSCAR" } ] }, { "idModulo" : "01134ee2-c8e3-4f3d-a4c7-aaabbbccc004", "moduloUri" : "/sm-detraccion/proveedor/buscar", "moduloDesc" : "Detracciones", "mini" : "D", "default" : false, "botones" : [ { "idBoton" : "5a5e3e43-73db-457e-aaa2-9cb1989c7654", "nombre" : "detalle", "Desc" : "Botón de ver detalle", "habilitado" : 1, "visible": true, "Titulo" : "DETALLE" }, { "idBoton" : "5a5e3e43-73db-457e-aaaa-9cb1989c7654", "nombre" : "buscar", "Desc" : "Botón de búsqueda", "habilitado" : 1, "visible": true, "Titulo" : "BUSCAR" } ] }]  }]';
                 const moduloUriDefault = '/sm-requerimiento/proveedor/buscar';
 
-                console.log('************************* Proveedor '+usuarioAutenticado+' ***************');
+                console.log('************************* Proveedor ' + usuarioAutenticado + ' ***************');
                 localStorage.setItem('RootMenu', '{"menus":' + menuLateral + ',"moduloUriDefault":"' + moduloUriDefault + '"}');   
                 localStorage.setItem('menuLateral', menuLateral);
                 this.router.navigate([moduloUriDefault], { relativeTo: this.route });
@@ -520,6 +605,8 @@ export class LoginComponent extends BaseComponent implements OnInit, AfterViewIn
 
                     if ( usuarioAutenticado === 'ADMINEBIZ' ) {
                         data.menus[0].title = 'Admin. del Sistema';
+                    } else if ( usuarioAutenticado === 'FACEBIZ' ) {
+                        data.menus[0].title = 'Cobranzas EBIZ';
                     }
 
                     GlobalFunctions.setup(true, TIME_INACTIVE);
@@ -565,85 +652,6 @@ export class LoginComponent extends BaseComponent implements OnInit, AfterViewIn
     }
 
 
-    ngOnInit() {
-        GlobalFunctions.StopTimer();
-        DatatableFunctions.DisconnectWebsockets();
-
-        this.logoOrganizacion = './assets/img/logos/default/logo.jpg';
-        this.fondoOrganizacion = 'cunamas';
-
-        this.sub = this.route.params.subscribe(params => {
-            this.id = +params['id']; // (+) converts string 'id' to a number
-
-            console.log(this.id);
-           // alert(params);
-            // In a real app: dispatch action to load the details here.
-        });
-
-        this.checkFullPageBackgroundImage();
-        setTimeout(function () {
-            // after 1000 ms we add the class animated to the login/register card
-            $('.card').removeClass('card-hidden');
-        }, 700)
-
-        setTimeout(function () {
-            $('select').each(function () {
-                $(this).keydown();
-                if (!$(this).val() && $(this).val() === '') {
-                    $(this.parentElement).addClass('is-empty');
-                }
-            });
-        }, 100);
-    }
-
-    ngAfterViewInit() {
-
-      //  $('#fondoLogin').attr('data-image','./assets/img/logos/panamericanos/login.jpg')
-
-        DatatableFunctions.ModalSettings();
-        this.uiUtils.addOrRemoveBodyBackGround(true, 'bckgrd-50percent-login');
-        this.uiUtils.addOrRemoveStyleFooter(true, 'fixed_full');
-        $('#txtUsuario').focus();
-
-        // this.usuario.tipo_empresa='C';
-        // $('select[name*=tipo_org] option[value=C]').prop('selected',true);
-        // $("#tipo_org").prop('checked', true);
-
-        setTimeout(function () {
-            $('input').each(function () {
-                $(this).keydown();
-                if (!$(this).val() && $(this).val() === '') {
-                    $(this.parentElement).addClass('is-empty');
-                }
-            });
-            $('select').each(function () {
-                $(this).val('');
-                $(this).keydown();
-                $(this.parentElement).addClass('is-empty');
-
-                /*
-                $(this).keydown();
-                if (!$(this).val() && $(this).val() == '')
-                    $(this.parentElement).addClass("is-empty");
-                */
-
-            });
-            $('textarea').each(function () {
-            $(this).keydown();
-            if (!$(this).val() && $(this).val() === '') {
-                $(this.parentElement).addClass('is-empty');
-            }
-            });
-        }, 100);
-
-    }
-
-    ngOnDestroy() {
-        this.uiUtils.addOrRemoveBodyBackGround(false, 'bckgrd-50percent-login');
-        this.uiUtils.addOrRemoveStyleFooter(false, 'fixed_full');
-
-        this.sub.unsubscribe();
-    }
 
     finishLoading() {
         this.loading = false;

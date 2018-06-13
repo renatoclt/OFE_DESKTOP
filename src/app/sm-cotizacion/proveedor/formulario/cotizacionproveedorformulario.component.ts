@@ -2,20 +2,20 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Component, OnInit, OnChanges, AfterViewInit, SimpleChanges } from '@angular/core';
 
 import { MomentModule } from 'angular2-moment/moment.module';
-import { AppUtils } from "app/utils/app.utils";
+import { AppUtils } from 'app/utils/app.utils';
 import { MasterService } from 'app/service/masterservice';
-import { ComboItem } from "app/model/comboitem";
-import { Cotizacion } from "app/model/sm-cotizacion";
+import { ComboItem } from 'app/model/comboitem';
+import { Cotizacion } from 'app/model/sm-cotizacion';
 import 'app/../assets/js/plugins/jquery.PrintArea.js';
-import {Archivo} from "app/model/archivo"
-import { AdjuntoService} from "app/service/adjuntoservice";
+import {Archivo} from 'app/model/archivo';
+import { AdjuntoService} from 'app/service/adjuntoservice';
 
 
-import { CotizacionService} from "app/service/sm-cotizacionservice";
+import { CotizacionService} from 'app/service/sm-cotizacionservice';
 import { LoginService } from 'app/service/login.service';
-//import { Boton } from 'app/model/menu';
+// import { Boton } from 'app/model/menu';
 import { ChangeDetectorRef } from '@angular/core';
-//import { Caracteristicas } from 'app/model/retenciones';
+// import { Caracteristicas } from 'app/model/retenciones';
 import {  ProductoAux, AtributoxProductoAux, Producto, AtributoxProducto } from 'app/model/sm-cotizacion';
 
 declare var moment: any;
@@ -27,7 +27,8 @@ declare interface DataTable {
   dataRows: string[][];
 }
 declare var $,DatatableFunctions: any;
-var oCotizacionProveedorFormularioComponent: CotizacionProveedorFormularioComponent, dtDetalleProductos, dtGenerales, dtArticulos, dtArchivos, archivo: Archivo;
+var oCotizacionProveedorFormularioComponent: CotizacionProveedorFormularioComponent,
+    dtDetalleProductos, dtGenerales, dtArticulos, dtArchivos, archivo: Archivo;
 @Component({
   moduleId: module.id,
   selector: 'cotizacionproveedorformulario-cmp',
@@ -37,10 +38,9 @@ var oCotizacionProveedorFormularioComponent: CotizacionProveedorFormularioCompon
 
 export class CotizacionProveedorFormularioComponent implements OnInit, AfterViewInit {
 
-    public id: string = '0';
-    public esBorrador : string = '0';
-    public id_doc: string = '';
-
+    public id: string;
+    public esBorrador: string;
+    public id_doc: string;
 
     util: AppUtils;
     public listPrioridadCombo: ComboItem[];
@@ -61,9 +61,13 @@ export class CotizacionProveedorFormularioComponent implements OnInit, AfterView
     public ProgressUpload: boolean;
 
 
-    constructor(private activatedRoute: ActivatedRoute, private router: Router,
-        public _dataServiceAdjunto: AdjuntoService,
-        private _masterService: MasterService, private _dataService:  CotizacionService, private_securityService: LoginService) {
+    constructor(private activatedRoute: ActivatedRoute, private router: Router, public _dataServiceAdjunto: AdjuntoService,
+                private _masterService: MasterService, private _dataService:  CotizacionService, private_securityService: LoginService) {
+
+        this.id = '0';
+        this.esBorrador = '0';
+        this.id_doc = '';
+
         this.util = new AppUtils(this.router, this._masterService);
         this.item = new Cotizacion();
         this.atencionA='';
@@ -80,38 +84,36 @@ export class CotizacionProveedorFormularioComponent implements OnInit, AfterView
 
 
     print(event): void {
-        //oDetraccionCompradorFormularioComponent.item.moneda_txt = $("#moneda option:selected").text();
+        // oDetraccionCompradorFormularioComponent.item.moneda_txt = $("#moneda option:selected").text();
         //  oDetraccionCompradorFormularioComponent.item.estado = $("#estadoComprador option:selected").text();
         setTimeout(function () {
-            $("div#print-section-material").printArea({ popTitle: 'COTIZACIÓN', mode: "iframe", popClose: false });
+            $('div#print-section-material').printArea({ popTitle: 'COTIZACIÓN', mode: 'iframe', popClose: false });
         }, 100);
-        //hay que chequear en donde imprime esta parte en conformidaad de servicio
+        // hay que chequear en donde imprime esta parte en conformidaad de servicio
     }
 
 
     ngOnInit() {
-        //oDetraccionCompradorFormularioComponent = this;
+        // oDetraccionCompradorFormularioComponent = this;
         this.activatedRoute.params.subscribe((params: Params) => {
             this.id = params['id'];
             this.esBorrador = params ['b'];
             this.id_doc = params ['c'];
         });
 
-        if (this.id != '0') {
+        if (this.id !== '0') {
             this.toggleButton = true;
-
         } else {
             this.toggleButton = false;
             this.esBorrador ='1';
         }
-        
-        this.util.listEstadoHAS(function (data: ComboItem[]) {
 
+        this.util.listEstadoHAS(function (data: ComboItem[]) {
             oCotizacionProveedorFormularioComponent.listEstadoCombo = data;
         });
 
         oCotizacionProveedorFormularioComponent = this;
-        
+
     }
     public navigate(nav) {
         this.router.navigate(nav, { relativeTo: this.activatedRoute });
@@ -120,25 +122,26 @@ export class CotizacionProveedorFormularioComponent implements OnInit, AfterView
 
     async habilitarEdicion(e) {
 
-        if(this.estadoRFQ === "RANUL"){
-            $('#botonrfq').attr('enabled')
+        if(this.estadoRFQ === 'RANUL'){
+            $('#botonrfq').attr('enabled');
         }else{
-            $('#botonrfq').attr('disabled')
+            $('#botonrfq').attr('disabled');
             swal({
-                html: "<p class= text-center>La Solicitud de Cotización ha sido cerrada</p>",
+                html: '<p class=text-center>La Solicitud de Cotización ha sido cerrada</p>',
                 type: 'warning',
                 buttonsStyling: false,
-                confirmButtonClass: "btn btn-warning"
+                confirmButtonClass: 'btn btn-warning'
               });
               return false;
         }
 /*
-        if(this.toggleButton){
+        if(this.toggleButton) {
 */
-            
-            for(let atrib of this.item.atributos){
-                if (atrib.modificable.trim()=='S')
+
+            for(const atrib of this.item.atributos){
+                if (atrib.modificable.trim() === 'S') {
                     $('input[name*="articuloItem-'+atrib.idatributo+'"]').prop('disabled', false);
+                }
             }
 
             for (let objP of this.item.productos) {
@@ -151,7 +154,7 @@ export class CotizacionProveedorFormularioComponent implements OnInit, AfterView
             oCotizacionProveedorFormularioComponent.item.version+=1;
 
             $('.remove').css('display', 'inline');
-            //$('input[name*="habilitarEdicion"]').attr("value", "Your new search string");
+            // $('input[name*="habilitarEdicion"]').attr("value", "Your new search string");
 
 /*
             $('button[name*=habilitarEdicion]').text('DESHABILITAR EDICIÓN');
@@ -182,31 +185,32 @@ export class CotizacionProveedorFormularioComponent implements OnInit, AfterView
 
 
         async enviarCotizacion(e){
-        
+
             this.toggleButton = true;
-            //this.item.numeroseguimient = this.guia.nroguia1 + "-" + this.guia.nroguia2;
-            //this.itemRFQ.nroreq = this.item.rfq; 
-            //console.log(this.itemRFQ.nroreq);
-            this.item.estado = "GPUBL";
+            // this.item.numeroseguimient = this.guia.nroguia1 + "-" + this.guia.nroguia2;
+            // this.itemRFQ.nroreq = this.item.rfq; 
+            // console.log(this.itemRFQ.nroreq);
+            this.item.estado = 'GPUBL';
             this.item.productos=[];
             this.item.idrfq=this.item.idrfq;
-            this.item.numerorfq=this.item.numerorfq;    
+            this.item.numerorfq=this.item.numerorfq;
             this.item.version+=-1;
 
-          //  alert(this.item.idrfq);
-          //  return '';
+            // alert(this.item.idrfq);
+            // return '';
 
-            this.item.idmoneda=$("#moneda").val();
-            //this.item.orgpro= this.itemRFQ.proveedorDirigido[0].codproveedor;//JSON.parse(localStorage.getItem('org_ruc'))+'';      
+            this.item.idmoneda=$('#moneda').val();
+            // this.item.orgpro= this.itemRFQ.proveedorDirigido[0].codproveedor;//JSON.parse(localStorage.getItem('org_ruc'))+'';      
             this.item.orgpro= this.item.orgcom;
 
             let i = 0, j = 0;
-            for (let obj of this.item.atributos) {
-                if(obj.modificable.trim()=='S'){
-                    if(obj.nombreatributo.toUpperCase()=='MONEDA')
-                        this.item.atributos[i].valorenviado=$("#moneda").val();
-                    else
+            for (const obj of this.item.atributos) {
+                if(obj.modificable.trim()==='S'){
+                    if(obj.nombreatributo.toUpperCase()==='MONEDA') {
+                        this.item.atributos[i].valorenviado=$('#moneda').val();
+                    } else {
                         this.item.atributos[i].valorenviado=$("input[name*='articuloItem-"+obj.idatributo+"']").val();
+                    }
                 }
                 i++;
             }
@@ -218,18 +222,18 @@ export class CotizacionProveedorFormularioComponent implements OnInit, AfterView
                 newProd.nombreproducto=obj.nombreproducto;
                 newProd.descripcionproducto=obj.descripcionproducto;
 
-                //j=0;
-                for (let objAxP of obj.atributos) {
+                // j=0;
+                for (const objAxP of obj.atributos) {
                     let newAtrib: AtributoxProducto = new AtributoxProducto();
 
-                    if(objAxP.nombreatributo.toUpperCase()=='CANTIDAD'){
+                    if(objAxP.nombreatributo.toUpperCase()==='CANTIDAD'){
                         newAtrib.valor=$("input[name*='atributoCantidad-"+obj.idproducto+"']").val();
-                        $("input[name*='atributoCantidad-"+obj.idproducto+"']").prop( "disabled", true );
-                    } else if(objAxP.nombreatributo.toUpperCase()=='PRECIO'){
+                        $("input[name*='atributoCantidad-"+obj.idproducto+"']").prop( 'disabled', true );
+                    } else if(objAxP.nombreatributo.toUpperCase()==='PRECIO'){
                         newAtrib.valor=$("input[name*='atributoPrecio-"+obj.idproducto+"']").val();
-                    } else if(objAxP.nombreatributo.toUpperCase()=='UNIDAD DE MEDIDA'){
+                    } else if(objAxP.nombreatributo.toUpperCase()==='UNIDAD DE MEDIDA'){
                         newAtrib.valor=$("input[name*='atributoUnidad-"+obj.idproducto+"']").val();
-                    } else if(objAxP.nombreatributo.toUpperCase()=='FECHA DE ENTREGA'){
+                    } else if(objAxP.nombreatributo.toUpperCase()==='FECHA DE ENTREGA'){
                         newAtrib.valor=$("input[name*='atributoFechaDeEntrega-"+obj.idproducto+"']").val(); 
                     } else {
                         newAtrib.valor=objAxP.valorenviado;
@@ -240,68 +244,68 @@ export class CotizacionProveedorFormularioComponent implements OnInit, AfterView
 
                     newAtrib.valoreditable=objAxP.modificable;
                     newAtrib.valortipodato=objAxP.atributovalortipodato;
-                    newAtrib.valorunidad=objAxP.nombreunidad
+                    newAtrib.valorunidad=objAxP.nombreunidad;
 
                     newProd.atributos.push(newAtrib);
                 }
                 this.item.productos.push(newProd);
                 i++;
             }
-               if(this.esBorrador ==='1'){
-                 this.item.IdBorrador = this.item.id_doc
-             }
 
-            if (await this.validardatos(e, true)) {                  
-
-            this._dataService
-                .agregar(this.item)
-                .subscribe(
-                p => {
-                        swal({
-                            //text: 'La información ha sido enviada. Confirme el correcto registro de la misma verificando el Número ERP en la columna correspondiente. Espere dicho número para la impresión de su constancia.',
-                            text: 'La cotización ha sido enviada con éxito.',
-                            type: 'success',
-                            buttonsStyling: false,
-                            confirmButtonClass: "btn btn-success"
-                        }).then(
-                            (result) => {
-                                let nav = ['/sm-cotizacion/proveedor/buscar'];
-                                oCotizacionProveedorFormularioComponent.navigate(nav);
-                            }, (dismiss) => {
-                                let nav = ['/sm-cotizacion/proveedor/buscar'];
-                                oCotizacionProveedorFormularioComponent.navigate(nav);
-                        });
-                },
-                e => {
-                    this.toggleButton = false;
-                    console.log(e);
-                },
-                () => { });
+            if(this.esBorrador === '1') {
+                this.item.IdBorrador = this.item.id_doc;
             }
-            else {
-            this.toggleButton = false;
+
+            if (await this.validardatos(e, true)) {
+
+                this._dataService
+                    .agregar(this.item)
+                    .subscribe(
+                    p => {
+                            swal({
+                                // text: 'La información ha sido enviada. Confirme el correcto registro de la misma verificando el Número ERP en la columna correspondiente. Espere dicho número para la impresión de su constancia.',
+                                text: 'La cotización ha sido enviada con éxito.',
+                                type: 'success',
+                                buttonsStyling: false,
+                                confirmButtonClass: "btn btn-success"
+                            }).then(
+                                (result) => {
+                                    let nav = ['/sm-cotizacion/proveedor/buscar'];
+                                    oCotizacionProveedorFormularioComponent.navigate(nav);
+                                }, (dismiss) => {
+                                    let nav = ['/sm-cotizacion/proveedor/buscar'];
+                                    oCotizacionProveedorFormularioComponent.navigate(nav);
+                            });
+                    },
+                    e => {
+                        this.toggleButton = false;
+                        console.log(e);
+                    },
+                    () => { });
+            } else {
+                this.toggleButton = false;
             }
     }////enviarCotizacion
 
-    
+
     async validardatos (e, enviar = false){
-            
-        if (this.item.numeroseguimiento == null || this.item.numeroseguimiento.trim() == "") {
+
+        if (this.item.numeroseguimiento == null || this.item.numeroseguimiento.trim() === '') {
             swal({
-                text: "N° Cotización es un campo requerido.",
+                text: 'N° Cotización es un campo requerido.',
                 type: 'warning',
                 buttonsStyling: false,
-                confirmButtonClass: "btn btn-warning"
+                confirmButtonClass: 'btn btn-warning'
             });
             return false;
         }
 
-        if (this.item.idmoneda == null || this.item.idmoneda.trim() == "") {
+        if (this.item.idmoneda == null || this.item.idmoneda.trim() === '') {
             swal({
-                text: "Moneda es un campo requerido.",
+                text: 'Moneda es un campo requerido.',
                 type: 'warning',
                 buttonsStyling: false,
-                confirmButtonClass: "btn btn-warning"
+                confirmButtonClass: 'btn btn-warning'
             });
             return false;
         }
@@ -310,8 +314,6 @@ export class CotizacionProveedorFormularioComponent implements OnInit, AfterView
     }
 
 
-   
-
     agregarArchivo(event) {
         this.archivo = new Archivo();
         this.archivo.nombreblob = 'org/' + localStorage.getItem('org_ruc') + '/cp/' + DatatableFunctions.newUUID();
@@ -319,25 +321,23 @@ export class CotizacionProveedorFormularioComponent implements OnInit, AfterView
         $('#txtArchivo').val(null);
         event.preventDefault();
     }
-     
-    
+
 
     eliminarArchivos(event) {
         event.preventDefault();
         let checkboxes = $('#dtArchivos').find('.checkboxArchivos:checked');
         if (checkboxes.length <= 0) {
             swal({
-                text: "Debe seleccionar un Archivo.",
+                text: 'Debe seleccionar un Archivo.',
                 type: 'warning',
                 buttonsStyling: false,
-                confirmButtonClass: "btn btn-warning"
+                confirmButtonClass: 'btn btn-warning'
             });
             return false;
-        }
-        else {
-            let mensaje = "¿Desea eliminar el archivo seleccionado?";
+        } else {
+            let mensaje = '¿Desea eliminar el archivo seleccionado?';
             if (checkboxes.length > 1) {
-                mensaje = "¿Desea eliminar los archivos seleccionados?";
+                mensaje = '¿Desea eliminar los archivos seleccionados?';
             }
             swal({
                 text: mensaje,
@@ -354,10 +354,10 @@ export class CotizacionProveedorFormularioComponent implements OnInit, AfterView
                     let id = $(checkbox).val();
                     lista = lista.filter(a => a.id != id);
                 }
-                
+
                 oCotizacionProveedorFormularioComponent.item.docadjuntos = JSON.parse(JSON.stringify(ActualizarCorrelativoArchivosAdjuntos(lista)));
                 setTimeout(function () {
-                dtArchivos.ajax.reload();
+                    dtArchivos.ajax.reload();
                 }, 500);
             }, function (dismiss) {
                 // dismiss can be 'cancel', 'overlay',
@@ -814,8 +814,8 @@ export class CotizacionProveedorFormularioComponent implements OnInit, AfterView
       footerCallback: function (row, data, start, end, display) {
           console.log(data);
       },
-      "order": [[0, "asc"]],
-      "ajax": function (data, callback, settings) {
+      'order': [[0, 'asc']],
+      'ajax': function (data, callback, settings) {
           let result = {
             data: oCotizacionProveedorFormularioComponent.item.docadjuntos
 
@@ -824,13 +824,12 @@ export class CotizacionProveedorFormularioComponent implements OnInit, AfterView
             result
           );
       },
-      "createdRow": function (row, data, index) {
+      'createdRow': function (row, data, index) {
           if (data.es_subitem == false && data.tienesubitem) {
             $(row).addClass('highlight');
             $(row).attr('identificador', data.id);
-          }
-          else {
-            //$(row).attr('parentid', data.parentid);
+          } else {
+            // $(row).attr('parentid', data.parentid);
             $('td', row).eq(0).addClass('text-center');
           }
       },
@@ -838,7 +837,7 @@ export class CotizacionProveedorFormularioComponent implements OnInit, AfterView
           { data: 'id' },
           { data: 'nombre' },
           { data: 'descripcion' },
-          { data: 'id' },     
+          { data: 'id' },
       ],
       columnDefs: [
           { "className": "text-center", "targets": [0, 1, 2, 3 ] },
@@ -849,7 +848,8 @@ export class CotizacionProveedorFormularioComponent implements OnInit, AfterView
                 return '<a class="editar" href="javascript:void(0);" row-id="' + row.id + '">' +
                 '<button class="btn btn-simple btn-info btn-icon download" rel="tooltip" title="Bajar Archivo" data-placement="left">' +
                 '<i class="material-icons">get_app</i></button></a>' +
-                '<button class="btn btn-simple btn-danger btn-icon remove" style="' + display+ '" rel="tooltip" title="Eliminar" data-placement="left">' +
+                    '<button class="btn btn-simple btn-danger btn-icon remove" style="' + display+
+                    '" rel="tooltip" title="Eliminar" data-placement="left">' +
                 '<i class="material-icons">delete</i>' +
                 '</button>';
               },
@@ -858,7 +858,6 @@ export class CotizacionProveedorFormularioComponent implements OnInit, AfterView
       ]
     });
     // Edit record
-    
 
 
     dtArchivos.on('click', '.download', function (event) {
@@ -880,12 +879,12 @@ export class CotizacionProveedorFormularioComponent implements OnInit, AfterView
         event.preventDefault();
 
     });
-    
+
         // Delete a record
         dtArchivos.on('click', '.remove', function (e) {
             var $tr = $(this).closest('tr');
             var row_id = $tr.find("a.editar").attr('row-id') as number;
-      
+
             swal({
               text: "¿Desea eliminar el registro seleccionado?",
               type: "warning",
@@ -913,21 +912,22 @@ export class CotizacionProveedorFormularioComponent implements OnInit, AfterView
   grabarAtributos(){
         let i=0;
         for (let objAxP of this.prodAux[this.indiceProdSel].atributos) {
-            if (objAxP.modificable.trim()=='S' && objAxP.esvisible==true)
+            if (objAxP.modificable.trim() === 'S' && objAxP.esvisible == true) {
                 this.prodAux[this.indiceProdSel].atributos[i].valorenviado=$('input[name*="producto-atributo-'+objAxP.idatributo +'"]').val();
+            }
             i++;
         }
-        $("#mdlAtributosLista").modal('hide');
+        $('#mdlAtributosLista').modal('hide');
   }
-  //ngAfterViewChecked() {
-    //this.cdRef.detectChanges();
-  //}
+  // ngAfterViewChecked() {
+    // this.cdRef.detectChanges();
+  // }
 
 }
 
 function ActualizarCorrelativoArchivosAdjuntos(lista) {
     let index = 1;
-    for (let item of lista) {
+    for (const item of lista) {
       item.id = index++;
     }
     return lista;
@@ -935,7 +935,7 @@ function ActualizarCorrelativoArchivosAdjuntos(lista) {
 
 function ActualizarCorrelativos(lista) {
     let index = 1;
-    for (let item of lista) {
+    for (const item of lista) {
       item.noitem = index++;
     }
     return lista;

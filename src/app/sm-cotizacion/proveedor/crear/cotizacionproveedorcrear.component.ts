@@ -1,6 +1,7 @@
 import { Component, OnInit, OnChanges, AfterViewInit, SimpleChanges } from '@angular/core';
 
-import { Cotizacion, Primero, Atributo, Producto, AtributoxProducto, ProductoAux, AtributoxProductoAux /*, Atributocrear, Productocrear , Archivos*/ } from 'app/model/sm-cotizacion';
+import { Cotizacion, Primero, Atributo, Producto, AtributoxProducto,
+         ProductoAux, AtributoxProductoAux /*, Atributocrear, Productocrear , Archivos*/ } from 'app/model/sm-cotizacion';
 import { MasterService } from 'app/service/masterservice';
 
 
@@ -36,18 +37,17 @@ var oCotizacionProveedorCrearComponent: CotizacionProveedorCrearComponent,dtArti
 export class CotizacionProveedorCrearComponent implements OnInit, OnChanges, AfterViewInit {
 
   public item: Cotizacion;
-  //public atributos?: Atributocrear[];
+  // public atributos?: Atributocrear[];
 
-
-  public toggleButton: boolean = true;
-  public ProgressUpload: boolean = false;
-  public classDisabled: string = 'disabled';
+  public toggleButton: boolean;
+  public ProgressUpload: boolean;
+  public classDisabled: string;
 
   public itemRFQ: RFQCompradorInsert;
   public util: AppUtils;
   public idRFQ: string;
   public prodAux: ProductoAux[];
-  public atributosxProdAux: AtributoxProductoAux[];  
+  public atributosxProdAux: AtributoxProductoAux[];
   public indiceProdSel: number;
   public listMonedaCombo: ComboItem[];
   public archivo: Archivo;
@@ -62,41 +62,43 @@ export class CotizacionProveedorCrearComponent implements OnInit, OnChanges, Aft
 
         }
     */
-    constructor( private route: ActivatedRoute,  private router: Router, private _masterService: MasterService, 
-                 private _dataService:  CotizacionService,
-                 public _dataServiceAdjunto: AdjuntoService, 
+    constructor( private route: ActivatedRoute,  private router: Router, private _masterService: MasterService,
+                 private _dataService:  CotizacionService, public _dataServiceAdjunto: AdjuntoService,
                  private _dataServiceRFQ:  RfqService, private_securityService: LoginService) {
 
         this.util = new AppUtils(this.router, this._masterService);
         this.item = new Cotizacion();
-        this.itemRFQ = new RFQCompradorInsert();  
+        this.itemRFQ = new RFQCompradorInsert();
         this.archivo = new Archivo();
-        this.atencionA='';        
-        this.indiceProdSel=-1;
+        this.atencionA = '';
+        this.indiceProdSel = -1;
 
-
-        this.item.version='1';
-        this.item.mensaje='';  
-
+        this.item.version = '1';
+        this.item.mensaje = '';
 
         let usuarioActual = JSON.parse(localStorage.getItem('usuarioActual'));
-        this.item.nomusupro= usuarioActual.nombrecompleto;
-        this.prodAux=[];
-        this.atributosxProdAux=[];
-        //this.item.orgpro= this.itemRFQ.proveedorDirigido[0].codproveedor;//JSON.parse(localStorage.getItem('org_ruc'))+'';
-        //this.activatedRoute = activatedRoute;;
+        this.item.nomusupro = usuarioActual.nombrecompleto;
+        this.prodAux = [];
+        this.atributosxProdAux = [];
+
+        // this.item.orgpro= this.itemRFQ.proveedorDirigido[0].codproveedor;//JSON.parse(localStorage.getItem('org_ruc'))+'';
+        // this.activatedRoute = activatedRoute;;
         /*
         this.itemoriginal = new Cotizacion();
         this.archivo = new Archivo();
         this.producto = new Articulo();
         */
+
+        this.toggleButton = true;
+        this.ProgressUpload = false;
+        this.classDisabled = 'disabled';
     }
 
     ngOnInit() {
         this.route.params.subscribe((params: Params) => {
           this.idRFQ = params['id'];
         });
-       // this.item = new Cotizacion();
+        // this.item = new Cotizacion();
         // Code for the Validator
         oCotizacionProveedorCrearComponent=this;
 
@@ -124,11 +126,10 @@ export class CotizacionProveedorCrearComponent implements OnInit, OnChanges, Aft
         this._dataServiceRFQ
             .obtener(this.idRFQ)
             .subscribe(
-            p => {           
+            p => {
                 this.itemRFQ = p;
 
-
-                    if (this.itemRFQ.atributos != null) {    
+                if (this.itemRFQ.atributos != null) {
                     for (let obj of this.itemRFQ.atributos) {
                         let newItem: Primero  = new Primero ();
                         newItem.idatributo=obj.id;
@@ -140,92 +141,91 @@ export class CotizacionProveedorCrearComponent implements OnInit, OnChanges, Aft
                         newItem.atributovalortipodato=obj.atributovalortipodato;
                         this.item.atributos.push(newItem);
                     }
-                    }
-
-                    if(p.propietario.trim()!='')
-                        oCotizacionProveedorCrearComponent.atencionA=p.propietario.trim();
-                    else
-                        oCotizacionProveedorCrearComponent.atencionA=p.nomorgcompradora.trim();
-        
-                    oCotizacionProveedorCrearComponent.item.numeroseguimiento = correlativoQT;
-                    
-    /*
-                if (this.itemRFQ.productos != null) {    
-                for (let obj of this.itemRFQ.productos) {
-                    let newItem: Producto  = new Producto ();
-                    newItem.nombreatributo=obj.nombreatributo;
-                    newItem.valorenviado=obj.valor;
-                    newItem.nombreunidad=obj.unidad;
-                    newItem.modificable=obj.modificable;
-                    newItem.mandatorio=obj.mandatorio;
-
-
-                    id: number;
-                    posicion: string; // posiscion 
-                    codigoproducto?: string;
-                    nombreproducto: string;
-                    descripcionproducto:string;
-                    //cantidadbase: number;
-                    unidad: string;
-                    cantidad: number;
-                    precio: number;
-                    //adjuntos: string;
-                    fechaentrega: Date;
-
-                    posicion: number; // posiscion 
-                    codigoproducto: string;
-                    nombreproducto: string;
-                    objetocontrato: string;
-                    cantidad: string;
-                    unidad: string;
-                    atributos?: Atributo[];
-
-
-
-                    this.item.productos.push(newItem);
-
-
-
                 }
-                }            
+
+                if(p.propietario.trim() !== '') {
+                    oCotizacionProveedorCrearComponent.atencionA = p.propietario.trim();
+                } else {
+                    oCotizacionProveedorCrearComponent.atencionA = p.nomorgcompradora.trim();
+                }
+
+                oCotizacionProveedorCrearComponent.item.numeroseguimiento = correlativoQT;
+
+                /*
+                if (this.itemRFQ.productos != null) {
+                    for (let obj of this.itemRFQ.productos) {
+                        let newItem: Producto  = new Producto ();
+                        newItem.nombreatributo=obj.nombreatributo;
+                        newItem.valorenviado=obj.valor;
+                        newItem.nombreunidad=obj.unidad;
+                        newItem.modificable=obj.modificable;
+                        newItem.mandatorio=obj.mandatorio;
+
+
+                        id: number;
+                        posicion: string; // posiscion 
+                        codigoproducto?: string;
+                        nombreproducto: string;
+                        descripcionproducto:string;
+                        //cantidadbase: number;
+                        unidad: string;
+                        cantidad: number;
+                        precio: number;
+                        //adjuntos: string;
+                        fechaentrega: Date;
+
+                        posicion: number; // posiscion 
+                        codigoproducto: string;
+                        nombreproducto: string;
+                        objetocontrato: string;
+                        cantidad: string;
+                        unidad: string;
+                        atributos?: Atributo[];
+
+                        this.item.productos.push(newItem);
+
+                    }
+                }
                 */
 
                     dtArticulos.ajax.reload();
-                    //console.log(this.itemRFQ);
+                    // console.log(this.itemRFQ);
                     setTimeout(function () {
-                
-                        $("input").each(function () {
-                        $(this).keydown();
-                        if (!$(this).val() && $(this).val() == '')
-                            $(this.parentElement).addClass("is-empty");
-                        });
-                        $("select").each(function () {
-                        $(this).keydown();
-                        if (!$(this).val() && $(this).val() == '')
-                            $(this.parentElement).addClass("is-empty");
-                        });
-                        $("textarea").each(function () {
-                        $(this).keydown();
-                        if (!$(this).val() && $(this).val() == '')
-                            $(this.parentElement).addClass("is-empty");
-                        });
-                    
 
-                        //console.log(dtArticulos);
-                        //console.log( dtProveedores);
+                        $('input').each(function () {
+                            $(this).keydown();
+                            if (!$(this).val() && $(this).val() === '') {
+                                $(this.parentElement).addClass('is-empty');
+                            }
+                        });
+                        $('select').each(function () {
+                            $(this).keydown();
+                            if (!$(this).val() && $(this).val() === '') {
+                                $(this.parentElement).addClass('is-empty');
+                            }
+                        });
+                        $('textarea').each(function () {
+                            $(this).keydown();
+                            if (!$(this).val() && $(this).val() === '') {
+                                $(this.parentElement).addClass('is-empty');
+                            }
+                        });
+
+                        // console.log(dtArticulos);
+                        // console.log( dtProveedores);
 
                         dtArticulos.ajax.reload();
                         dtGenerales2.ajax.reload();
                         dtArchivos.ajax.reload();
-                        //dtArticulos2.ajax.reload();
-                        //dtProveedores.ajax.reload();
-                        //dtProveedoresInvitados.ajax.reload();
+                        // dtArticulos2.ajax.reload();
+                        // dtProveedores.ajax.reload();
+                        // dtProveedoresInvitados.ajax.reload();
 
                     }, 50);
             },
             e => console.log(e),
             () => { });
-          
+
 
           dtArticulos = $('#dtGenerales').DataTable({
             footerCallback: function (row, data, start, end, display) {
@@ -237,14 +237,14 @@ export class CotizacionProveedorCrearComponent implements OnInit, OnChanges, Aft
                 });
                 var api = this.api(), data;
                 //oRfqCompradorFormularioComponent.item.total = DatatableFunctions.FormatNumber(total);
-        
+
                 /*$(api.column(7).footer()).html(
                   oDetraccionCompradorFormularioComponent.item.total
                 );*/
             },
-            "order": [[1, "asc"]],
-            "ajax": function (data, callback, settings) {
-                let result = {
+            'order': [[1, 'asc']],
+            'ajax': function (data, callback, settings) {
+                const result = {
                   data: oCotizacionProveedorCrearComponent.item.atributos
                 };
                 callback(
@@ -270,51 +270,50 @@ export class CotizacionProveedorCrearComponent implements OnInit, OnChanges, Aft
             ],
             columnDefs: [
                 { 'className': 'text-center', 'targets': [0, 1, 2, 3, 4] },
-
                 {
                     render: function (data, type, row) {
 
-                        if(row.nombreatributo.toUpperCase()=='MONEDA'){
+                        if(row.nombreatributo.toUpperCase() === 'MONEDA') {
 
-                            let isDisabled='';
+                            let isDisabled = '';
 
-                            if (row.modificable.trim()==='N') {
-                                isDisabled='disabled';
+                            if (row.modificable.trim() === 'N') {
+                                isDisabled = 'disabled';
                             }
 
                             let comboHTML = '<select class="form-group label-floating form-control"  id="moneda" name="moneda" ' +
                                             isDisabled + '><option disabled="" ></option>';
 
                             if(row.valorenviado.trim().toUpperCase() === 'PEN') {
-                                comboHTML+='<option value="PEN" selected >PEN</option>';
+                                comboHTML += '<option value="PEN" selected >PEN</option>';
                             } else {
-                                comboHTML+='<option value="PEN">PEN</option>';
+                                comboHTML += '<option value="PEN">PEN</option>';
                             }
 
                             if(row.valorenviado.trim().toUpperCase() === 'USD') {
-                                comboHTML+='<option value="USD" selected >USD</option>';
+                                comboHTML += '<option value="USD" selected >USD</option>';
                             } else {
-                                comboHTML+='<option value="USD">USD</option>';
+                                comboHTML += '<option value="USD">USD</option>';
                             }
 
                             if(row.valorenviado.trim().toUpperCase() === 'EUR') {
-                                comboHTML+='<option value="EUR" selected >EUR</option>';
+                                comboHTML += '<option value="EUR" selected >EUR</option>';
                             } else {
-                                comboHTML+='<option value="EUR">EUR</option>';
+                                comboHTML += '<option value="EUR">EUR</option>';
                             }
 
-                            comboHTML+='</select>';
+                            comboHTML += '</select>';
 
                             // $("#moneda").val("PEN");
                             // row.valorenviado;
                             return comboHTML;
                         } else {
-                            if (row.modificable.trim()==='S') {
-                                return '<input name="articuloItem-'+row.id+'" type="text"   value="'+row.valorenviado+
+                            if (row.modificable.trim() === 'S') {
+                                return '<input name="articuloItem-' + row.idatributo + '" type="text"   value="' + row.valorenviado +
                                        '" class="form-control" >';
                             } else {
-                                return '<input name="articuloItem-'+row.id+'" type="hidden" value="'+row.valorenviado+
-                                       '">'+row.valorenviado;
+                                return '<input name="articuloItem-' + row.idatributo + '" type="hidden" value="' + row.valorenviado +
+                                       '">' + row.valorenviado;
                             }
                         }
                         /*
@@ -335,8 +334,8 @@ export class CotizacionProveedorCrearComponent implements OnInit, OnChanges, Aft
             footerCallback: function (row, data, start, end, display) {
               console.log(data);
             },
-            "order": [[1, "asc"]],
-            "ajax": function (data, callback, settings) {
+            'order': [[1, 'asc']],
+            'ajax': function (data, callback, settings) {
                 oCotizacionProveedorCrearComponent.prodAux=new Array();
                 let productos=oCotizacionProveedorCrearComponent.itemRFQ.productos;
 
@@ -362,39 +361,39 @@ export class CotizacionProveedorCrearComponent implements OnInit, OnChanges, Aft
                           newAtribxProdAux.nombreunidad=productos[i].atributos[j].nombreunidad;
                           newAtribxProdAux.valorenviado=productos[i].atributos[j].valorenviado;
 
-                          if( productos[i].atributos[j].nombreatributo.toUpperCase()=='POSICION' ||
-                              productos[i].atributos[j].nombreatributo.toUpperCase()=='POSICIÓN' ) {
-                              newProdAux.posicion=productos[i].atributos[j].valorenviado;
-                              newAtribxProdAux.esvisible=false;
-                          } else if(productos[i].atributos[j].nombreatributo.toUpperCase()=='CANTIDAD'){
-                              newProdAux.cantidadsolicitada=productos[i].atributos[j].valorenviado;
-                              newProdAux.cantidadofrecida=productos[i].atributos[j].valorenviado;
-                              newAtribxProdAux.esvisible=false;
-                              if(productos[i].atributos[j].modificable.trim().toUpperCase()=='S'){
-                                    newProdAux.esmodificablecantidadofrecida=true;
+                          if( productos[i].atributos[j].nombreatributo.toUpperCase() === 'POSICION' ||
+                              productos[i].atributos[j].nombreatributo.toUpperCase() === 'POSICIÓN' ) {
+                              newProdAux.posicion = productos[i].atributos[j].valorenviado;
+                              newAtribxProdAux.esvisible = false;
+                          } else if(productos[i].atributos[j].nombreatributo.toUpperCase() === 'CANTIDAD') {
+                              newProdAux.cantidadsolicitada = productos[i].atributos[j].valorenviado;
+                              newProdAux.cantidadofrecida = productos[i].atributos[j].valorenviado;
+                              newAtribxProdAux.esvisible = false;
+                              if(productos[i].atributos[j].modificable.trim().toUpperCase() === 'S') {
+                                    newProdAux.esmodificablecantidadofrecida = true;
                               }
-                          } else if(productos[i].atributos[j].nombreatributo.toUpperCase()=='PRECIO'){
-                              newProdAux.precio=productos[i].atributos[j].valorenviado;
-                              newAtribxProdAux.esvisible=false;
-                              if(productos[i].atributos[j].modificable.trim().toUpperCase()=='S'){
-                                    newProdAux.esmodificableprecio=true;
+                          } else if(productos[i].atributos[j].nombreatributo.toUpperCase() === 'PRECIO') {
+                              newProdAux.precio = productos[i].atributos[j].valorenviado;
+                              newAtribxProdAux.esvisible = false;
+                              if(productos[i].atributos[j].modificable.trim().toUpperCase() === 'S') {
+                                    newProdAux.esmodificableprecio = true;
                               }
-                          } else if(productos[i].atributos[j].nombreatributo.toUpperCase()=='UNIDAD DE MEDIDA'){
+                          } else if(productos[i].atributos[j].nombreatributo.toUpperCase() === 'UNIDAD DE MEDIDA') {
                               newProdAux.unidad=productos[i].atributos[j].valorenviado;
-                              newAtribxProdAux.esvisible=false;
-                              if(productos[i].atributos[j].modificable.trim().toUpperCase()=='S'){
-                                    newProdAux.esmodificableunidad=true;
+                              newAtribxProdAux.esvisible = false;
+                              if(productos[i].atributos[j].modificable.trim().toUpperCase() === 'S') {
+                                    newProdAux.esmodificableunidad = true;
                               }
-                          } else if(productos[i].atributos[j].nombreatributo.toUpperCase()=='FECHA DE ENTREGA'){
-                              newProdAux.fechaentrega=productos[i].atributos[j].valorenviado!=''?DatatableFunctions.FormatDatetimeForDisplay(new Date(productos[i].atributos[j].valorenviado)):new Date;
-                              newAtribxProdAux.esvisible=false;
-                              if(productos[i].atributos[j].modificable.trim().toUpperCase()=='S'){
-                                    newProdAux.esmodificablefechaentrega=true;
+                          } else if(productos[i].atributos[j].nombreatributo.toUpperCase() === 'FECHA DE ENTREGA') {
+                              newProdAux.fechaentrega=productos[i].atributos[j].valorenviado !== ''?DatatableFunctions.FormatDatetimeForDisplay(new Date(productos[i].atributos[j].valorenviado)):new Date;
+                              newAtribxProdAux.esvisible = false;
+                              if(productos[i].atributos[j].modificable.trim().toUpperCase() === 'S') {
+                                    newProdAux.esmodificablefechaentrega = true;
                               }
-                          } //else {
+                          } // else {
 
                           newProdAux.atributos.push(newAtribxProdAux);
-                          //}
+                          // }
                           j++;
                       }
                       oCotizacionProveedorCrearComponent.prodAux.push(newProdAux);
@@ -402,8 +401,8 @@ export class CotizacionProveedorCrearComponent implements OnInit, OnChanges, Aft
                   }
                 }
 
-                let result = {
-                    data: oCotizacionProveedorCrearComponent.prodAux  
+                const result = {
+                    data: oCotizacionProveedorCrearComponent.prodAux
                 };
                 callback(
                     result
@@ -499,8 +498,8 @@ export class CotizacionProveedorCrearComponent implements OnInit, OnChanges, Aft
             footerCallback: function (row, data, start, end, display) {
                 console.log(data);
             },
-            "order": [[1, "asc"]],
-            "ajax": function (data, callback, settings) {
+            'order': [[1, 'asc']],
+            'ajax': function (data, callback, settings) {
                 const result = {
                     data : oCotizacionProveedorCrearComponent.atributosxProdAux,
                 };
@@ -509,7 +508,7 @@ export class CotizacionProveedorCrearComponent implements OnInit, OnChanges, Aft
                 );
             },
 
-            "createdRow": function (row, data, index) {
+            'createdRow': function (row, data, index) {
                 if (data.es_subitem == false && data.tienesubitem) {
                     $(row).addClass('highlight');
                     $(row).attr('identificador', data.id);
@@ -519,7 +518,7 @@ export class CotizacionProveedorCrearComponent implements OnInit, OnChanges, Aft
                 }
             },
             columns: [
-                // {data: 'id'},
+                // {data: 'idatributo'},
                 { data: 'nombreatributo' },
                 { data: 'valorenviado' },
                 { data: 'nombreunidad' },
@@ -569,7 +568,7 @@ export class CotizacionProveedorCrearComponent implements OnInit, OnChanges, Aft
             { data: 'id' },
           ],
           columnDefs: [
-            { "className": "text-center", "targets": [1, 2, 3] },
+            { 'className': 'text-center', 'targets': [1, 2, 3] },
             {
               render: function (data, type, row) {
                   return '<div class="text-center" height="100%"><div class="checkbox text-right"><label>'+
@@ -618,28 +617,27 @@ export class CotizacionProveedorCrearComponent implements OnInit, OnChanges, Aft
         // Delete a record
         dtArchivos.on('click', '.remove', function (e) {
           var $tr = $(this).closest('tr');
-          var row_id = $tr.find("a.editar").attr('row-id') as number;
+          var row_id = $tr.find('a.editar').attr('row-id') as number;
 
           swal({
-                text: "¿Desea eliminar el registro seleccionado?",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Si",
-                cancelButtonText: "No",
-                buttonsStyling: false,
-                confirmButtonClass: "btn btn-default",
-                cancelButtonClass: "btn btn-warning",
-          }).then(function () {
-                var lista = oCotizacionProveedorCrearComponent.item.docadjuntos as Archivo[];
-                var listafiltrada = lista.filter(a => a.id != row_id);
-                oCotizacionProveedorCrearComponent.item.docadjuntos = JSON.parse(JSON.stringify(listafiltrada));
-                setTimeout(function () {
-                dtArchivos.ajax.reload();
-                }, 500);
-          }, function (dismiss) {
-            // dismiss can be 'cancel', 'overlay',
-            // 'close', and 'timer'
-
+                    text: '¿Desea eliminar el registro seleccionado?',
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Si',
+                    cancelButtonText: 'No',
+                    buttonsStyling: false,
+                    confirmButtonClass: 'btn btn-default',
+                    cancelButtonClass: 'btn btn-warning',
+            }).then(function () {
+                    var lista = oCotizacionProveedorCrearComponent.item.docadjuntos as Archivo[];
+                    var listafiltrada = lista.filter(a => a.id != row_id);
+                    oCotizacionProveedorCrearComponent.item.docadjuntos = JSON.parse(JSON.stringify(listafiltrada));
+                    setTimeout(function () {
+                    dtArchivos.ajax.reload();
+                    }, 500);
+            }, function (dismiss) {
+                // dismiss can be 'cancel', 'overlay',
+                // 'close', and 'timer'
           });
 
           e.preventDefault();
@@ -652,22 +650,22 @@ export class CotizacionProveedorCrearComponent implements OnInit, OnChanges, Aft
 
     async grabarAtributos(e) {
         let i=0;
-        for (let objAxP of this.prodAux[this.indiceProdSel].atributos) {
-            if (objAxP.modificable.trim()=='S' && objAxP.esvisible==true) {
+        for (const objAxP of this.prodAux[this.indiceProdSel].atributos) {
+            if (objAxP.modificable.trim()==='S' && objAxP.esvisible==true) {
                 this.prodAux[this.indiceProdSel].atributos[i].valorenviado=$('input[name*="producto-'+objAxP.idproductoxrfq+'-atributo-'+objAxP.idatributo +'"]').val();
             }
             i++;
         }
-        $("#mdlAtributosLista").modal('hide');
+        $('#mdlAtributosLista').modal('hide');
     };
 
     async guardarCotizacion(e) {
-        //alert(moment().format());
-        //return null;
+        // alert(moment().format());
+        // return null;
 
         this.toggleButton = true;
         // this.factura.nocomprobantepago = this.item.nocomprobantepago1 + "-" + this.factura.nocomprobantepago2;
-        this.item.estado = "Q";
+        this.item.estado = 'Q';
         this.item.IdBorrador = this.item.id_doc;
 
         this.item.fechacreacion = moment().format();
@@ -682,10 +680,11 @@ export class CotizacionProveedorCrearComponent implements OnInit, OnChanges, Aft
             .subscribe(
             p => {
                 swal({
-                    text: "La información ha sido guardada. Confirme el correcto registro de la misma verificando el No. Doc. de Pago en la columna correspondiente.",
+                    text: 'La información ha sido guardada. Confirme el correcto registro de la misma verificando el No. Doc. de Pago '+
+                          'en la columna correspondiente.',
                     type: 'success',
                     buttonsStyling: false,
-                    confirmButtonClass: "btn btn-success"
+                    confirmButtonClass: 'btn btn-success'
                 });
                 let nav = ['/sm-requerimiento/proveedor/buscar'];
                 oCotizacionProveedorCrearComponent.navigate(nav);
@@ -695,8 +694,7 @@ export class CotizacionProveedorCrearComponent implements OnInit, OnChanges, Aft
                 console.log(e);
             },
             () => { });
-        }
-        else{
+        } else {
           this.toggleButton = false;
         }
     }
@@ -716,7 +714,7 @@ export class CotizacionProveedorCrearComponent implements OnInit, OnChanges, Aft
                 if(obj.nombreatributo.toUpperCase()==='MONEDA') {
                     this.item.atributos[i].valorenviado=$('#moneda').val();
                 } else {
-                    this.item.atributos[i].valorenviado=$("input[name*='articuloItem-"+obj.idatributo+"']").val();
+                    this.item.atributos[i].valorenviado=$('input[name*="articuloItem-'+obj.idatributo+'"]').val();
                 }
             }
             i++;
@@ -724,24 +722,24 @@ export class CotizacionProveedorCrearComponent implements OnInit, OnChanges, Aft
 
         i = 0;
         for (const obj of this.prodAux) {
-            let newProd: Producto = new Producto();
+            const newProd: Producto = new Producto();
             newProd.codigoproducto=obj.codigoproducto;
             newProd.nombreproducto=obj.nombreproducto;
             newProd.descripcionproducto=obj.descripcionproducto;
 
             // j=0;
             for (const objAxP of obj.atributos) {
-                  let newAtrib: AtributoxProducto = new AtributoxProducto();
+                  const newAtrib: AtributoxProducto = new AtributoxProducto();
 
-                  if(objAxP.nombreatributo.toUpperCase()=='CANTIDAD') {
-                      newAtrib.valor=$("input[name*='atributoCantidad-"+obj.idproducto+"']").val();
-                      $("input[name*='atributoCantidad-"+obj.idproducto+"']").prop( "disabled", true );
-                  } else if(objAxP.nombreatributo.toUpperCase()=='PRECIO') {
-                      newAtrib.valor=$("input[name*='atributoPrecio-"+obj.idproducto+"']").val();
-                  } else if(objAxP.nombreatributo.toUpperCase()=='UNIDAD DE MEDIDA') {
-                      newAtrib.valor=$("input[name*='atributoUnidad-"+obj.idproducto+"']").val();
-                  } else if(objAxP.nombreatributo.toUpperCase()=='FECHA DE ENTREGA') {
-                      newAtrib.valor=$("input[name*='atributoFechaDeEntrega-"+obj.idproducto+"']").val(); 
+                  if(objAxP.nombreatributo.toUpperCase()==='CANTIDAD') {
+                      newAtrib.valor=$('input[name*="atributoCantidad-'+obj.idproducto+'"]').val();
+                      $('input[name*="atributoCantidad-'+obj.idproducto+'"]').prop( 'disabled', true );
+                  } else if(objAxP.nombreatributo.toUpperCase()==='PRECIO') {
+                      newAtrib.valor=$('input[name*="atributoPrecio-'+obj.idproducto+'"]').val();
+                  } else if(objAxP.nombreatributo.toUpperCase()==='UNIDAD DE MEDIDA') {
+                      newAtrib.valor=$('input[name*="atributoUnidad-'+obj.idproducto+'"]').val();
+                  } else if(objAxP.nombreatributo.toUpperCase()==='FECHA DE ENTREGA') {
+                      newAtrib.valor=$('input[name*="atributoFechaDeEntrega-'+obj.idproducto+'"]').val();
                   } else {
                       newAtrib.valor=objAxP.valorenviado;
                   }
@@ -751,7 +749,7 @@ export class CotizacionProveedorCrearComponent implements OnInit, OnChanges, Aft
 
                   newAtrib.valoreditable=objAxP.modificable;
                   newAtrib.valortipodato=objAxP.atributovalortipodato;
-                  newAtrib.valorunidad=objAxP.nombreunidad
+                  newAtrib.valorunidad=objAxP.nombreunidad;
 
                   newProd.atributos.push(newAtrib);
             }
@@ -768,7 +766,7 @@ export class CotizacionProveedorCrearComponent implements OnInit, OnChanges, Aft
           // this.item.numeroseguimient = this.guia.nroguia1 + "-" + this.guia.nroguia2;
           // this.itemRFQ.nroreq = this.item.rfq; 
           // console.log(this.itemRFQ.nroreq);
-          this.item.estado = "GPUBL";
+          this.item.estado = 'GPUBL';
           this.guardarDatosDePantalla();
 
           if (await this.validardatos(e, true)) {
@@ -782,7 +780,7 @@ export class CotizacionProveedorCrearComponent implements OnInit, OnChanges, Aft
                             text: 'La cotización ha sido enviada con éxito.',
                             type: 'success',
                             buttonsStyling: false,
-                            confirmButtonClass: "btn btn-success"
+                            confirmButtonClass: 'btn btn-success'
                         }).then(
                             (result) => {
                                 let nav = ['/sm-requerimiento/proveedor/buscar'];
@@ -797,30 +795,29 @@ export class CotizacionProveedorCrearComponent implements OnInit, OnChanges, Aft
                     console.log(e);
                 },
                 () => { });
-          }
-          else {
+          } else {
             this.toggleButton = false;
           }
     }////enviarCotizacion
 
     async validardatos (e, enviar = false){
-        
-        if (this.item.numeroseguimiento == null || this.item.numeroseguimiento.trim() == "") {
+
+        if (this.item.numeroseguimiento == null || this.item.numeroseguimiento.trim() === '') {
             swal({
-                text: "N° Cotización es un campo requerido.",
+                text: 'N° Cotización es un campo requerido.',
                 type: 'warning',
                 buttonsStyling: false,
-                confirmButtonClass: "btn btn-warning"
+                confirmButtonClass: 'btn btn-warning'
             });
             return false;
         }
 
-        if (this.item.idmoneda == null || this.item.idmoneda.trim() == "") {
+        if (this.item.idmoneda == null || this.item.idmoneda.trim() === '') {
             swal({
-                text: "Moneda es un campo requerido.",
+                text: 'Moneda es un campo requerido.',
                 type: 'warning',
                 buttonsStyling: false,
-                confirmButtonClass: "btn btn-warning"
+                confirmButtonClass: 'btn btn-warning'
             });
             return false;
         }
@@ -830,12 +827,12 @@ export class CotizacionProveedorCrearComponent implements OnInit, OnChanges, Aft
 
     public navigate(nav) {
         this.router.navigate(nav, { relativeTo: this.route });
-    } 
-    
+    }
+
     /*************FUNCION AGREGAR ARCHIVOS************* */
     agregarArchivo(event) {
         this.archivo = new Archivo();
-    
+
         this.archivo.nombreblob = 'org/' + localStorage.getItem('org_ruc') + '/cotizacion/' + DatatableFunctions.newUUID();
         $('#btnEliminarAA').click();
         $('#txtArchivo').val(null);
@@ -843,12 +840,12 @@ export class CotizacionProveedorCrearComponent implements OnInit, OnChanges, Aft
     }
 
     validarDocumentos() {
-        if ($("#txtArchivo").get(0).files.length == 0) {
+        if ($('#txtArchivo').get(0).files.length == 0) {
             swal({
-            text: "Un archivo es requerido. Por favor completar y volver a intentar!",
+            text: 'Un archivo es requerido. Por favor completar y volver a intentar!',
             type: 'warning',
             buttonsStyling: false,
-            confirmButtonClass: "btn btn-warning"
+            confirmButtonClass: 'btn btn-warning'
             });
             return false;
         }
@@ -866,32 +863,31 @@ export class CotizacionProveedorCrearComponent implements OnInit, OnChanges, Aft
         if (!this.validarDocumentos()) {
             return false;
         }
-    
+
         let docs_ordenado = this.item.docadjuntos.sort((n, n1): number => {
-            if (n.id < n1.id) return -1;
-            if (n.id > n1.id) return 1;
+            if (n.id < n1.id) { return -1; };
+            if (n.id > n1.id) { return 1; };
             return 0;
         });
         if (docs_ordenado.length > 0) {
             let max_id = docs_ordenado[docs_ordenado.length - 1].id;
             this.archivo.id = max_id + 1;
-        }
-        else
+        } else {
             this.archivo.id = 1;
-    
+        }
+
         var fullPath = $('#txtArchivo').val();
         if (fullPath) {
             var startIndex = (fullPath.indexOf('\\') >= 0 ? fullPath.lastIndexOf('\\') : fullPath.lastIndexOf('/'));
             var filename = fullPath.substring(startIndex);
             if (filename.indexOf('\\') === 0 || filename.indexOf('/') === 0) {
-            filename = filename.substring(1);
+                filename = filename.substring(1);
             }
             this.archivo.nombre = filename;
-    
         }
-    
+
         this.ProgressUpload = true;
-    
+
         oCotizacionProveedorCrearComponent._dataServiceAdjunto
             .AgregarArchivo(this.archivo)
             .subscribe(
@@ -902,8 +898,8 @@ export class CotizacionProveedorCrearComponent implements OnInit, OnChanges, Aft
             setTimeout(function () {
                 dtArchivos.ajax.reload();
             }, 500);
-    
-            $("#mdlArchivosAdjuntos").modal('toggle');
+
+            $('#mdlArchivosAdjuntos').modal('toggle');
             },
             e => console.log(e),
             () => { });
@@ -914,26 +910,26 @@ export class CotizacionProveedorCrearComponent implements OnInit, OnChanges, Aft
         let checkboxes = $('#dtArchivos').find('.checkboxArchivos:checked');
         if (checkboxes.length <= 0) {
             swal({
-            text: "Debe seleccionar un Archivo.",
+            text: 'Debe seleccionar un Archivo.',
             type: 'warning',
             buttonsStyling: false,
-            confirmButtonClass: "btn btn-warning"
+            confirmButtonClass: 'btn btn-warning'
             });
             return false;
         } else {
-            let mensaje = "¿Desea eliminar el archivo seleccionado?";
+            let mensaje = '¿Desea eliminar el archivo seleccionado?';
             if (checkboxes.length > 1) {
-                mensaje = "¿Desea eliminar los archivos seleccionados?";
+                mensaje = '¿Desea eliminar los archivos seleccionados?';
             }
                 swal({
                     text: mensaje,
-                    type: "warning",
+                    type: 'warning',
                     showCancelButton: true,
-                    confirmButtonText: "Si",
-                    cancelButtonText: "No",
+                    confirmButtonText: 'Si',
+                    cancelButtonText: 'No',
                     buttonsStyling: false,
-                    confirmButtonClass: "btn btn-default",
-                    cancelButtonClass: "btn btn-warning",
+                    confirmButtonClass: 'btn btn-default',
+                    cancelButtonClass: 'btn btn-warning',
                 }).then(function () {
                     var lista = oCotizacionProveedorCrearComponent.item.docadjuntos as Archivo[];
                     for (const checkbox of checkboxes) {

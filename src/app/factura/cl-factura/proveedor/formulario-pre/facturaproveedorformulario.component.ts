@@ -17,7 +17,7 @@ import { ComboItem } from 'app/model/comboitem';
 import { FacturaService } from 'app/service/factura/cl-facturaservice';
 import { GuiaService } from 'app/service/guiaservice';
 import { ConformidadServicioService } from 'app/service/conformidadservicioservice';
-import { TransporteServicioService } from 'app/service/transporteservicioservice';
+import { TransporteServicioService } from 'app/service/transporteservicio.service';
 
 import 'app/../assets/js/plugins/jquery.PrintArea.js';
 import { BASE_URL, URL_BUSCAR_ORGANIZACION, URL_BUSCAR_GUIA, URL_BUSCAR_HAS, URL_BUSCAR_TRANSPORTE } from 'app/utils/app.constants';

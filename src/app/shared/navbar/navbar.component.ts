@@ -49,16 +49,16 @@ export class NavbarComponent  extends BaseComponent implements OnInit {
         // this.usuario = JSON.parse(localStorage.getItem('usuarioActual')) as Usuario;
         this.usuarioSesion = new Usuario;
         this.usuarioSesion.setearDatosDeObjJ(JSON.parse(localStorage.getItem('usuarioActual')));
-        this.selTipo_empresa='';
-        this.selOrganizacionActiva='';
-        this.esNuevaOrgSel=false;
+        this.selTipo_empresa = '';
+        this.selOrganizacionActiva = '';
+        this.esNuevaOrgSel = false;
         this.PermitirCambiarOrganizacion = false;
         this.PermitirCambiarTipoOrganizacion = false;
 
         if (this.usuarioSesion) {
             if (this.usuarioSesion.tipo_empresa === 'C') {
                 this.organizaciones = this.usuarioSesion.dameOrgComp();
-            }else{
+            } else {
                 this.organizaciones = this.usuarioSesion.dameOrgProv();
             }
 
@@ -67,7 +67,7 @@ export class NavbarComponent  extends BaseComponent implements OnInit {
                 this.selOrganizacionActiva = this.usuarioSesion.org_id;
             }
 
-            let org = this.usuarioSesion.organizaciones.find(a => a.id == this.usuarioSesion.org_id) as Organizacion;
+            const org = this.usuarioSesion.organizaciones.find(a => a.id == this.usuarioSesion.org_id) as Organizacion;
             if (org.tipo_empresa.split(',').length > 1) {
                 this.PermitirCambiarTipoOrganizacion = true;
                 this.selTipo_empresa = this.usuarioSesion.tipo_empresa;

@@ -3,22 +3,24 @@ import { Http, Response, RequestOptions, Headers } from '@angular/http';
 import 'rxjs/add/operator/map'
 import { Observable } from 'rxjs/Observable';
 
-import { Cotizacion, Primero, Producto, AtributoxProducto} from "app/model/sm-cotizacion";
-import { ResponseError } from '../model/responseerror';
+import { Cotizacion, Primero, Producto, AtributoxProducto} from 'app/model/sm-cotizacion';
+import { ResponseError } from 'app/model/responseerror';
 /*import { Configuration } from '../app.constants';*/
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
-import { AppUtils } from "app/utils/app.utils";
-import { URL_DETALLE_QT, URL_CREAR_QT , URL_GENERAR_NUMSEG_QT, URL_AGREGAR_QT_BORRADOR, URL_DETALLE_QT_BORRADOR} from 'app/utils/app.constants';
-import { Usuario } from "app/model/usuario";
-import { RFQCompradoBuscar} from "app/model/sm-rfqcomprador";
+import { AppUtils } from 'app/utils/app.utils';
+import { URL_DETALLE_QT, URL_CREAR_QT , URL_GENERAR_NUMSEG_QT, URL_AGREGAR_QT_BORRADOR,
+         URL_DETALLE_QT_BORRADOR} from 'app/utils/app.constants';
+import { Usuario } from 'app/model/usuario';
+import { RFQCompradoBuscar} from 'app/model/sm-rfqcomprador';
 
-//import { CotizacionMS, CotizacionM, Atributo, ProductoM, Archivos, POSTQT} from 'app/model/sm-cotizacionms';
-import { CotizacionMS, POSTQT, Cotizacion as Cotizacion_MS, Atributo as Atributo_MS, Producto as Producto_MS, AtributoxProducto as AtributoxProducto_MS, Archivo as Archivo_MS} from 'app/model/sm-cotizacionms';
-import {TablaDeTabla} from "app/model/tabladetabla";
+// import { CotizacionMS, CotizacionM, Atributo, ProductoM, Archivos, POSTQT} from 'app/model/sm-cotizacionms';
+import { CotizacionMS, POSTQT, Cotizacion as Cotizacion_MS, Atributo as Atributo_MS,
+         Producto as Producto_MS, AtributoxProducto as AtributoxProducto_MS, Archivo as Archivo_MS} from 'app/model/sm-cotizacionms';
+import {TablaDeTabla} from 'app/model/tabladetabla';
 
-//import { Producto } from 'app/facturacion-electronica/general/models/producto';
-//import { Producto } from 'app/model/requerimiento';
+// import { Producto } from 'app/facturacion-electronica/general/models/producto';
+// import { Producto } from 'app/model/requerimiento';
 
 
 declare var DatatableFunctions, moment, swal: any;
@@ -28,12 +30,11 @@ export class CotizacionService {
   util: AppUtils;
 
   constructor(private http: Http) {
-
   }
 
   convertStringToDate(strDate: string): Date {
     return new Date(strDate);
-  } 
+  }
 
   generarNumeroDeSeguimiento(): Observable<string> {
       let items$ = this.http
@@ -46,7 +47,7 @@ export class CotizacionService {
   private mapNumSeg(res: Response): string {
       let respuesta = {
           status: res ? res.status : -1,
-          statusText: res ? res.statusText : "ERROR",
+          statusText: res ? res.statusText : 'ERROR',
           data: res ? res.json() || {} : {},
       }
 
@@ -56,7 +57,7 @@ export class CotizacionService {
 
 
   guardar(item: Cotizacion): Observable<any> {
-    let headers = this.getHeaders("P");
+    let headers = this.getHeaders('P');
 
     headers.append('org_id', localStorage.getItem('org_id'));
 
@@ -71,16 +72,14 @@ export class CotizacionService {
 */
     let cotizacionMS: CotizacionMS = new CotizacionMS();
 
-    //facturaMS.FACUPLOADMQ = new FACUPLOADMQ();
-    item.estado = "Borrador";
-    
+    // facturaMS.FACUPLOADMQ = new FACUPLOADMQ();
+    item.estado = 'Borrador';
+
     cotizacionMS.cotizacion = item;
-    cotizacionMS.recurso = "cotizacion";
+    cotizacionMS.recurso = 'cotizacion';
     cotizacionMS.id_doc = item.id_doc;
     cotizacionMS.vc_numeroseguimiento = item.numeroseguimiento;
     cotizacionMS.session_id = localStorage.getItem('access_token');
-    
-
 
     let options = new RequestOptions({ headers: headers });
     return this.http.post(URL_AGREGAR_QT_BORRADOR, cotizacionMS, options)
@@ -94,9 +93,8 @@ export class CotizacionService {
     let headers = this.getHeaders(localStorage.getItem('tipo_empresa'));
     //let headers = this.getHeaders("P");
     let usuario: Usuario = JSON.parse(localStorage.getItem('usuarioActual'));
-    
-    let listUnidadMedida:TablaDeTabla[] = JSON.parse(localStorage.getItem('listUnidadMedida'));
 
+    let listUnidadMedida:TablaDeTabla[] = JSON.parse(localStorage.getItem('listUnidadMedida'));
 
     let cotizacionMS: CotizacionMS = new CotizacionMS();// aca se guarda la cotizacionMS (campos criticos)
 
@@ -104,9 +102,8 @@ export class CotizacionService {
     cotizacionMS.POSTQT.IdRfq = item.idrfq;        
     cotizacionMS.POSTQT.NumeroRfq = item.numerorfq;
 
-
     /*****UNIDADES PARA LA TABLA */
-   
+
     //cotizacionMS.POSTQT.Cotizacion = [];
 
     //unidadMedida = listUnidadMedida.find(a => a.vc_DESC_CORTA == item.PrecioUnitarioUnidad);
@@ -123,7 +120,6 @@ export class CotizacionService {
     cotizacionMS.POSTQT.Cotizacion.NumeroSeguimiento= item.numeroseguimiento;
     cotizacionMS.POSTQT.Cotizacion.NomOrgCom = item.nomorgcom;
 
-    
     cotizacionMS.POSTQT.Cotizacion.Atributo = [];
     cotizacionMS.POSTQT.Cotizacion.Archivos = [];
     cotizacionMS.POSTQT.Cotizacion.Producto = [];
@@ -133,16 +129,15 @@ export class CotizacionService {
     if (item.atributos != null){
       for (let articulo of item.atributos) {
         let cotCondGenerales: Atributo_MS = new Atributo_MS();
-      
-        
+
         cotCondGenerales.atributonombre = articulo.nombreatributo;
         cotCondGenerales.atributovalor = articulo.valorenviado;
         cotCondGenerales.atributovalorunidad = articulo.nombreunidad;
         cotCondGenerales.atributovaloreditable = articulo.modificable;
         cotCondGenerales.atributoobligatorio = articulo.mandatorio;
         cotCondGenerales.atributovalortipodato = articulo.atributovalortipodato;
-        //itemGuia.IdTablaunidadMedida = articulo.IdTablaUnidad;
-        //itemGuia.IdRegistroUnidadMedida = articulo.IdRegistroUnidad;
+        // itemGuia.IdTablaunidadMedida = articulo.IdTablaUnidad;
+        // itemGuia.IdRegistroUnidadMedida = articulo.IdRegistroUnidad;
 
         cotizacionMS.POSTQT.Cotizacion.Atributo.push(cotCondGenerales);
       }
@@ -153,18 +148,17 @@ export class CotizacionService {
       let i=0;
       for (let detalles of item.productos) {
         let cotArticulos: Producto_MS = new Producto_MS();
-      
-        
+
         //  cotArticulos.Id = detalles.id + "";
         cotArticulos.codigoproducto = detalles.codigoproducto;
-        //cotArticulos.Posicion = detalles.posicion;
+        // cotArticulos.Posicion = detalles.posicion;
         cotArticulos.nombreproducto = detalles.nombreproducto;
         cotArticulos.descripcionproducto = detalles.descripcionproducto;
-        //cotArticulos.CantidadSolicitada = detalles.cantidad + "";
-        //cotArticulos.PrecioUnitario = detalles.precio + "";
+        // cotArticulos.CantidadSolicitada = detalles.cantidad + "";
+        // cotArticulos.PrecioUnitario = detalles.precio + "";
 
-        //itemGuia.IdTablaunidadMedida = articulo.IdTablaUnidad;
-        //itemGuia.IdRegistroUnidadMedida = articulo.IdRegistroUnidad;
+        // itemGuia.IdTablaunidadMedida = articulo.IdTablaUnidad;
+        // itemGuia.IdRegistroUnidadMedida = articulo.IdRegistroUnidad;
 
 
         for (let objAxP of item.productos[i].atributos) {
@@ -188,7 +182,7 @@ export class CotizacionService {
       if (item.docadjuntos != null) {
           for (let docadjunto of item.docadjuntos) {
               let archivoAdjCotizacion: Archivo_MS = new Archivo_MS();
-              
+
               archivoAdjCotizacion.nombre = docadjunto.nombre;
               archivoAdjCotizacion.archivo = docadjunto.descripcion;
               archivoAdjCotizacion.url = docadjunto.url;
@@ -214,8 +208,9 @@ export class CotizacionService {
 
   obtener(id: string, publicada:boolean = true): Observable<Cotizacion> {
       let url = URL_DETALLE_QT_BORRADOR;
-      if (publicada)
-      url = URL_DETALLE_QT
+      if (publicada) {
+        url = URL_DETALLE_QT
+      }
       let items$ = this.http
         .get(url + id, { headers: this.getHeaders(localStorage.getItem('tipo_empresa')) })
         .map(this.mapCotizacion)
@@ -224,25 +219,26 @@ export class CotizacionService {
   }
 
   private mapCotizacion(res: Response): Cotizacion {
-      //console.log('extractData2', res);
+      // console.log('extractData2', res);
       let respuesta = {
         status: res ? res.status : -1,
-        statusText: res ? res.statusText : "ERROR",
+        statusText: res ? res.statusText : 'ERROR',
         data: res ? res.json() || {} : {},
       }
-  
+
       let objeto_json = res.json();
       console.log(objeto_json)
 
-      if(objeto_json.cotizacion)
-      return objeto_json.cotizacion;
+      if(objeto_json.cotizacion) {
+        return objeto_json.cotizacion;
+      }
       let cot = new Cotizacion();
 
       let cs: Cotizacion = {
 
         idrfq:objeto_json.data.cotizacion.idrfq,
         estadorfqcomprador: objeto_json.data.cotizacion.estadorfqcomprador,
-        //estadorfqcomprador: 'OCSSS',
+        // estadorfqcomprador: 'OCSSS',
         numerorfq:objeto_json.data.cotizacion.numerorfq,
         version:objeto_json.data.cotizacion.version,
         orgpro:objeto_json.data.cotizacion.orgpro,
@@ -258,7 +254,7 @@ export class CotizacionService {
         estadolargo:objeto_json.data.cotizacion.estadolargo,
         idmoneda:objeto_json.data.cotizacion.idmoneda,
         mensaje:objeto_json.data.cotizacion.mensaje,
-        //habilitado:objeto_json.data.cotizacion.habilitado,
+        // habilitado:objeto_json.data.cotizacion.habilitado,
 
         atributos: [],
         productos: [],
@@ -276,7 +272,7 @@ export class CotizacionService {
               modificable: item.atributovaloreditable?item.atributovaloreditable:'',
               mandatorio: item.atributoobligatorio?item.atributoobligatorio:'',
               atributovalortipodato: item.atributovalortipodato?item.atributovalortipodato:''
-              //habilitado: item.habilitado, 
+              // habilitado: item.habilitado, 
           }
           cs.atributos.push(p);
         }
@@ -291,7 +287,7 @@ export class CotizacionService {
                   //id:0,
                   idproducto:item.in_idproducto?item.in_idproducto:'',
 //                  posicion: item.posicion,
-//alert(item.nombreprodcuto);
+// alert(item.nombreprodcuto);
                   codigoproducto:item.codigoProducto?item.codigoProducto:'',
                   nombreproducto:item.nombreproducto?item.nombreproducto:'',
                   descripcionproducto:item.descripcionProducto?item.descripcionProducto:'',
@@ -317,14 +313,14 @@ export class CotizacionService {
                   artxProd.valorunidad=itemAxP.atributoproductovalorunidad;
 
 
-/*
+                  /*
                   nombreatributo: item.atributoproductonombre?item.atributoproductonombre:'',
                   valorenviado: item.atributoproductovalor?item.atributoproductovalor:'',
                   nombreunidad: item.atributoproductovalorunidad?item.atributoproductovalorunidad:'',
                   modificable: item.atributoproductovaloreditable?item.atributoproductovaloreditable:'',
                   mandatorio: item.atributoproductoobligatorio?item.atributoproductoobligatorio:'',
-                  tipodato: item.atributoproductovalortipodato?item.atributoproductovalortipodato:'',      
-                  */            
+                  tipodato: item.atributoproductovalortipodato?item.atributoproductovalortipodato:'',
+                  *
                   /*
                   "nombreatributo" : "Fecha de entrega",
                   "valorenviado" : "10/05/2018",
@@ -338,9 +334,6 @@ export class CotizacionService {
 
                   pr.atributos.push(artxProd);
               }
-             
-
-
 
               cs.productos.push(pr);
           }
@@ -362,18 +355,19 @@ export class CotizacionService {
 
       console.log(cs);
       return cs;
-      //return body || {};
-  
+      // return body || {};
+
     }
 
     private handleError(error: Response | any) {
         console.error('handleError', error.message || error);
         let  data= error ? error.json() || {} : {};     
-        if (data && data.error && data.error === "invalid_token")
+        if (data && data.error && data.error === "invalid_token") {
           DatatableFunctions.logout();
+        }
         return Observable.throw(error.message || error);
     }
-  
+
     private getHeaders(tipo_empresa:string) {
         // I included these headers because otherwise FireFox
         // will request text/html
@@ -382,18 +376,18 @@ export class CotizacionService {
         headers.append('Accept', 'application/json');
         headers.append('origen_datos', 'PEB2M');
         headers.append("tipo_empresa", localStorage.getItem('tipo_empresa'));
-        
-      /* if (tipo_empresa != "") {
+
+        /*
+        if (tipo_empresa != "") {
           headers.append("tipo_empresa", tipo_empresa);
         }
         */
         headers.append('org_id', localStorage.getItem('org_id'));
         headers.append('Authorization', 'Bearer ' + localStorage.getItem('access_token'));
         // headers.append('Access-Control-Allow-Origin', '*');
-    
+
         headers.append("Ocp-Apim-Subscription-Key", localStorage.getItem('Ocp_Apim_Subscription_Key'));
         return headers;
     }
-  
+
   }
-  

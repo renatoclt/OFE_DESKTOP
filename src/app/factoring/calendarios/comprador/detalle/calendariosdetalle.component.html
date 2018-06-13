@@ -1,0 +1,67 @@
+<div class="main-content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="card">          
+              <div class="card-header card-header-text" data-background-color="blue">
+                  <h4 class="card-title">{{title}}</h4>
+              </div>
+              <div class="card-content">                  
+                <!-- CALENDAR -->
+                <!-- CALENDAR -->
+                <!-- CALENDAR -->
+                <!-- CALENDAR -->
+                <!-- CALENDAR -->
+                <!-- CALENDAR -->
+                <!-- CALENDAR -->
+                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                    <button class="btn btn-default btn-block" (click)="lastYear()" [disabled]="generateCalendar">
+                        <i class="material-icons">chevron_left</i>
+                    </button>
+                </div>
+                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 text-center">
+                    <button class="btn btn-default btn-simple btn-block">{{year}}</button>                    
+                </div>
+                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                    <button class="btn btn-default btn-block" (click)="nextYear()"[disabled]="generateCalendar">
+                        <i class="material-icons">chevron_right</i>
+                    </button>
+                </div>
+                <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4" *ngFor="let mon of months">
+                    <div class="ebiz-calendar">
+                        <div class="ebiz-calendar-nav text-white bg-primary">
+                            <div class="has-text-centered">{{ mon.name }}</div>
+                        </div>
+                        <div class="ebiz-calendar-container">
+                            <div class="ebiz-calendar-header">
+                                <div class="ebiz-calendar-date" *ngFor="let weeDay of weekDays">
+                                    {{ weeDay }}
+                                </div>
+                            </div>
+                            <div class="ebiz-calendar-body">
+                                <div class="ebiz-calendar-date" *ngFor="let monDay of monthDays[mon.index]">
+                                    <button class="date-item" [ngClass]="{'is-active': selectedDay(monDay.id)}" (click)="selectDay(monDay.id)" [disabled]="generateCalendar">{{ monDay.day }}</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
+                    <button class="btn btn-default" (click)="saveDates()">
+                        Guardar
+                    </button>
+                    <a class="btn btn-fill btn-default" [routerLink]="['/confcalendarios/comprador/buscar']">Regresar</a>
+                </div>
+                <!-- CALENDAR -->
+                <!-- CALENDAR -->
+                <!-- CALENDAR -->
+                <!-- CALENDAR -->
+                <!-- CALENDAR -->
+                <!-- CALENDAR -->
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

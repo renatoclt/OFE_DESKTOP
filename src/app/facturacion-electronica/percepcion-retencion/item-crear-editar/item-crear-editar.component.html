@@ -20,7 +20,8 @@
           <div class="col-md-2">
             <div class="form-group label-floating">
               <label class="control-label"> {{'serie' | translate}} <span class="star">*</span></label>
-              <input [SerieDirective]="true" id="txtserie" formControlName="txtserie" autocomplete="off" class="form-control" type="text" minlength="4" min="4" maxlength="4" max="4" >
+              <!--<input [SerieDirective]="true" id="txtserie" formControlName="txtserie" autocomplete="off" class="form-control" type="text" minlength="4" min="4" maxlength="4" max="4" >-->
+              <input [SerieDirective]="true" id="txtserie" formControlName="txtserie" autocomplete="off" class="form-control" type="text">
               <span *ngIf="!itemFormGroup.get('txtserie').valid && itemFormGroup.get('txtserie').touched">
                 <span *ngIf="itemFormGroup.controls['txtserie'].hasError('required')"  class="text-danger">{{'campoRequerido' | translate}}</span>
                 <span *ngIf="itemFormGroup.controls['txtserie'].hasError('pattern')"   class="text-danger">{{'formatoInvalido' | translate}}</span>
@@ -91,7 +92,7 @@
           <div class="col-md-4">
             <div class="form-group label-floating">
               <label class="control-label">{{'importeSoles' | translate}}</label>
-              <input precioDirectiva id="txtImporteSoles" formControlName="txtImporteSoles" autocomplete="off" class="form-control" disabled type="text">
+              <input precioDirectiva id="txtImporteSoles" formControlName="txtImporteSoles" autocomplete="off" class="form-control" [disabled]="true" type="text">
               <span *ngIf="!itemFormGroup.get('txtImporteSoles').valid && itemFormGroup.get('txtImporteSoles').touched">
                 <span *ngIf="itemFormGroup.controls['txtImporteSoles'].hasError('required')"  class="text-danger">{{'campoRequerido' | translate}}</span>
                 <span *ngIf="itemFormGroup.controls['txtImporteSoles'].hasError('pattern')"   class="text-danger">Ej. 10.00</span>

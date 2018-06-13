@@ -93,7 +93,13 @@ var GlobalFunctions = new function () {
    /* this.SetSidebarComponent = function (object) {
         oSidebarComponent = object;
     };*/
+    this.SetMessageUtilsComponent = function (object) {
+        oMessageUtilsComponent = object;
+    };
 
+    this.getMessageUtilsComponent = function () {
+        return oMessageUtilsComponent;
+    };
 
     this.AplicarCambioDeLinea = function (cadena, maxCar) {
 
@@ -670,8 +676,8 @@ function respuestaHandler(msg) {
 
     var respuesta = JSON.parse(msg.body);
 
-    //console.log('*****RESPUESTA-----');
-    //console.log(respuesta)
+    console.log('*****RESPUESTA-----');
+    console.log(respuesta)
 
     //alert(respuesta.message);
     /*$("#status").val(respuesta.statuscode);
@@ -679,9 +685,19 @@ function respuestaHandler(msg) {
     $("#id_doc").val(respuesta.id_doc);
     $("#num_doc").val(respuesta.num_doc);*/
 
+    let uri ='sm-requerimiento/proveedor/formulario/a1305885-91cc-408e-88ba-4cabb9410cb1';
+    
+    /*
+    let oSidebarComponent = DatatableFunctions.getSidebarComponent();
+    if (oSidebarComponent) {
+        oSidebarComponent.navegar.setearDatosDeObjJ(JSON.parse(localStorage.getItem('usuarioActual')));
+    }
+    */
+
     $.notify({
-        icon: "notifications",
-        message: respuesta.message + ". " + (respuesta.num_doc != null && respuesta.num_doc != "" ? "<b><u><a href=\"javascript:alert(\'Navegar\')\">Ir al documento " + respuesta.num_doc + " .</a></u></b>" : "")
+        icon: 'notifications',
+      //   message: respuesta.message + ". " + (respuesta.num_doc != null && respuesta.num_doc != "" ? "<b><u><a href=\"javascript:alert(\'Navegar\')\">Ir al documento " + respuesta.num_doc + " .</a></u></b>" : "")
+        message: respuesta.message + ". " + (respuesta.num_doc != null && respuesta.num_doc != "" ? '<b><u><a onClick=navegarLocalmente(\"'+uri+'\")>Ir al documento ' + respuesta.num_doc + " .</a></u></b>" : "")
     }, {
             type: "info",
             timer: 3000,
@@ -690,6 +706,10 @@ function respuestaHandler(msg) {
                 align: "center"
             }
         });
+}
+
+function navegarLocalmente(clave){
+    const login = GlobalFunctions.GetLoginComponent();
 }
 
 
