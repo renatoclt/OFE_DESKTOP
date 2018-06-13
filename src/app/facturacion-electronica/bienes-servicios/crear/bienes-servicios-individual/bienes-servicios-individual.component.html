@@ -1,0 +1,100 @@
+<div class="card">
+  <div class="card-content">
+    <form  [formGroup]="productosIndividualformGroup" novalidate autocomplete="off">
+      <div class="row">
+        <div class="col-xs-12 col-sm-4 col-md-4">
+          <div class="form-group label-floating">
+            <label class="control-label"> {{'codigo' | translate}} <span class="star">*</span></label>
+            <input  id="txtcodigo" formControlName="txtcodigo" class="form-control" type="text" autocomplete="off">
+            <span *ngIf="!productosIndividualformGroup.get('txtcodigo').valid && productosIndividualformGroup.get('txtcodigo').touched">
+              <span *ngIf="productosIndividualformGroup.controls['txtcodigo'].hasError('required')" class="text-danger">{{'campoRequerido' | translate}}</span>
+            </span>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-4 col-md-4">
+          <div class="form-group label-floating">
+            <label class="control-label"> {{'descripcion' | translate}} <span class="star">*</span></label>
+            <input  id="txtdescripcion" formControlName="txtdescripcion" class="form-control" type="text" autocomplete="off">
+            <span *ngIf="!productosIndividualformGroup.get('txtdescripcion').valid && productosIndividualformGroup.get('txtdescripcion').touched">
+              <span *ngIf="productosIndividualformGroup.controls['txtdescripcion'].hasError('required')" class="text-danger">{{'campoRequerido' | translate}}</span>
+            </span>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-4 col-md-4">
+          <div class="form-group label-floating">
+            <label class="control-label"> {{'tipo' | translate}} <span class="star">*</span></label>
+            <select id="cmbtipo" name="cmbtipo" formControlName="cmbtipo" class="form-control">
+              <option *ngFor="let tipo of tipoBienServicios" [value]="tipo.codigo"> {{tipo.descripcion}}</option>
+            </select>
+            <span *ngIf="!productosIndividualformGroup.get('cmbtipo').valid && productosIndividualformGroup.get('cmbtipo').touched">
+              <span *ngIf="productosIndividualformGroup.controls['cmbtipo'].hasError('required')" class="text-danger">{{'campoRequerido' | translate}}</span>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-4 col-md-4">
+          <div class="form-group label-floating">
+            <label class="control-label"> {{'unidadMedida' | translate}} <span class="star">*</span></label>
+            <select id="cmbunidadmedida" name="cmbunidadmedida" formControlName="cmbunidadmedida" class="form-control">
+              <option *ngFor="let unidad of unidadesDeMedida | async" [value]="unidad.iso"> {{unidad.descripcionCorta}}</option>
+            </select>
+            <span *ngIf="!productosIndividualformGroup.get('cmbunidadmedida').valid && productosIndividualformGroup.get('cmbunidadmedida').touched">
+              <span *ngIf="productosIndividualformGroup.controls['cmbunidadmedida'].hasError('required')" class="text-danger">{{'campoRequerido' | translate}}</span>
+            </span>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-4 col-md-4">
+          <div class="form-group label-floating">
+            <label class="control-label"> {{'valorUnitario' | translate}} <span class="star">*</span></label>
+            <input precioDirectiva="true" id="txtvalorunitario" formControlName="txtvalorunitario" class="form-control" type="text" autocomplete="off">
+            <span *ngIf="!productosIndividualformGroup.get('txtvalorunitario').valid && productosIndividualformGroup.get('txtvalorunitario').touched">
+              <span *ngIf="productosIndividualformGroup.controls['txtvalorunitario'].hasError('min')" class="text-danger">{{'debeSerMayorA' | translate:{digito:'0.00'} }}</span>
+            </span>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-4 col-md-4">
+          <div class="form-group label-floating">
+            <label class="control-label"> {{'calculoIsc' | translate}} <span class="star">*</span></label>
+            <select id="cmbcalculoISC" name="cmbcalculoISC" formControlName="cmbcalculoISC" class="form-control" (change)="seleccionarTipoIsc()">
+              <option *ngFor="let calculo of tipoCalculoIsc | async" [value]="calculo.idTipoCalculo"> {{calculo.descripcion}}</option>
+            </select>
+            <span *ngIf="!productosIndividualformGroup.get('cmbcalculoISC').valid && productosIndividualformGroup.get('cmbcalculoISC').touched">
+              <span *ngIf="productosIndividualformGroup.controls['cmbcalculoISC'].hasError('required')" class="text-danger">{{'campoRequerido' | translate}}</span>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-4 col-md-4">
+          <div class="form-group label-floating">
+            <label class="control-label"> {{'isc' | translate}}</label>
+            <input precioDirectiva="true" id="txtISC" formControlName="txtISC" class="form-control" type="text" autocomplete="off">
+            <span *ngIf="!productosIndividualformGroup.get('txtISC').valid && productosIndividualformGroup.get('txtISC').touched">
+              <span *ngIf="productosIndividualformGroup.controls['txtISC'].hasError('min')" class="text-danger">{{'debeSerMayorA' | translate:{digito:'0.00'} }}</span>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <ng-container *ngIf="esEditable; then editable else normal"></ng-container>
+          <ng-template #editable>
+            <div class="form-group pull-right">
+              <button type="button" (click)="regresar()" class="btn btn-default blue" name="btnRegresar">{{'regresar' | translate}}</button>
+              <button type="button" (click)="editar()" class="btn btn-default blue" name="btnEditar">{{txtBotonEditar | translate}}</button>
+            </div>
+          </ng-template>
+          <ng-template #normal>
+            <div class="form-group pull-right">
+              <button type="button" (click)="subirData()" class="btn btn-default blue" name="btnGuardar" [disabled]="!productosIndividualformGroup.valid">{{'guardar' | translate}}</button>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+

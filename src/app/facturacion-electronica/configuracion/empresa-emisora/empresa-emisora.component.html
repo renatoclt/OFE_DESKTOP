@@ -1,0 +1,330 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="card">
+        <div class="card-header card-header-text" data-background-color="blue">
+          <h4 class="card-title">{{titulo | translate}}</h4>
+        </div>
+        <div class="card-content">
+            <div class="row">
+              <div class="col-md-12">
+                <form [formGroup]="empresaEmisoraFormGroup">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <div class="form-group label-floating">
+                        <label class="control-label"> {{'ruc'|translate}}</label>
+                        <input rucDirective id="txtRuc" formControlName="txtRuc" class="form-control" type="text">
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group label-floating">
+                        <label class="control-label"> {{'razonsocial'|translate}}</label>
+                        <input id="txtRazonSocial" formControlName="txtRazonSocial" autocomplete="off"
+                               class="form-control"
+                               type="text">
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group label-floating">
+                        <label class="control-label"> {{'nombrecomerial'|translate}}</label>
+                        <input id="txtNombreComercial" formControlName="txtNombreComercial" class="form-control"
+                               type="text">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <div class="form-group label-floating">
+                        <label class="control-label"> {{'domiciliofiscal'|translate}}</label>
+                        <input id="txtDomicilioFiscal" formControlName="txtDomicilioFiscal" class="form-control"
+                               type="text">
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group label-floating">
+                        <label class="control-label"> {{'email'|translate}}<span class="star">*</span></label>
+                        <input id="txtCorreoElectronico" formControlName="txtCorreoElectronico" class="form-control"
+                               type="text">
+                        <div class="row" *ngIf="!empresaEmisoraFormGroup.get('txtCorreoElectronico').valid && empresaEmisoraFormGroup.get('txtCorreoElectronico').touched">
+                          <div class="col-md-12">
+                            <span *ngIf="empresaEmisoraFormGroup.get('txtCorreoElectronico').hasError('required')"
+                                  class="text-danger">{{'campoRequerido' | translate}}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group label-floating">
+                        <label class="control-label"> {{'usersol'|translate}}<span class="star">*</span></label>
+                        <input id="txtUsuarioSol" formControlName="txtUsuarioSol" class="form-control"
+                               type="text">
+                        <div class="row" *ngIf="!empresaEmisoraFormGroup.get('txtUsuarioSol').valid && empresaEmisoraFormGroup.get('txtUsuarioSol').touched">
+                          <div class="col-md-12">
+                            <span *ngIf="empresaEmisoraFormGroup.get('txtUsuarioSol').hasError('required')"
+                                  class="text-danger">{{'campoRequerido' | translate}}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <div class="form-group label-floating">
+                        <label class="control-label"> {{'clavesol'|translate}}<span class="star">*</span></label>
+                        <input id="txtClaveSol" formControlName="txtClaveSol" class="form-control" type="text">
+                        <div class="row" *ngIf="!empresaEmisoraFormGroup.get('txtUsuarioSol').valid && empresaEmisoraFormGroup.get('txtUsuarioSol').touched">
+                          <div class="col-md-12">
+                            <span *ngIf="empresaEmisoraFormGroup.get('txtUsuarioSol').hasError('required')"
+                                  class="text-danger">{{'campoRequerido' | translate}}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group label-floating">
+                        <label class="control-label"> {{'clavecertificadollave'|translate}}<span class="star">*</span></label>
+                        <input id="txtClaveCertificadoDigital" formControlName="txtClaveCertificadoDigital"
+                               class="form-control"
+                               type="text">
+                        <div class="row" *ngIf="!empresaEmisoraFormGroup.get('txtClaveCertificadoDigital').valid && empresaEmisoraFormGroup.get('txtClaveCertificadoDigital').touched">
+                          <div class="col-md-12">
+                            <span *ngIf="empresaEmisoraFormGroup.get('txtClaveCertificadoDigital').hasError('required')"
+                                  class="text-danger">{{'campoRequerido' | translate}}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group label-floating">
+                        <label class="control-label"> {{'clavekey'|translate}}<span class="star">*</span></label>
+                        <input id="txtClaveLlave" formControlName="txtClaveLlave" class="form-control"
+                               type="text">
+                        <div class="row" *ngIf="!empresaEmisoraFormGroup.get('txtClaveLlave').valid && empresaEmisoraFormGroup.get('txtClaveLlave').touched">
+                          <div class="col-md-12">
+                            <span *ngIf="empresaEmisoraFormGroup.get('txtClaveLlave').hasError('required')"
+                                  class="text-danger">{{'campoRequerido' | translate}}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="checkbox">
+                        <label>
+                          <input type="checkbox" name="checkBoxRecibirNotificaciones" formControlName="checkBoxRecibirNotificaciones"> {{'recibirnoti'|translate}}
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+                <div class="row" style="text-align: center">
+                  <div class="col-md-12">
+                    <div class="col-md-6">
+                      <div class="center-block">
+                        <form [formGroup]="certificadoFormGroup">
+                          <div class="row">
+                            <label class="control-label">{{'subircertificadodigital'|translate}}</label>
+                          </div>
+                          <br>
+                          <div class="fileinput fileinput-new text-center">
+                            <span>{{entidad.certificadoDigitalCloud}}</span>
+                            <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                            <div>
+                              <span class="btn btn-file btn-default blue">
+                                <span class="fileinput-new">{{'seleccioneArchivo' | translate}}</span>
+                                <span class="fileinput-exists">{{'cambiar' | translate}}</span>
+                                <input type="file" name="..."
+                                       formControlName="certificado"
+                                       archivoDirectiva
+                                       [verificarTamanio] = "false"
+                                       [tipoArchivoRestriccion] = "tiposArchivosPermitidosCertificado"
+                                       [mensajeErrorTipo]= "'mensajeErrorTipoArchivo' | translate: {tiposArchivo: ' .pfx'}"
+                                       (change)="cambioCertificado($event)"
+                                       #inputArchivoCertificado
+                                />
+                              </span>
+                              <a class="btn btn-file btn-danger blue"
+                                 (click)="eliminarCertificado()"
+                                 *ngIf="(certificadoSeleccionado | async)">
+                                <i class="fa fa-times"></i> {{'eliminar'|translate}}
+                              </a>
+                              <div class="fileinput-preview" *ngIf="(certificadoSeleccionado | async)">
+                                {{(certificadoSeleccionado | async)[0].name}}
+                              </div>
+                              <div class="fileinput-new" *ngIf="!(certificadoSeleccionado | async)">
+                                <label>{{'ningunArchivoSeleccionado' | translate}}</label>
+                              </div>
+                            </div>
+                            <div class="row" *ngIf="!certificadoFormGroup.controls['certificado'].valid">
+                                <span style="color: red" *ngIf="certificadoFormGroup.controls['certificado'].errors">
+                                  <strong *ngIf="certificadoFormGroup.controls['certificado'].errors['tipo']">
+                                    {{certificadoFormGroup.controls['certificado'].errors['tipo'] | translate}}
+                                  </strong>
+                                </span>
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="center-block">
+                        <div class="col-md-12 col-sm-12">
+                          <form [formGroup]="imagenFormGroup">
+                            <div class="row">
+                              <label class="control-label">{{'logo'|translate}}</label>
+                            </div>
+                            <br>
+                            <div class="fileinput fileinput-new text-center">
+                              <div class="fileinput-new thumbnail">
+                                <img #imagen_cloud>
+                              </div>
+                              <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                              <div>
+                                <span class="btn btn-file btn-default blue">
+                                  <span class="fileinput-new"> {{'selecimg'|translate}}</span>
+                                  <span class="fileinput-exists"> {{'cambiarimg'|translate}}</span>
+                                  <input type="file"
+                                         archivoDirectiva
+                                         formControlName="imagen"
+                                         [verificarTamanio] = "false"
+                                         [tipoArchivoRestriccion] = "tiposArchivosPermitidosImagen"
+                                         [mensajeErrorTipo]= "'mensajeErrorTipoArchivo' | translate: {tiposArchivo: ' .jpeg, .png'}"
+                                         (change)="cambioLogo($event)"
+                                         #inputArchivoImg/>
+                                </span>
+                                <a class="btn btn-file btn-danger blue"
+                                   (click)="eliminarLogo()"
+                                   *ngIf="(logoSeleccionado | async)">
+                                  <i class="fa fa-times"></i> {{'eliminar'|translate}}
+                                </a>
+                                <div class="fileinput-preview" *ngIf="(logoSeleccionado | async)">
+                                  {{(logoSeleccionado | async)[0].name}}
+                                </div>
+                                <div class="fileinput-new" *ngIf="!(logoSeleccionado | async)">
+                                  <label>{{'ningunArchivoSeleccionado' | translate}}</label>
+                                </div>
+                              </div>
+                              <div class="row" *ngIf="!imagenFormGroup.controls['imagen'].valid">
+                                <span style="color: red" *ngIf="imagenFormGroup.controls['imagen'].errors">
+                                  <strong *ngIf="imagenFormGroup.controls['imagen'].errors['tipo']">
+                                    {{imagenFormGroup.controls['imagen'].errors['tipo'] | translate}}
+                                  </strong>
+                                </span>
+                              </div>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12"  align="right">
+                    <button type="button" class="btn btn-default blue"
+                            (click)="actualizarEntidad()"
+                            [disabled]="!(
+                            empresaEmisoraFormGroup.valid &&
+                            certificadoFormGroup.valid &&
+                            imagenFormGroup.valid &&
+                            cambioEntidad())">
+                      {{'guardar' | translate}}
+                    </button>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="card">
+                    <div class="card-header card-header-icon" data-background-color="blue">
+                      <i class="material-icons">list</i>
+                    </div>
+                    <div class="row"><h3>{{'archivosXML' | translate}}</h3></div>
+                    <div class="row"><p>&nbsp;</p></div>
+                    <nav class="navbar navbar-info" role="navigation"></nav>
+                    <div class="card-content">
+                      <app-data-table
+                                      #tabla
+                                      [idTabla]="'tabla'"
+                                      [columnas]="columnasTabla"
+                                      [habilitarAcciones]="true"
+                                      [acciones]="accionesTabla"
+                                      [nombreIdDelItem]="nombreIdDelItem"
+                                      [ordenarPorElCampo]="ordenarPorElCampo"
+                                      (accion)="ejecutarAccion($event)"
+                                      (iniciarData)="iniciarDataTabla($event)"
+                      >
+                      </app-data-table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" [id]="idModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+          <i class="material-icons">clear</i>
+        </button>
+        <h3 class="modal-title">{{tituloModalGeneral | translate}}</h3>
+      </div>
+      <div class="modal-body">
+        <div align="center">
+          <form #formPlantilla [formGroup]="plantillaFormGroup">
+            <div class="fileinput fileinput-new text-center">
+              <div class="row">
+                <div>
+                    <span class="btn btn-file btn-default blue">
+                        <span class="fileinput-new">{{'seleccioneArchivo' | translate}}</span>
+                        <span class="fileinput-exists">{{'cambiar' | translate}}</span>
+                        <input type="file" name="..."
+                               formControlName="plantilla"
+                               archivoDirectiva
+                               [verificarTamanio] = "false"
+                               [tipoArchivoRestriccion] = "tiposArchivosPermitidosGeneral"
+                               [mensajeErrorTipo]= "'mensajeErrorTipoArchivo' | translate: {tiposArchivo: ' .xml'}"
+                               (change)="cambioPlantilla($event)"
+                               #inputArchivoGeneral
+                        />
+                    </span>
+                  <a class="btn btn-danger" *ngIf="(archivoPlantillaSeleccionado | async)"
+                     (click)="eliminarPlantilla()"><i
+                    class="fa fa-times"></i> {{'eliminar' | translate}}</a>
+                </div>
+                <div class="fileinput-preview" *ngIf="(archivoPlantillaSeleccionado | async)">{{(archivoPlantillaSeleccionado | async)[0].name}}</div>
+                <div class="fileinput-new" *ngIf="!(archivoPlantillaSeleccionado | async)">
+                  <label>{{'ningunArchivoSeleccionado' | translate}}</label>
+                </div>
+              </div>
+              <div class="row" *ngIf="!plantillaFormGroup.controls['plantilla'].valid">
+                <span style="color: red" *ngIf="plantillaFormGroup.controls['plantilla'].errors">
+                  <strong *ngIf="plantillaFormGroup.controls['plantilla'].errors['tipo']">
+                    {{plantillaFormGroup.controls['plantilla'].errors['tipo'] | translate}}
+                  </strong>
+                </span>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default blue" [disabled]="!plantillaFormGroup.controls['plantilla'].valid" (click)="cargarPlantilla(puntero)">
+          {{'cargar' | translate}}
+        </button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal"> <i class="material-icons">clear</i>
+          {{'cerrar' | translate}}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

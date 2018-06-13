@@ -1,0 +1,200 @@
+<ul class="nav">
+  <li routerLinkActive="active">
+    <a data-toggle="collapse" href="#comprobantes">
+      <i class="material-icons"><span>CO</span></i>
+      <p>Comprobantes
+        <b class="caret"></b>
+      </p>
+    </a>
+    <div class="collapse" id="comprobantes">
+      <ul class="nav">
+        <li routerLinkActive="active">
+          <a (click)="cambioMenu()" [routerLink]="['/comprobantes']">
+            <span class="sidebar-mini"><i class="material-icons">create</i></span>
+            <span class="sidebar-normal">Crear</span>
+          </a>
+        </li>
+        <li routerLinkActive="active">
+          <a  [routerLink]="['/comprobantes/consultar']">
+            <span class="sidebar-mini"><i class="material-icons">search</i></span>
+            <span class="sidebar-normal">Consultar</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </li>
+
+  <li routerLinkActive="active">
+    <a data-toggle="collapse" href="#percepcion-retencion">
+      <i class="material-icons"><span>PR</span></i>
+      <p>Percepción/Retención
+        <b class="caret"></b>
+      </p>
+    </a>
+    <div class="collapse" id="percepcion-retencion">
+      <ul class="nav">
+        <li routerLinkActive="active">
+          <a  [routerLink]="['/percepcion-retencion/crear-retencion']">
+            <span class="sidebar-mini"><i class="material-icons">create</i></span>
+            <span class="sidebar-normal">Crear</span>
+          </a>
+        </li>
+        <li routerLinkActive="active">
+          <a  [routerLink]="['/percepcion-retencion/consultar']">
+            <span class="sidebar-mini"><i class="material-icons">search</i></span>
+            <span class="sidebar-normal">Consultar</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </li>
+
+  <li routerLinkActive="active">
+    <a data-toggle="collapse" href="#guia-remision">
+      <i class="material-icons"><span>GR</span></i>
+      <p>Guía Remisión
+        <b class="caret"></b>
+      </p>
+    </a>
+    <div class="collapse" id="guia-remision">
+      <ul class="nav">
+        <li routerLinkActive="active">
+          <a  [routerLink]="['/guia-remision/crear']">
+            <span class="sidebar-mini"><i class="material-icons">create</i></span>
+            <span class="sidebar-normal">Crear</span>
+          </a>
+        </li>
+        <li routerLinkActive="active">
+          <a  [routerLink]="['/guia-remision/consultar']">
+            <span class="sidebar-mini"><i class="material-icons">search</i></span>
+            <span class="sidebar-normal">Consultar</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </li>
+
+  <li routerLinkActive="active">
+    <a data-toggle="collapse" href="#bienes-servicios">
+      <i class="material-icons"><span>CO</span></i>
+      <p>Bienes/Servicios
+        <b class="caret"></b>
+      </p>
+    </a>
+    <div class="collapse" id="bienes-servicios">
+      <ul class="nav">
+        <li routerLinkActive="active">
+          <a  [routerLink]="['/bienes-servicios/crear']">
+            <span class="sidebar-mini"><i class="material-icons">create</i></span>
+            <span class="sidebar-normal">Crear</span>
+          </a>
+        </li>
+        <li routerLinkActive="active">
+          <a  [routerLink]="['/bienes-servicios/consultar']">
+            <span class="sidebar-mini"><i class="material-icons">search</i></span>
+            <span class="sidebar-normal">Consultar</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </li>
+
+
+  <li routerLinkActive="active">
+    <a data-toggle="collapse" href="#resumen-boletas">
+      <i class="material-icons"><span>RB</span></i>
+      <p>Resumen Boletas
+        <b class="caret"></b>
+      </p>
+    </a>
+    <div class="collapse" id="resumen-boletas">
+      <ul class="nav">
+        <li routerLinkActive="active">
+          <a  [routerLink]="['/resumen-boletas/consultar']">
+            <span class="sidebar-mini"><i class="material-icons">search</i></span>
+            <span class="sidebar-normal">Consultar</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </li>
+
+
+
+  <li routerLinkActive="active">
+    <a data-toggle="collapse" href="#resumen-bajas">
+      <i class="material-icons"><span>RB</span></i>
+      <p>Resumen de Bajas
+        <b class="caret"></b>
+      </p>
+    </a>
+    <div class="collapse" id="resumen-bajas">
+      <ul class="nav">
+        <li routerLinkActive="active">
+          <a  [routerLink]="['/resumen-bajas/crear']">
+            <span class="sidebar-mini"><i class="material-icons">create</i></span>
+            <span class="sidebar-normal">Crear</span>
+          </a>
+        </li>
+        <li routerLinkActive="active">
+          <a  [routerLink]="['/resumen-bajas/consultar']">
+            <span class="sidebar-mini"><i class="material-icons">search</i></span>
+            <span class="sidebar-normal">Consultar</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </li>
+
+
+  <li routerLinkActive="active">
+    <a data-toggle="collapse" href="#reportes">
+      <i class="material-icons"><span>RE</span></i>
+      <p>Reportes
+        <b class="caret"></b>
+      </p>
+    </a>
+    <div class="collapse" id="reportes">
+      <ul class="nav">
+        <li routerLinkActive="active">
+          <a  [routerLink]="['/reportes/documento-emisor']">
+            <span class="sidebar-mini"><i class="material-icons">receipt</i></span>
+            <span class="sidebar-normal">Documento por Emisor</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </li>
+
+
+  <li routerLinkActive="active">
+    <a data-toggle="collapse" href="#configuracion">
+      <i class="material-icons"><span>CO</span></i>
+      <p>Configuración
+        <b class="caret"></b>
+      </p>
+    </a>
+    <div class="collapse" id="configuracion">
+      <ul class="nav">
+        <li routerLinkActive="active">
+          <a  [routerLink]="['/configuracion/mi-cuenta']">
+            <span class="sidebar-mini"><i class="material-icons">account_circle</i></span>
+            <span class="sidebar-normal">Mi cuenta</span>
+          </a>
+        </li>
+        <li routerLinkActive="active">
+          <a  [routerLink]="['/configuracion/empresa']">
+            <span class="sidebar-mini"><i class="material-icons">business</i></span>
+            <span class="sidebar-normal">Configuración de la Empresa</span>
+          </a>
+        </li>
+        <li routerLinkActive="active">
+          <a  [routerLink]="['/configuracion/parametros-dominios']">
+            <span class="sidebar-mini">PD</span>
+            <span class="sidebar-normal">Configuración Parámetros/Dominios</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </li>
+</ul>

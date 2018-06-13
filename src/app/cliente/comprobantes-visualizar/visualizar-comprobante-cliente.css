@@ -1,0 +1,19 @@
+input.ng-invalid.ng-touched,
+mat-select.ng-invalid.ng-touched{
+  border-bottom: 1px solid red;
+}
+mat-select{
+  border-bottom: 1px solid #AAAAAA;
+}
+div.row{
+  display: flex;
+  align-items: center;
+}
+.blue{
+  background: #0079bf;
+}
+/* @media (min-width: 1200px){
+  .container {
+      width: 1400px;
+  }
+} */

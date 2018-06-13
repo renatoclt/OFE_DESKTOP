@@ -1,0 +1,186 @@
+<div class="modal fade" #modalEditar [id]="idModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="material-icons">clear</i></button>
+        <div class="row">
+          <div class="col-md-4">
+            <h5 class="modal-title" id="myModalLabel">{{'editarItem' | translate}}</h5>
+          </div>
+        </div>
+      </div>
+      <form [formGroup]="editarItemFormGroup" autocomplete="off">
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group label-floating">
+                <label id="lblCantidad" class="control-label">{{'cantidad' | translate}}</label>
+                <input class="form-control" id="txtCantidad" formControlName="txtCantidad" type="text" precioDirectiva>
+                <div class="row" *ngIf="!editarItemFormGroup.get('txtCantidad').valid">
+                  <div class="col-md-12">
+                    <span *ngIf="editarItemFormGroup.get('txtCantidad').hasError('maxlength')"
+                          class="text-danger">{{'maximoCaracteres' | translate: {digito: tamanioTxtCantidad} }}
+                    </span>
+                    <span *ngIf="editarItemFormGroup.get('txtCantidad').hasError('required')"
+                          class="text-danger">{{'campoRequerido' | translate}}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group label-floating">
+                <label id="lblCodigo" class="control-label">{{'codigo' | translate}}</label>
+                <input class="form-control" id="txtCodigo" formControlName="txtCodigo" type="text">
+                <div class="row" *ngIf="!editarItemFormGroup.get('txtCodigo').valid">
+                  <div class="col-md-12">
+                    <span *ngIf="editarItemFormGroup.get('txtCodigo').hasError('maxlength')"
+                          class="text-danger">{{'maximoCaracteres' | translate: {digito: tamanioTxtCodigo} }}
+                    </span>
+                    <span *ngIf="editarItemFormGroup.get('txtCodigo').hasError('required')"
+                          class="text-danger">{{'campoRequerido' | translate}}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group label-floating">
+                <label id="lblDescripcion" class="control-label">{{'descripcion' | translate}}</label>
+                <textarea class="form-control" id="txtDescripcion" formControlName="txtDescripcion" type="text" rows="3"></textarea>
+                <div class="row" *ngIf="!editarItemFormGroup.get('txtDescripcion').valid">
+                  <div class="col-md-12">
+                    <span *ngIf="editarItemFormGroup.get('txtDescripcion').hasError('maxlength')"
+                          class="text-danger">{{'maximoCaracteres' | translate: {digito: tamanioTxtDescripcion} }}
+                    </span>
+                    <span *ngIf="editarItemFormGroup.get('txtDescripcion').hasError('required')"
+                          class="text-danger">{{'campoRequerido' | translate}}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group label-floating">
+                <label id="lblUnidadMedida" class="control-label">{{'unidadMedida' | translate}}</label>
+                <input class="form-control" id="txtUnidadMedida" formControlName="txtUnidadMedida" type="text">
+                <div class="row" *ngIf="!editarItemFormGroup.get('txtUnidadMedida').valid">
+                  <div class="col-md-12">
+                    <span *ngIf="editarItemFormGroup.get('txtUnidadMedida').hasError('maxlength')"
+                          class="text-danger">{{'maximoCaracteres' | translate: {digito: tamanioTxtUnidadMedida} }}
+                    </span>
+                    <span *ngIf="editarItemFormGroup.get('txtUnidadMedida').hasError('required')"
+                          class="text-danger">{{'campoRequerido' | translate}}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group label-floating">
+                <label id="lblValorUnitario" class="control-label">{{'valorUnitario' | translate}}</label>
+                <input class="form-control" id="txtValorUnitario" formControlName="txtValorUnitario" type="text" precioDirectiva>
+                <div class="row" *ngIf="!editarItemFormGroup.get('txtValorUnitario').valid && tipoNotaDebito === _tiposService.TIPO_NOTA_DEBITO_AUMENTO_EN_EL_VALOR">
+                  <div class="col-md-12">
+                    <span *ngIf="editarItemFormGroup.get('txtValorUnitario').hasError('maxlength')"
+                          class="text-danger">{{'maximoCaracteres' | translate: {digito: tamanioTxtValorUnitario} }}
+                    </span>
+                    <span *ngIf="editarItemFormGroup.get('txtValorUnitario').hasError('required')"
+                          class="text-danger">{{'campoRequerido' | translate}}
+                    </span>
+                    <span *ngIf="editarItemFormGroup.get('txtValorUnitario').hasError('max')"
+                          class="text-danger">{{'debeSerMayorA' | translate: {digito: '0.00'} }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group label-floating">
+                <label id="lblIgv" class="control-label">{{'igv' | translate}}</label>
+                <input class="form-control" id="txtIgv" formControlName="txtIgv" type="text" precioDirectiva>
+                <div class="row" *ngIf="!editarItemFormGroup.get('txtIgv').valid">
+                  <div class="col-md-12">
+                    <span *ngIf="editarItemFormGroup.get('txtIgv').hasError('maxlength')"
+                          class="text-danger">{{'maximoCaracteres' | translate: {digito: tamanioTxtIgv} }}
+                    </span>
+                    <span *ngIf="editarItemFormGroup.get('txtIgv').hasError('required')"
+                          class="text-danger">{{'campoRequerido' | translate}}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group label-floating">
+                <label id="lblIsc" class="control-label">{{'isc' | translate}}</label>
+                <input class="form-control" id="txtIsc" formControlName="txtIsc" type="text" precioDirectiva>
+                <div class="row" *ngIf="!editarItemFormGroup.get('txtIsc').valid">
+                  <div class="col-md-12">
+                    <span *ngIf="editarItemFormGroup.get('txtIsc').hasError('maxlength')"
+                          class="text-danger">{{'maximoCaracteres' | translate: {digito: tamanioTxtIsc} }}
+                    </span>
+                    <span *ngIf="editarItemFormGroup.get('txtIsc').hasError('required')"
+                          class="text-danger">{{'campoRequerido' | translate}}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group label-floating">
+                <label id="lblDescuento" class="control-label">{{'descuento' | translate}}</label>
+                <input class="form-control" id="txtDescuento" formControlName="txtDescuento" type="text" precioDirectiva>
+                <div class="row" *ngIf="!editarItemFormGroup.get('txtDescuento').valid">
+                  <div class="col-md-12">
+                    <span *ngIf="editarItemFormGroup.get('txtDescuento').hasError('maxlength')"
+                          class="text-danger">{{'maximoCaracteres' | translate: {digito: tamanioTxtDescuento} }}
+                    </span>
+                    <span *ngIf="editarItemFormGroup.get('txtDescuento').hasError('required')"
+                          class="text-danger">{{'campoRequerido' | translate}}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group label-floating">
+                <label id="lblValorVenta" class="control-label">{{'valorVenta' | translate}}</label>
+                <input class="form-control" id="txtValorVenta" formControlName="txtValorVenta" type="text" precioDirectiva>
+                <div class="row" *ngIf="!editarItemFormGroup.get('txtValorVenta').valid">
+                  <div class="col-md-12">
+                    <span *ngIf="editarItemFormGroup.get('txtValorVenta').hasError('maxlength')"
+                          class="text-danger">{{'maximoCaracteres' | translate: {digito: tamanioTxtValorVenta} }}
+                    </span>
+                    <span *ngIf="editarItemFormGroup.get('txtValorVenta').hasError('required')"
+                          class="text-danger">{{'campoRequerido' | translate}}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer text-center">
+          <button type="submit" class="btn btn-default" data-dismiss="modal" [disabled]="!(editarItemFormGroup.valid)" (click)="guardarItem()">{{'guardar' | translate}}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,47 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="row col-md-12">
+      <div class="card">
+        <div class="card-header card-header-text" data-background-color="blue">
+          <h4 class="card-title">{{'retencionEmitida' | translate}}</h4>
+        </div>
+        <div class="card-content">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="center-block">
+                <pdf-viewer [src]="pdfSrc | async"
+                            [render-text]="true"
+                            [external-link-target]="'blank'"
+                            [stick-to-page]="true"
+                            style="display: block;"
+                ></pdf-viewer>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 col-lg-offset-8">
+            <!-- <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12 col-lg-offset-4"> -->
+              <!-- <div class="dropdown col-xs-12 col-sm-4 col-md-4 col-lg-4 border">
+                <button class="dropdown-toggle btn btn-default btn-block" data-toggle="dropdown">{{'descargar' | translate}} <b class="caret" ></b>
+                  <ul class="dropdown-menu">
+                    <li *ngFor="let archivo of tiposArchivos">
+                      <a (click)="guardarArchivo(archivo)">{{archivo.descripcion}}</a>
+                    </li>
+                  </ul>
+                </button>
+              </div> -->
+              <!-- <div class=" col-xs-12 col-sm-4 col-md-4 col-lg-4 border">
+                <button type="button" class="btn btn-default col-xs-12 col-sm-12 col-md-12 col-lg-12" (click)="showSwal()" > {{'enviarCorreo' | translate}}</button>
+              </div> -->
+              <div class=" col-xs-12 col-sm-4 col-md-4 col-lg-4 border">
+                <button type="button" class="btn btn-default col-xs-12 col-sm-12 col-md-12 col-lg-12" (click)="emitir()"> {{'imprimir' | translate}}</button>
+              </div>
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+

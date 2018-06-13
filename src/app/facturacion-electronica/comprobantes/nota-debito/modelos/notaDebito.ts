@@ -1,0 +1,78 @@
+import {DetalleNotaDebito} from './detalleNotaDebito';
+import {EntidadNotaDebito} from './entidadNotaDebito';
+import {DocumentoConceptoNotaDebito} from './documentoConceptoNotaDebito';
+import {DocumentoParametroNotaDebito} from './documentoParametroNotaDebito';
+import {DocumentoReferenciaNotaDebito} from './documentoReferenciaNotaDebito';
+import {TablaMaestra} from '../../../general/models/documento/tablaMaestra';
+
+export class NotaDebito {
+  numeroComprobante: string;
+  rucProveedor: string;
+  rucComprador: string;
+  idTablaTipoComprobante: string;
+  idRegistroTipoComprobante: string;
+  idTipoComprobante: string;
+  razonSocialProveedor: string;
+  razonSocialComprador: string;
+  moneda: string;
+  fechaEmision: number;
+  observacionComprobante: string;
+  tipoComprobante: string;
+  montoPagado: string;
+  igv: string;
+  isc: string;
+  otrosTributos: string;
+  descuento: string;
+  importeReferencial: string;
+  subtotalComprobante: string;
+  totalComprobante: string;
+  tipoItem: string;
+  idTablaMoneda: string;
+  idRegistroMoneda: string;
+  usuarioCreacion: string;
+  usuarioModificacion: string;
+  idSerie: string;
+  motivoComprobante: string;
+  detalleEbiz: DetalleNotaDebito[];
+  documentoEntidad: EntidadNotaDebito[];
+  documentoConcepto: DocumentoConceptoNotaDebito[];
+  documentoParametro: DocumentoParametroNotaDebito[];
+  documentoReferencia: DocumentoReferenciaNotaDebito[];
+  auxMonedaTablaMaestra: TablaMaestra;
+
+  constructor() {
+    this.numeroComprobante = '';
+    this.rucProveedor = '';
+    this.rucComprador = '';
+    this.idTablaTipoComprobante = '';
+    this.idRegistroTipoComprobante = '';
+    this.idTipoComprobante = '';
+    this.razonSocialProveedor = '';
+    this.razonSocialComprador = '';
+    this.moneda = '';
+    this.fechaEmision = 0;
+    this.observacionComprobante = '';
+    this.tipoComprobante = '';
+    this.montoPagado = '';
+    this.igv = '';
+    this.isc = '';
+    this.otrosTributos = '';
+    this.descuento = '';
+    this.importeReferencial = '';
+    this.subtotalComprobante = '';
+    this.totalComprobante = '';
+    this.tipoItem = '';
+    this.idTablaMoneda = '';
+    this.idRegistroMoneda = '';
+    this.usuarioCreacion = '';
+    this.usuarioModificacion = '';
+    this.idSerie = '';
+    this.motivoComprobante = '';
+    this.detalleEbiz = new Array<DetalleNotaDebito>() ;
+    this.documentoEntidad = new Array<EntidadNotaDebito>();
+    this.documentoConcepto = new Array<DocumentoConceptoNotaDebito>();
+    this.documentoParametro = new Array<DocumentoParametroNotaDebito>();
+    this.documentoReferencia = new Array<DocumentoReferenciaNotaDebito>();
+    this.auxMonedaTablaMaestra = new TablaMaestra();
+  }
+}

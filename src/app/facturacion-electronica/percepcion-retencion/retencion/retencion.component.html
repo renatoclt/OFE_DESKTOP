@@ -1,0 +1,28 @@
+<div class="card">
+  <form method="#" action="#">
+    <div class="card-header card-header-text" data-background-color="blue">
+      <h4 class="card-title">{{titulo}}</h4>
+    </div>
+    <div class="card-content">
+      <div class="row">
+        <ul class="nav nav-pills nav-pills-circle nav-pills-warning">
+          <li #unitaria>
+            <a data-toggle="tab" (click)="llamar_unitaria()">
+              {{'retencionUnitaria' | translate}}
+            </a>
+          </li>
+          <!--li #masiva>
+            <a data-toggle="tab" (click)="llamar_masiva()">
+              {{'retencionMasiva' | translate}}
+            </a>
+          </li-->
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active">
+            <router-outlet></router-outlet>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

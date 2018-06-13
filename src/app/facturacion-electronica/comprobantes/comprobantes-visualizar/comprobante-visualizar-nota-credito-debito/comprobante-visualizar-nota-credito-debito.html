@@ -1,0 +1,271 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="row col-md-12">
+      <div class="card">
+        <div class="card-header card-header-text" data-background-color="blue">
+          <h4 class="card-title">{{'vistaPrevia' | translate}}</h4>
+        </div>
+        <div class="card-content" *ngIf="(comprobante | async)">
+          <!-- <div class="row">
+            <div class="col-md-4">
+              <label>
+                <h5>
+                  <b *ngIf="(comprobante | async).entidadproveedora">{{(comprobante | async).entidadproveedora.vcDenominacion}}</b>
+                </h5>
+              </label>
+            </div>
+            <div class="col-md-4 col-md-offset-4">
+              <div class="row">
+                <div class="col-md-4">
+                  <label>
+                    <h4>
+                      <b>{{'ruc' | translate}}:</b>
+                    </h4>
+                  </label>
+                </div>
+                <div class="col-md-8">
+                  <label>
+                    <h5 *ngIf="(comprobante | async).entidadproveedora">{{(comprobante | async).entidadproveedora.vcDocumento}}</h5>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <label>
+                <h5>
+                  <b *ngIf="(comprobante | async).entidadproveedora">{{(comprobante | async).entidadproveedora.vcDirFiscal}}</b>
+                </h5>
+              </label>
+            </div>
+            <div class="col-md-4 col-md-offset-4">
+              <label>
+                <h3>
+                  <b>{{tituloComprobante | translate | uppercase}}</b>
+                </h3>
+              </label>
+            </div>
+          </div>
+          <br>
+          <div class="row">
+            <div class="col-md-4 col-md-offset-8">
+              <div class="row">
+                <div class="col-md-12">
+                  <label>
+                    <h3>{{(comprobante | async).serieCorrelativo}}</h3>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div> -->
+
+          <div class="row">
+            <div class="col-md-4 left">
+                  <!-- <div class="logoVisualizar">
+                    <img src="{{urlLogo}}">
+                  </div> -->
+              <label>
+                <b *ngIf="(comprobante | async).entidadproveedora">{{(comprobante | async).entidadproveedora.vcDenominacion}}</b>
+              </label>
+              <br>
+              <label>
+                <b *ngIf="(comprobante | async).entidadproveedora">{{(comprobante | async).entidadproveedora.vcDirFiscal}}</b>
+              </label>
+            </div>
+            <div class="col-md-4 col-md-offset-4 center">
+              <div class="col-md-12 borde-simple">
+                <label>
+                  <b *ngIf="(comprobante | async).entidadproveedora">{{'rucNumero'| translate}}: {{(comprobante | async).entidadproveedora.vcDocumento}}</b>
+                </label>
+                <br>
+                <label>
+                  <b>{{tituloComprobante | translate | uppercase}}</b>
+                  <!-- <b>{{documento.vcTipocomprobante | uppercase}} {{'baseComprobanteElectronica' | translate | uppercase}}</b> -->
+                </label>
+                <br>
+                <label>
+                    <b>{{(comprobante | async).serieCorrelativo}}</b>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <br>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="row">
+                <div class="col-md-6">
+                  <label>
+                    <b>{{'seniorSeniors' | translate}}:</b>
+                  </label>
+                </div>
+                <div class="col-md-6">
+                  <label *ngIf="(comprobante | async).entidadcompradora">{{(comprobante | async).entidadcompradora.vcDenominacion}}</label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="row">
+                <div class="col-md-6">
+                  <label>
+                    <b>{{'ruc' | translate}}:</b>
+                  </label>
+                </div>
+                <div class="col-md-6">
+                  <label *ngIf="(comprobante | async).entidadcompradora">{{(comprobante | async).entidadcompradora.vcDocumento}}</label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="row">
+                <div class="col-md-6">
+                  <label>
+                    <b>{{'domicilioFiscal' | translate}}:</b>
+                  </label>
+                </div>
+                <div class="col-md-6">
+                  <label *ngIf="(comprobante | async).entidadcompradora">{{(comprobante | async).entidadcompradora.vcDirFiscal}}</label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="row">
+                <div class="col-md-6">
+                  <label>
+                    <b>{{'fechaEmision' | translate}}:</b>
+                  </label>
+                </div>
+                <div class="col-md-6">
+                  <label>{{formatoFechaEmision}}</label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="row">
+                <div class="col-md-6">
+                  <label>
+                    <b>{{'tipoMoneda' | translate}}:</b>
+                  </label>
+                </div>
+                <div class="col-md-6">
+                  <label>{{(comprobante | async).chMonedacomprobantepago}}</label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="row">
+                <div class="col-md-6">
+                  <label>
+                    <b>{{tipoNotaTitulo | translate}}:</b>
+                  </label>
+                </div>
+                <div class="col-md-6">
+                  <label>{{tipoNotaComprobante | uppercase}}</label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="row">
+                <div class="col-md-6">
+                  <label>
+                    <b>{{'motivoSustento' | translate}}:</b>
+                  </label>
+                </div>
+                <div class="col-md-6">
+                  <label>{{(comprobante | async).motivoComprobante}}</label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <br>
+          <app-data-table
+            #tablaVistaPrevia
+            (iniciarData)="iniciarDataTable($event)"
+            [idTabla]="'tablaVistaPrevia'"
+            [columnas]="columnasTabla"
+            [ordenarPorElCampo]="ordenarPorElCampo"
+          ></app-data-table>
+          <br>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="row">
+                <div class="col-md-6">
+                  <label>
+                    <b>{{'observaciones' | translate}}:</b>
+                  </label>
+                </div>
+                <div class="col-md-6">
+                  <label>{{(comprobante | async).vcObscomprobantepago}}</label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <br>
+          <div class="row">
+            <div class="col-md-2 col-md-offset-5">
+              <label>
+                <b>{{'importeTotal' | translate}}:</b>
+              </label>
+            </div>
+            <div class="col-md-5">
+              <label>{{(comprobante | async).deTotalcomprobantepago | number : '1.2-2'}}</label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-2 col-md-offset-5">
+              <label>
+                <b>{{'montoEnLetras' | translate}}:</b>
+              </label>
+            </div>
+            <div class="col-md-5">
+              <label>{{(comprobante | async).vcMontocomprobantepago | uppercase}}</label>
+            </div>
+          </div>
+          <br>
+          <br>
+        </div>
+        <div class="row">
+          <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12 col-lg-offset-4">
+            <div class=" col-xs-12 col-sm-6 col-md-3 col-lg-3 border">
+              <button name="btnregresar" type="button" class="btn btn-default btn-block" (click)="regresar()">Regresar
+              </button>
+            </div>
+            <div class=" col-xs-12 col-sm-6 col-md-3 col-lg-3 border">
+              <button type="btnEnviarCorreo" class="btn btn-default btn-block" (click)="enviarCorreo()"> {{'enviarCorreo' |
+                translate}}
+              </button>
+            </div>
+            <div class="dropdown col-xs-12 col-sm-6 col-md-3 col-lg-3 border">
+              <button class="dropdown-toggle btn btn-default btn-block" data-toggle="dropdown"
+                      style="padding-left: 17px;">
+                {{'descargar' | translate}}
+                <b class="caret"></b>
+                <ul class="dropdown-menu">
+                  <li *ngFor="let archivo of tiposArchivos">
+                    <a (click)="guardarArchivo(archivo)">{{archivo.descripcion}}</a>
+                  </li>
+                </ul>
+              </button>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3 border">
+              <button type="btnimprimir" class="btn btn-default btn-block" (click)="imprimir()"> Imprimir</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,31 @@
+.input-group-addon {
+    background: transparent;
+}
+
+.text-danger{
+    font-size: 11px;
+    font-weight: 700;
+}
+.right{
+    text-align: right;
+}
+div.form-group div.col-sm-3{    
+    padding-right: 8px;
+    padding-left: 8px;
+}
+.radio input[type=radio]:checked {
+    background-color: #337ab7 !important;
+}
+.radio input[type=radio]:checked ~ .check {
+    background-color: #337ab7 !important;
+}
+.radio input[type=radio]:checked ~ .circle {
+    border-color: #337ab7 !important;
+}
+.radio input[type=radio]:checked ~ .circle {
+    border-color: #337ab7 !important;
+    background-color: #337ab7 !important;
+}
+.radio input[type=radio]:checked ~ .check {
+    background-color: #337ab7 !important;
+}

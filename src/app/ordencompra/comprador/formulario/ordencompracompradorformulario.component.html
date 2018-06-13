@@ -1,0 +1,708 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="card">
+          <form method="#" action="#">
+            <div class="card-header card-header-text" data-background-color="blue">
+              <h4 class="card-title">Orden de Compra</h4>
+            </div>
+            <div class="card-content">
+              <div class="row">
+                <div class="col-sm-3">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Organización Compradora
+                      <span class="star"></span>
+                    </label>
+                    <input name="comprador" [(ngModel)]="item.comprador" required type="text" class="form-control" [disabled]="toggleButton">
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="form-group label-floating">
+                    <label class="control-label">RUC Organización Compradora
+                      <span class="star"></span>
+                    </label>
+                    <input name="ruccomprador" [(ngModel)]="item.ruccomprador" required type="text" class="form-control" [disabled]="toggleButton">
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Fecha de Emisión
+                      <span class="star"></span>
+                    </label>
+                    <input name="fecharegistro" [(ngModel)]="item.fecharegistro" datepicker required type="text" class="form-control" disabled>
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Orden de {{item.tipo}}
+                      <span class="star"></span>
+                    </label>
+                    <input name="nroordencompra" [(ngModel)]="item.nroordencompra" required type="text" class="form-control" [disabled]="toggleButton">
+                  </div>
+                </div>
+
+
+
+
+              </div>
+              <div class="row">
+                <div class="col-sm-3">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Organización Proveedora
+                      <span class="star"></span>
+                    </label>
+                    <input name="proveedor" [(ngModel)]="item.proveedor" required type="text" class="form-control" [disabled]="toggleButton">
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="form-group label-floating">
+                    <label class="control-label">RUC Proveedor
+                      <span class="star"></span>
+                    </label>
+                    <input name="rucproveedor" [(ngModel)]="item.rucproveedor" required type="text" class="form-control" [disabled]="toggleButton">
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Código Proveedor
+                      <span class="star"></span>
+                    </label>
+                    <input name="codigoproveedor" [(ngModel)]="item.codigoproveedor" required type="text" class="form-control" [disabled]="toggleButton">
+                  </div>
+                </div>
+
+
+                <div class="col-sm-3">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Versión OC
+                      <span class="star"></span>
+                    </label>
+                    <input name="version" [(ngModel)]="item.version" required type="text" class="form-control" [disabled]="toggleButton">
+                  </div>
+                </div>
+
+                <div class="col-sm-2">
+
+                  <div class="form-group label-floating">
+                    <label class="control-label">Estado Web</label>
+
+
+                    <select id="estadocomprador" name="estadocomprador" class="form-control" [(ngModel)]="item.estadocomprador" [disabled]="toggleButton">
+                      <option value=""></option>
+                      <option *ngFor="let optEstado of listEstadoCombo" value="{{optEstado.valor}}"> {{optEstado.desc}} </option>           
+
+
+                  </select>
+
+
+                  </div>
+                </div>
+              </div>
+
+
+
+              <div class="row">
+                <div class="col-sm-4">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Atención a
+                      <span class="star"></span>
+                    </label>
+                    <textarea name="atenciona" [(ngModel)]="item.atenciona" required type="text" class="form-control" rows="3" [disabled]="toggleButton"> </textarea>
+                  </div>
+                </div>
+
+                <div class="col-sm-4">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Contactar con
+                      <span class="star"></span>
+                    </label>
+                    <textarea name="contactarcon" [(ngModel)]="item.contactarcon" required type="text" class="form-control" rows="3" [disabled]="toggleButton"> </textarea>
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Creado por 
+                      <span class="star"></span>
+                    </label>
+                    <textarea name="creadorpor" [(ngModel)]="item.creadorpor" required type="text" class="form-control" rows="3" [disabled]="toggleButton"> </textarea>
+                  </div>
+                </div>
+
+              </div>
+
+
+
+              <div class="row">
+                <div class="col-sm-4">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Facturar a
+                      <span class="star"></span>
+                    </label>
+                    <textarea [(ngModel)]="item.facturara_texto" name="facturara_texto" class="form-control" rows="4" [disabled]="toggleButton"></textarea>
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Recepción de Factura
+                      <span class="star"></span>
+                    </label>
+                    <textarea [(ngModel)]="item.recepcionfactura_texto" name="recepcionfactura_texto" class="form-control" rows="4" [disabled]="toggleButton"></textarea>
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Grupo de Compra
+                      <span class="star"></span>
+                    </label>
+                    <textarea [(ngModel)]="item.grupocompra" name="grupocompra" class="form-control" rows="4" [disabled]="toggleButton"></textarea>
+                  </div>
+                </div>
+              </div>
+
+
+
+
+
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="card">
+                    <div class="card-header card-header-icon" data-background-color="blue">
+                      <i class="material-icons">assignment</i>
+                    </div>
+                    <div class="card-content">
+                      <h4 class="card-title">Condiciones</h4>
+                      <div class="row">
+                        <div class="col-sm-3">
+                          <div class="form-group label-floating">
+                            <label class="control-label">Moneda<span class="star"></span></label>
+                            <input name="moneda" [(ngModel)]="item.moneda" required type="text" class="form-control" [disabled]="toggleButton">
+                          </div>
+                        </div>
+                        <div class="col-sm-3">
+                          <div class="form-group label-floating">
+                            <label class="control-label">Forma de Pago<span class="star"></span></label>
+                            <input name="formapago" [(ngModel)]="item.formapago" required type="text" class="form-control" [disabled]="toggleButton">
+                          </div>
+                        </div>
+                        <div class="col-sm-3">
+                          <div class="form-group label-floating">
+                            <label class="control-label">Fecha de Inicio de Contrato<span class="star"></span></label>
+                            <input name="fechainiciocontrato" [(ngModel)]="item.fechainiciocontrato" datepicker required type="text" class="form-control"
+                              disabled>
+                          </div>
+                        </div>
+                        <div class="col-sm-3">
+                          <div class="form-group label-floating">
+                            <label class="control-label">Fecha Fin de Contrato<span class="star"></span></label>
+                            <input name="fechafincontrato" [(ngModel)]="item.fechafincontrato" datepicker required type="text" class="form-control" disabled>
+                          </div>
+                        </div>
+                      </div>
+
+
+
+                    </div>
+                    <!-- end content-->
+                  </div>
+                  <!--  end card  -->
+                </div>
+                <!-- end col-md-12 -->
+              </div>
+
+              <div class="row" *ngIf="this.item.condiciones_generales">
+                <div class="col-md-12">
+                  <div class="card">
+                    <div class="card-header card-header-icon" data-background-color="blue">
+                      <i class="material-icons">assignment</i>
+                    </div>
+                    <div class="card-content">
+                      <h4 class="card-title">Observaciones</h4>
+                      <div class="row">
+                        <div class="col-sm-12">
+
+                          <div [innerHTML]="this.item.condiciones_generales" style="text-align: left;">
+                          </div>
+
+
+
+                        </div>
+
+                      </div>
+
+
+
+                    </div>
+                    <!-- end content-->
+                  </div>
+                  <!--  end card  -->
+                </div>
+                <!-- end col-md-12 -->
+              </div>
+
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="card">
+                    <div class="card-header card-header-icon" data-background-color="blue">
+                      <i class="material-icons">assignment</i>
+                    </div>
+                    <div class="card-content">
+                      <h4 class="card-title">Detalle de Artículos</h4>
+
+                      <div class="material-datatables table-responsive" style="display:block">
+                        <table id="dtArticulos" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+
+                          <thead>
+                            <tr>
+                              <th>ID</th>
+                              <th>Posición</th>
+
+                              <th>Descripción del Producto</th>
+                              <th class="disabled-sorting">Cantidad</th>
+                              <th class="disabled-sorting">Unidad</th>
+                              <th class="disabled-sorting">Precio Unitario</th>
+                              <th class="disabled-sorting">Precio Total</th>
+                              <th class="disabled-sorting">IGV</th>
+                              <th class="disabled-sorting">Fecha de Entrega</th>
+                            </tr>
+                          </thead>
+
+
+                        </table>
+                      </div>
+                      <!-- end content-->
+                    </div>
+                  </div>
+                  <!--  end card  -->
+                </div>
+                <!-- end col-md-12 -->
+              </div>
+
+
+
+              <div class="row">
+                <div class="col-sm-8">
+
+                  <div class="row">
+
+                    <div class="col-sm-12">
+                      <div class="form-group label-floating">
+                        <label class="control-label">Aprobado por<span class="star"></span></label>
+                        <div class="aprobadopor">
+                          <br/>
+                          <span *ngIf="item.autorizadopor">{{item.autorizadopor}}</span>
+                          <p *ngFor="let item of item.aprobadopor">
+                            Aprobado Nivel {{item.id}}: {{item.nombre}}
+                          </p>
+
+
+
+
+                          <p class="form-control" disabled>
+
+                          </p>
+                        </div>
+
+                      </div>
+
+
+                    </div>
+
+
+
+                  </div>
+                </div>
+                <div class="col-sm-4">
+
+                  <div class="row">
+                    <div class="col-sm-12">
+                      <div class="form-group label-floating">
+                        <label class="control-label">VALOR DE VENTA ({{item.moneda}})<span class="star"></span></label>
+                        <input [(ngModel)]="item.valorventa" name="valorventa" class="form-control" [disabled]="toggleButton">
+                      </div>
+                    </div>
+
+                    <div class="col-sm-12" *ngFor="let termino of item.terminos">
+                      <div class="form-group label-floating">
+                        <label class="control-label">{{termino.nombre}}<span class="star"></span></label>
+                        <input [(ngModel)]="termino.valor" name="valor{{termino.id}}" class="form-control" [disabled]="toggleButton">
+                      </div>
+                    </div>
+
+
+                    <div class="col-sm-12" *ngIf="item.tiene_condiciones">
+                      <div class="form-group label-floating">
+                        <label class="control-label">SUB TOTAL ({{item.moneda}})<span class="star"></span></label>
+                        <input [(ngModel)]="item.subtotal" name="subtotal" class="form-control" [disabled]="toggleButton">
+                      </div>
+                    </div>
+
+
+                    <div class="col-sm-12">
+                      <div class="form-group label-floating">
+                        <label class="control-label">IMPUESTOS ({{item.porcentaje_impuestos}})<span class="star"></span></label>
+                        <input [(ngModel)]="item.impuestos" name="impuestos" class="form-control" [disabled]="toggleButton">
+                      </div>
+                    </div>
+                    <div class="col-sm-12">
+                      <div class="form-group label-floating">
+                        <label class="control-label">VALOR TOTAL ({{item.moneda}})<span class="star"></span></label>
+                        <input [(ngModel)]="item.valortotal" name="valortotal" class="form-control" [disabled]="toggleButton">
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
+              </div>
+
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="form-group label-floating">
+                    <label class="control-label">Comentario del Proveedor acerca del cambio de estado 
+                      <span class="star"></span>
+                    </label>
+                    <textarea [(ngModel)]="item.comentarioproveedor" name="comentarioproveedor" class="form-control" row="4" [disabled]="toggleButton"></textarea>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+
+
+
+            <div class="card-footer">
+              <!--<button type="button" class="btn btn-fill btn-default pull-right" (click)="grabar($event)" [disabled]="toggleButton">Grabar</button>
+              <button (click)="toggleButton=false" class="btn btn-fill btn-default pull-right" *ngIf="id>0">Habilitar Edición</button>-->
+              <a routerLink="/ordencompra/comprador/buscar" class="btn btn-fill btn-default pull-right">Regresar</a>
+              <button class="btn btn-fill btn-default pull-right" *ngIf="botonImprimir.visible" [disabled]="!botonImprimir.habilitado" (click)="print($event)">{{botonImprimir.Titulo}}</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="mdlAtributosLista" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+
+        <table>
+          <tr>
+            <td>
+              <div class="card-header card-header-icon" data-background-color="blue">
+                <i class="material-icons">assignment</i>
+              </div>
+            </td>
+            <td class="cell-title">
+              <div class="card-content">
+                <h4 class="card-title modal-title">Atributos del Detalle</h4>
+
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="modal-body">
+
+        <div class="card-content">
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="form-group label-floating">
+                <label class="control-label">Posición
+                      <span class="star"></span>
+                    </label>
+                <input name="posicion" [(ngModel)]="producto.posicion" required type="text" class="form-control" [disabled]="toggleButton">
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group label-floating">
+                <label class="control-label">Descripción del Producto
+                      <span class="star"></span>
+                    </label>
+                <input name="descripcion" [(ngModel)]="producto.descripcion" required type="text" class="form-control" [disabled]="toggleButton">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="material-datatables table-responsive">
+          <table id="dtAtributos" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+            <thead>
+              <tr>
+
+                <th>Nombre</th>
+                <th>Operador</th>
+                <th>Valor</th>
+                <th>Unidad</th>
+
+
+              </tr>
+            </thead>
+
+
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+
+<div style="display:none">
+
+  <div id="print-section-material" style='font-family: Arial, Helvetica, sans-serif;color: #000;font-size: 14px;'>
+    <table width="100%" cellpadding="0" cellspacing="0" align="center" bgcolor="#ffffff" style='font-family: Arial, Helvetica, sans-serif;color: #000;font-size: 14px; border-collapse: collapse;'>
+      <tbody>
+        <tr>
+          <td align="center">
+
+
+            <table width="900" cellpadding="0" cellspacing="0" border="0" bgcolor="#fff" style="border-collapse: collapse;">
+              <tbody>
+                <tr>
+                  <td colspan="2" bgcolor="#fff" align="left" valign="middle">
+                    <img *ngIf="this.item.idorgcompradora && this.item.idorgcompradora!=''" src="{{this.baseurl}}assets/img/logos/{{this.item.idorgcompradora}}.png" height="110" style="padding:0; margin:0; border:0">
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="2" bgcolor="#fff" align="center" valign="middle" style="font-size: 16px;">
+                    <b style="font-size: 16px;">Orden de Compra {{this.item.nroordencompra}}</b><br><br>
+
+                  </td>
+                </tr>
+
+                <tr>
+                  <td width="449" bgcolor="#fff" style="border-left:1px solid #999; border-right:0; border-top:1px solid #999" align="left"
+                    valign="top">
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom:1px solid #999">
+                      <tbody>
+                        <tr>
+                          <td style="padding:5px; vertical-align:top;"><strong>Organización Proveedora:</strong><br> {{this.item.proveedor}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom:1px solid #999" height="75">
+                      <tbody>
+                        <tr>
+                          <td width="50%" height="30" style="border-right:1px solid #999; padding:5px; vertical-align:top;"><strong>RUC Proveedor:</strong><br> {{this.item.rucproveedor}}
+                          </td>
+                          <td width="50%" height="30" align="left" style="padding:5px; vertical-align:top;"><strong>Código Proveedor:</strong><strong></strong>
+                            <br> {{this.item.codigoproveedor}}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                  <td width="448" align="left" valign="top" bgcolor="#fff" style="border-left:1px solid #999; border-right:1px solid #999; border-top:1px solid #999">
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom:1px solid #999">
+                      <tbody>
+                        <tr>
+                          <td style="padding:5px; vertical-align:top;"><strong>Creado por:</strong><br>
+                            <div [innerHTML]="this.item.creadorpor_html">
+                            </div>
+
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom:1px solid #999" height="75">
+                      <tbody>
+                        <tr>
+                          <td width="50%" height="30" style="border-right:1px solid #999; padding:5px; vertical-align:top;"><strong>Fecha de emisión:</strong>
+                            <br>{{this.item.fecharegistro}}</td>
+                          <td width="25%" height="30" align="left" valign="middle" style="border-right:1px solid #999; padding:5px; vertical-align:top;"><strong>Versión OC:</strong><br>{{this.item.version}}
+                          </td>
+                          <td width="25%" height="30" align="left" valign="middle" style="padding:5px; vertical-align:top;"><strong>Estado Web:</strong><strong></strong> {{this.item.estado_nombre}} </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <table width="900" cellpadding="0" cellspacing="0" border="0" bgcolor="#fff" style="border-collapse: collapse;">
+              <tbody>
+                <tr>
+                  <td width="50%" bgcolor="#fff" style="border-left:1px solid #999; border-right:0; border-top:0; padding:5px"><strong>Atención a:</strong><br>
+                    <div [innerHTML]="this.item.atenciona_html">
+                    </div>
+                  </td>
+                  <td width="50%" bgcolor="#fff" style="border-left:1px solid #999; border-right:1px solid #999; border-top:0; padding:5px; vertical-align:top;">
+                    <strong>Contactar con:</strong><br>
+                    <div [innerHTML]="this.item.contactarcon_html">
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <table width="900" cellpadding="0" cellspacing="0" border="0" bgcolor="#fff">
+              <tbody>
+                <tr>
+                  <td width="50%" bgcolor="#fff" style="border-left:1px solid #999; border-right:0; border-top:1px solid #999; padding:5px; vertical-align:top;"><strong>Facturar a:</strong><br>
+                    <div *ngIf="!item.facturara" [innerHTML]="this.item.facturara_html">
+                    </div>
+
+
+                    <span *ngIf="item.facturara">
+                            <strong>Razón Social:</strong> {{this.item.facturara.razonsocial}}<br>                   
+                            <strong>RUC:</strong> {{this.item.facturara.ruc}}
+                            <br> <strong>Dirección:</strong> {{this.item.facturara.direccion}}
+                          </span>
+                  </td>
+                  <td width="50%" bgcolor="#fff" style="border-left:1px solid #999; border-right:1px solid #999; border-top:1px solid #999; padding:5px; vertical-align:top;">
+                    <strong>Recepción de Factura:</strong><br>
+
+
+                    <div [innerHTML]="this.item.recepcionfactura_html">
+                    </div>
+
+
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <table width="900" cellpadding="0" cellspacing="0" border="0" bgcolor="#fff">
+              <tbody>
+                <tr>
+                  <td width="50%" bgcolor="#fff" style="border-left:1px solid #999; border-right:0; border-top:1px solid #999; padding:5px; vertical-align:top;"><strong>Condiciones:</strong><br>
+                    <strong>Moneda:</strong> {{this.item.moneda}}<br>
+                    <strong>Forma de Pago:</strong> {{this.item.formapago}}<br>
+                    <strong>Fecha de inicio de contrato:</strong> {{this.item.fechainiciocontrato}}<br>
+                    <strong>Fecha fin de contrato:</strong> {{this.item.fechafincontrato}}</td>
+                  <td width="50%" bgcolor="#fff" style="border-left:1px solid #999; border-right:1px solid #999; border-top:1px solid #999; padding:5px; vertical-align:top;">
+                    <strong>Grupo de Compra:</strong><br>
+                    <div [innerHTML]="this.item.grupocompra_html">
+                    </div>
+
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <table width="900" cellpadding="0" cellspacing="0" border="0" bgcolor="#fff">
+              <tbody>
+                <tr>
+                  <td width="100%" height="20" align="center" bgcolor="#fff" style="border-left:1px solid #999; border-right:1px solid #999; border-top:1px solid #999; padding:5px"><strong>OBSERVACIONES</strong></td>
+                </tr>
+              </tbody>
+            </table>
+
+            <table width="900" cellpadding="0" cellspacing="0" border="0" bgcolor="#fff">
+              <tbody>
+                <tr>
+                  <td width="100%" align="center" bgcolor="#fff" style="border-left:1px solid #999; border-right:1px solid #999; border-top:1px solid #999; padding:0">
+                    <div [innerHTML]="this.item.condiciones_generales" style="text-align: left;" *ngIf="this.item.condiciones_generales">
+                    </div>
+                    <div style="text-align: left;" *ngIf="this.item.condiciones_generales!=null">
+                      &nbsp;
+                      </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+
+
+            <table width="900" cellpadding="0" cellspacing="0" border="0" style="border-top:1px solid #999; border-bottom:1px solid #999;border-collapse: collapse;">
+              <tbody>
+                <tr>
+                  <td width="10%" height="20" align="center" bgcolor="#fff" style="border-left:1px solid #999; border-right:0; border-top:0;  border-bottom:1px solid #999; padding:5px">
+                    <strong>Posición</strong></td>
+                  <td width="40%" height="20" bgcolor="#fff" style="border-left:1px solid #999; border-right:1px solid #999; border-top:0; border-bottom:1px solid #999; padding:5px"><strong>Descripción del producto</strong></td>
+                  <td width="8%" height="20" align="center" bgcolor="#fff" style="border-left:0; border-right:1px solid #999; border-top:0; border-bottom:1px solid #999; padding:5px"><strong>Cant.</strong></td>
+                  <td width="8%" height="20" align="center" bgcolor="#fff" style="border-left:0; border-right:1px solid #999; border-top:0; border-bottom:1px solid #999; padding:5px"><strong>Unid.</strong></td>
+                  <td width="8%" height="20" align="center" bgcolor="#fff" style="border-left:0; border-right:1px solid #999; border-top:0; border-bottom:1px solid #999; padding:5px"><strong>Precio<br>Unitario</strong></td>
+                  <td width="8%" height="20" align="center" bgcolor="#fff" style="border-left:0; border-right:1px solid #999; border-top:0; border-bottom:1px solid #999; padding:5px"><strong>Total</strong></td>
+                  <td width="8%" height="20" align="center" bgcolor="#fff" style="border-left:0; border-right:1px solid #999; border-top:0; border-bottom:1px solid #999; padding:5px"><strong>IGV</strong></td>
+                  <td width="10%" height="20" align="center" bgcolor="#fff" style="border-left:0; border-right:1px solid #999; border-top:0; border-bottom:1px solid #999; padding:5px"><strong>Fecha<br>Entrega</strong></td>
+                </tr>
+                <tr *ngFor="let row of item.productos" ng-class="trhighlight">
+                  <td width="10%" height="20" align="center" valign="middle" bgcolor="#fff" style="border-left:1px solid #999; border-bottom:1px solid #999; border-right:0; border-top:0; padding:5px">{{row.posicion}}</td>
+                  <td width="40%" height="20" bgcolor="#fff" style="border-left:1px solid #999;  border-bottom:1px solid #999; border-right:1px solid #999; border-top:0; padding:5px">
+
+                    <div style="max-width: 300px; overflow-wrap: break-word;" [innerHTML]="row.nombre">
+                    </div>
+                    <span *ngIf="row.centro"> <strong>Centro: </strong>{{row.centro}}<br></span>
+                    <span *ngIf="row.solicitudpedido"><strong>Solicitud de pedido:</strong> {{row.solicitudpedido}}</span>
+
+
+                  </td>
+                  <td width="8%" height="20" align="center" valign="middle" bgcolor="#fff" style="border-left:0; border-bottom:1px solid #999; border-right:1px solid #999; border-top:0; padding:5px">{{row.cantidad}}</td>
+                  <td width="8%" height="20" align="center" valign="middle" bgcolor="#fff" style="border-left:0; border-bottom:1px solid #999; border-right:1px solid #999; border-top:0; padding:5px">{{row.unidad}}</td>
+                  <td width="8%" height="20" align="center" valign="middle" bgcolor="#fff" style="border-left:0; border-bottom:1px solid #999; border-right:1px solid #999; border-top:0; padding:5px">{{row.preciounitario}}</td>
+                  <td width="8%" height="20" align="center" valign="middle" bgcolor="#fff" style="border-left:0; border-bottom:1px solid #999; border-right:1px solid #999; border-top:0; padding:5px">{{row.total}}</td>
+                  <td width="8%" height="20" align="center" valign="middle" bgcolor="#fff" style="border-left:0; border-bottom:1px solid #999; border-right:1px solid #999; border-top:0; padding:5px">{{row.igv}}</td>
+                  <td width="10%" height="20" align="center" valign="middle" bgcolor="#fff" style="border-left:0; border-bottom:1px solid #999; border-right:1px solid #999; border-top:0; padding:5px">{{row.fechaentrega}}</td>
+                </tr>
+                <tr>
+                  <td colspan="2" bgcolor="#fff" style="border-left:1px solid #999; border-right:1px solid #999; border-top:0; padding:5px; ; vertical-align:top;">
+
+                    <strong>Aprobado por:</strong><br>
+
+                    <div *ngIf="item.autorizadopor" [innerHTML]="this.item.autorizadopor_html">
+                    </div>
+                    <span *ngFor="let ap of item.aprobadopor">
+                                    Aprobado Nivel {{ap.id}}: {{ap.nombre}}<br>
+                                </span>
+                  </td>
+                  <td colspan="6" width="50%" bgcolor="#fff" style="border-left:0; border-right:1px solid #999; border-top:0; padding:5px">
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                      <tbody>
+                        <tr>
+                          <td width="60%" align="left" valign="middle">
+                            <p><strong>VALOR DE VENTA ({{item.moneda}})</strong><br>
+                              <strong *ngFor="let termino of item.terminos">{{termino.nombre}}<br></strong>
+                              <strong *ngIf="item.tiene_condiciones">SUB TOTAL ({{item.moneda}})<br></strong>
+                              <strong>IMPUESTOS ({{item.porcentaje_impuestos}})</strong><br>
+                              <strong>VALOR TOTAL ({{item.moneda}})</strong></p>
+                          </td>
+
+                          <td align="right" valign="middle">
+                            <p align="right">{{this.item.valorventa}}<br><span *ngFor="let termino of item.terminos">{{termino.valor}}<br></span>
+                              <span
+                                *ngIf="item.tiene_condiciones">{{this.item.subtotal}}<br></span>{{this.item.impuestos}}<br>{{this.item.valortotal}}</p>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+
+              </tbody>
+            </table>
+
+
+
+
+            <table width="900" cellpadding="0" cellspacing="0" border="0" bgcolor="#fff" *ngIf="item.narrativa_html" style="border-collapse: collapse;">
+              <tbody>
+                <tr>
+                  <td width="100%" align="left" bgcolor="#fff" style="border-collapse: collapse; border-left:1px solid #999; border-right:1px solid #999; border-top:0px solid #999; border-bottom:1px solid #999; padding:5px; margin-bottom:20px">
+                    <div *ngIf="item.narrativa_html" [innerHTML]="this.item.narrativa_html">
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+
+
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+</div>
