@@ -18,7 +18,7 @@
                     </div>
                     <div class="col-md-4">
                       <div class="form-group label-floating">
-                        <label class="control-label"> {{'razonsocial'|translate}}</label>
+                        <label class="control-label"> {{'razonSocial'|translate}}</label>
                         <input id="txtRazonSocial" formControlName="txtRazonSocial" autocomplete="off"
                                class="form-control"
                                type="text">
@@ -74,9 +74,9 @@
                       <div class="form-group label-floating">
                         <label class="control-label"> {{'clavesol'|translate}}<span class="star">*</span></label>
                         <input id="txtClaveSol" formControlName="txtClaveSol" class="form-control" type="text">
-                        <div class="row" *ngIf="!empresaEmisoraFormGroup.get('txtUsuarioSol').valid && empresaEmisoraFormGroup.get('txtUsuarioSol').touched">
+                        <div class="row" *ngIf="!empresaEmisoraFormGroup.get('txtClaveSol').valid && empresaEmisoraFormGroup.get('txtClaveSol').touched">
                           <div class="col-md-12">
-                            <span *ngIf="empresaEmisoraFormGroup.get('txtUsuarioSol').hasError('required')"
+                            <span *ngIf="empresaEmisoraFormGroup.get('txtClaveSol').hasError('required')"
                                   class="text-danger">{{'campoRequerido' | translate}}
                             </span>
                           </div>
@@ -129,11 +129,19 @@
                       <div class="center-block">
                         <form [formGroup]="certificadoFormGroup">
                           <div class="row">
-                            <label class="control-label">{{'subircertificadodigital'|translate}}</label>
+                            <label class="control-label">{{'subircertificadodigital'|translate}}<span class="star">*</span></label>
                           </div>
                           <br>
                           <div class="fileinput fileinput-new text-center">
-                            <span>{{entidad.certificadoDigitalCloud}}</span>
+                            <div class="archivos_personalizados">
+                              <div class="fileinput-new">
+                                <div class="row">
+                                  <div class="form-group label-floating">
+                                    <input class="form-control" type="text" [value]="entidad.certificadoDigitalCloud" disabled>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
                             <div class="fileinput-preview fileinput-exists thumbnail"></div>
                             <div>
                               <span class="btn btn-file btn-default blue">
@@ -177,12 +185,14 @@
                         <div class="col-md-12 col-sm-12">
                           <form [formGroup]="imagenFormGroup">
                             <div class="row">
-                              <label class="control-label">{{'logo'|translate}}</label>
+                              <label class="control-label">{{'logo'|translate}}<span class="star">*</span></label>
                             </div>
                             <br>
                             <div class="fileinput fileinput-new text-center">
-                              <div class="fileinput-new thumbnail">
-                                <img #imagen_cloud>
+                              <div class="archivos_personalizados">
+                                <div class="fileinput-new thumbnail">
+                                  <img #imagen_cloud>
+                                </div>
                               </div>
                               <div class="fileinput-preview fileinput-exists thumbnail"></div>
                               <div>

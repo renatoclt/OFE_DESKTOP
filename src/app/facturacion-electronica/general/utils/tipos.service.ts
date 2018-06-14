@@ -150,7 +150,7 @@ export class TiposService {
     public BOLETA_ANTICIPO_DESCRIPCION_TIPO_IGV = 'Gravado - Operación Onerosa';
     public BOLETA_ANTICIPO_ID_PARAMETRO = '5';
     public BOLETA_ANTICIPO_DESCRIPCION_PARAMETRO = 'Anticipo';
-    public BOLETA_ANTICIPO_CODIGO_SUNAT = '02';
+    public BOLETA_ANTICIPO_CODIGO_SUNAT = '03';
     public BOLETA_ANTICIPO_ID_DOMINIO = 26;
     public BOLETA_ANTICIPO_TIPO_PARAMETRO = 3;
     public BOLETA_ANTICIPO_TIPO_PARAMETRO_VALOR = 'Anticipos';

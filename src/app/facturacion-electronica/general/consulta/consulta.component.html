@@ -72,6 +72,9 @@
                       {{serie.serie}}
                     </option>
                   </select>
+                  <span *ngIf="!consultaFormGroup.valid && consultaFormGroup.hasError('serieError')"
+                        class="text-danger">{{consultaFormGroup.errors['serieError'] | translate}}
+                  </span>
                 </div>
               </div>
               <div class="col-sm-3" *ngIf="estadoSerie">
@@ -85,18 +88,18 @@
                     formControlName="txtNúmeroCorrelativoInicial"
                     class="form-control">
                 </div>
+                <span *ngIf="!consultaFormGroup.valid && consultaFormGroup.hasError('correlativoInicialError')"
+                      class="text-danger">{{consultaFormGroup.errors['correlativoInicialError'] | translate}}
+                  </span>
               </div>
               <div class="col-sm-3" *ngIf="estadoSerie">
                 <div class="form-group label-floating">
                   <label class="control-label">{{'correlativoFinal' | translate}}</label>
                   <input correlativoDirective id="txtNúmeroCorrelativoFinal" name="txtNúmeroCorrelativoFinal"
                          type="text" formControlName="txtNúmeroCorrelativoFinal" class="form-control">
-                </div>
-              </div>
-              <div class="col-md-3" *ngIf="flagResumenBoletas">
-                <div class="form-group label-floating">
-                  <label class="control-label"></label>
-                  <br><br>
+                  <span *ngIf="!consultaFormGroup.valid && consultaFormGroup.hasError('correlativoFinalError')"
+                        class="text-danger">{{consultaFormGroup.errors['correlativoFinalError'] | translate}}
+                  </span>
                 </div>
               </div>
               <div class="col-sm-3">
@@ -218,8 +221,20 @@
                             [tipoAtributoServicio]="tipoConsultaRetencion"
                             [urlServicio]="urlConsultaRetencion">
             </app-data-table>
-            <app-data-table *ngIf="resumenBoletasFlag"
-                            >
+            <app-data-table *ngIf="flagResumenBoletas"
+                            #tablaConsultaResumenBoletas
+                            [idTabla]="'tablaResumenBoletas'"
+                            [columnas]="columnasResumenBoletas"
+
+                            [acciones]="accionesResumenBoletas"
+                            (accion)="ejecutarAccionComoAtributo($event)"
+                            [ordenarPorElCampo]="'tsFechaemision'"
+                            [usaServicio]="true"
+                            [servicio]="_comprobantes"
+                            [parametros]="parametrosConsulta"
+                            [tipoAtributoServicio]="tipoConsultaGeneral"
+                            [urlServicio]="urlConsulta"
+            >
             </app-data-table>
           </div>
         </div>

@@ -34,25 +34,29 @@ export class SerieDirective  {
   onKeyDown(evento: Event) {
     const caracterEvento = evento['which'];
     const e = <KeyboardEvent> event;
+    const tamanio = this.control.value.length;
+
     if ((e.shiftKey && e.keyCode < 65 ) || ( e.shiftKey && e.keyCode > 90) ) {
       e.preventDefault();
     }
     if ((e.keyCode == 219) || (e.keyCode == 221) || (e.keyCode == 186) || (e.keyCode == 187) || (e.keyCode == 222) || (e.keyCode == 191) || (e.keyCode == 188) || (e.keyCode == 190) || (e.keyCode == 189) {
       e.preventDefault();
     }
+    // if (tamanio > this.maxTamanio - 1 ) {
+    //   if (this.control.value) {
+    //
+    //   } else {
+    //       e.preventDefault();
+    //   }
+    // }
     this.setFormato();
   }
 
   public setFormato () {
     let cadena: string;
-    cadena = '';
-    const tamanio = this.control.value.length;
-    for (let a = 0; a < tamanio; a++) {
-      cadena = cadena + this.control.value[a];
-    }
-
-    if ( (cadena).length > this.maxTamanio ) {
-      cadena = (cadena.substr(0, this.maxTamanio));
+    cadena = this.control.value;
+    if ( cadena.length - 1 > this.maxTamanio  - 2) {
+      cadena = (cadena.substr(0, this.maxTamanio - 1));
     }
     this.control.reset( cadena );
   }

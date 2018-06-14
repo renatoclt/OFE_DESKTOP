@@ -99,7 +99,11 @@ export class TipoNotaCreditoEditarItemComponent implements OnInit, OnDestroy {
         if (data && this.editarItemFormGroup.valid) {
           const cantidad = Number(this.editarItemFormGroup.controls[txtCantidad].value);
           const valorUnitario = Number(this.editarItemFormGroup.controls[txtValorUnitario].value);
-          const isc = Number(this.editarItemFormGroup.controls[txtIsc].value);
+          let isc = Number(this.editarItemFormGroup.controls[txtIsc].value);
+          if (this.tipoNotaCredito === this._tiposService.TIPO_NOTA_CREDITO_DEVOLUCION_POR_ITEM) {
+            isc = (Number(this.detalleEbizSinModificar.detalle.subtotalIsc) / Number(this.detalleEbizSinModificar.cantidad)) * Number(cantidad);
+            this.editarItemFormGroup.controls[txtIsc].setValue(isc.toFixed(2));
+          }
           const auxPrecioVenta = cantidad * valorUnitario + isc;
           let igv = auxPrecioVenta * 0.18;
           const descuentos = Number(this.editarItemFormGroup.controls[txtDescuentos].value);
@@ -157,7 +161,7 @@ export class TipoNotaCreditoEditarItemComponent implements OnInit, OnDestroy {
   }
 
   verificarSiCambioItem() {
-    if (Number(this.detalleEbiz.cantidad) !== Number(this.detalleEbizSinModificar.cantidad) ||
+    if (Number(this.detalleEbiz.cantidad) <= Number(this.detalleEbizSinModificar.cantidad) ||
         Number(this.detalleEbiz.precioUnitario) !== Number(this.detalleEbizSinModificar.precioUnitario) ||
         this.detalleEbiz.descripcionItem.localeCompare(this.detalleEbizSinModificar.descripcionItem ) !== 0 ||
         Number(this.detalleEbiz.detalle.descuento) !== Number(this.detalleEbizSinModificar.detalle.descuento)
@@ -229,7 +233,7 @@ export class TipoNotaCreditoEditarItemComponent implements OnInit, OnDestroy {
                 this.editarItemFormGroup.controls['txtCantidad'].setErrors({min: true});
                 this.estaValidadoFormGroup = false;
               } else {
-                if (valor >= Number(this.detalleEbizSinModificar.cantidad)) {
+                if (valor > Number(this.detalleEbizSinModificar.cantidad)) {
                   this.editarItemFormGroup.controls['txtCantidad'].setErrors({max: true});
                   this.estaValidadoFormGroup = false;
                 } else {

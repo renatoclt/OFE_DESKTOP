@@ -99,7 +99,7 @@
                   </label>
                 </div>
                 <div class="col-md-6">
-                  <label>{{documento.tsFechaemision | date:'d/M/yyyy'}}</label>
+                  <label>{{documento.tsFechaemision | date:'yyyy-MM-dd'}}</label>
                 </div>
               </div>
             </div>
@@ -128,7 +128,7 @@
                 <thead>
                   <tr>
                     <th>{{'tipoDocumentoRelacionado' | translate}}</th>
-                    <th>{{'documentosRelacionados' | translate}}</th>
+                    <th>{{'documentoRelacionado' | translate}}</th>
                     <th>{{'montoAnticipo' | translate}}</th>
                   </tr>
                 </thead>
@@ -138,7 +138,7 @@
                     <td>
                       {{item.chSerieDest  + '-' + item.chCorrDest}}
                     </td>
-                    <td>{{item.deAnticipo| number: 3.1-2}}</td>
+                    <td [ngStyle]="{'text-align': 'right'}">{{convertirMonto(item.deAnticipo)}}</td>
                   </tr>
                 </tbody>
               </table>
@@ -168,17 +168,17 @@
               <label>{{documento.dePagomontopagado}}</label>
             </div>
           </div>
-          <div class="row">
-            <div class="col-md-2 col-md-offset-5">
-              <label>
-                <b>{{'baseTotal'| translate}} {{documento.vcTipocomprobante}} {{'baseComprobanteElectronica' | translate}}</b>
-                <!-- <b>Total Factura Electrónica:</b> -->
-              </label>
-            </div>
-            <div class="col-md-5">
-              <label>{{documento.deTotalcomprobantepago}}</label>
-            </div>
-          </div>
+          <!--<div class="row">-->
+            <!--<div class="col-md-2 col-md-offset-5">-->
+              <!--<label>-->
+                <!--<b>{{'baseTotal'| translate}} {{documento.vcTipocomprobante}} {{'baseComprobanteElectronica' | translate}}</b>-->
+                <!--&lt;!&ndash; <b>Total Factura Electrónica:</b> &ndash;&gt;-->
+              <!--</label>-->
+            <!--</div>-->
+            <!--<div class="col-md-5">-->
+              <!--<label>{{documento.deTotalcomprobantepago}}</label>-->
+            <!--</div>-->
+          <!--</div>-->
           <div class="row">
             <div class="col-md-2 col-md-offset-5">
               <label>
@@ -194,28 +194,28 @@
           <br>
         </div>
         <div class="row">
-          <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12 col-lg-offset-8">
+          <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12 col-lg-offset-4">
             <div class=" col-xs-12 col-sm-6 col-md-3 col-lg-3 border">
               <button name="btnregresar" type="button" class="btn btn-default btn-block" (click)="regresar()">Regresar
               </button>
             </div>
-            <!-- <div class=" col-xs-12 col-sm-6 col-md-3 col-lg-3 border">
+            <div class=" col-xs-12 col-sm-6 col-md-3 col-lg-3 border">
               <button type="btnEnviarCorreo" class="btn btn-default btn-block" (click)="enviarCorreo()"> {{'enviarCorreo' |
                 translate}}
               </button>
-            </div> -->
-            <!-- <div class="dropdown col-xs-12 col-sm-6 col-md-3 col-lg-3 border">
+            </div>
+            <div class="dropdown col-xs-12 col-sm-6 col-md-3 col-lg-3 border">
               <button class="dropdown-toggle btn btn-default btn-block" data-toggle="dropdown"
                       style="padding-left: 17px;">
                 {{'descargar' | translate}}
                 <b class="caret"></b>
                 <ul class="dropdown-menu">
-                  <li *ngFor="let archivo of tiposArchivos">
-                    <a (click)="guardarArchivo(archivo)">{{archivo.descripcion}}</a>
+                  <li *ngFor="let archivo of tiposArchivos" [class]="habilitarTipoArchivo(archivo) ? '' : 'disabled'">
+                    <a class="disabled" (click)="guardarArchivo(archivo, $event)">{{archivo.descripcion}}</a>
                   </li>
                 </ul>
               </button>
-            </div> -->
+            </div>
             <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3 border">
               <button type="btnimprimir" class="btn btn-default btn-block" (click)="imprimir()"> {{'imprimir' | translate}}</button>
             </div>

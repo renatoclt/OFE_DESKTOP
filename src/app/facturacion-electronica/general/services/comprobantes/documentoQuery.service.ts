@@ -16,7 +16,7 @@ export class DocumentoQueryService {
     private url: string;
     private documentoPorId: BehaviorSubject<DocumentoQuery>;
     private urlGuardarOrganizacion: string = '/entidad/guardarEntidad'
-    
+
     constructor(
         private _httpClient: HttpClient,
         private _servidores: Servidores,
@@ -58,13 +58,14 @@ export class DocumentoQueryService {
             },
             error => {
                 this._spinner.set(false);
-            });
+            }
+            );
         return comprobantes;
     }
     public buscarDocumenentoPorId(uuid: string): BehaviorSubject<DocumentoQuery> {
         this.url = this.url + this.urlDocumnetId + uuid;
         this._spinner.set(true);
-        this._httpClient.get<DocumentoQuery>( this.url, 
+        this._httpClient.get<DocumentoQuery>( this.url,
             // {responseType: 'text'}
         )
         .subscribe(
@@ -87,5 +88,5 @@ export class DocumentoQueryService {
         this._httpClient.post<OrganizacionDTO>(this.urlGuardarOrganizacion, organizacion ).subscribe();
         return organizacionRpta;
     }
-    
+
 }

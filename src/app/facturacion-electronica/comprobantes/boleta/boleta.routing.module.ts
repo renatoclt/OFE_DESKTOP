@@ -50,7 +50,8 @@ const routes: Routes = [
           codigo: '03',
           tipoAccion: 1,
           tipoDocumento: '03',
-          mostrarCombo: true
+          mostrarCombo: true,
+          tipoItem: 'S'
         }
       },
       {
@@ -60,7 +61,8 @@ const routes: Routes = [
           codigo: '03',
           tipoAccion: 2,
           tipoDocumento: '03',
-          mostrarCombo: false
+          mostrarCombo: false,
+          tipoItem: 'S'
         }
       },
       {
@@ -70,7 +72,8 @@ const routes: Routes = [
           codigo: '03',
           tipoAccion: 3,
           tipoDocumento: '03',
-          mostrarCombo: false
+          mostrarCombo: false,
+          tipoItem: 'B'
         }
       },
       {
@@ -80,7 +83,8 @@ const routes: Routes = [
           codigo: '03',
           tipoAccion: 4,
           tipoDocumento: '03',
-          mostrarCombo: false
+          mostrarCombo: false,
+          tipoItem: 'B'
         }
       },
 

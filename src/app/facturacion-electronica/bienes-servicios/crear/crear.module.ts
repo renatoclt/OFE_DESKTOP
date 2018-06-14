@@ -21,6 +21,8 @@ import {Servidores} from '../../general/services/servidores';
 import {DataTableModule} from '../../general/data-table/data-table.module';
 import {TokenInterceptorService} from '../../general/services/tokenInterceptor.service';
 import {EstilosServices} from '../../general/utils/estilos.services';
+import {BienesServiciosMasivaDetalleComponent} from './bienes-servicios-masiva/bienes-servicios-masiva-detalle/bienes-servicios-masiva-detalle.component';
+import {ArchivoMasivaService} from '../../percepcion-retencion/services/archivoMasiva.service';
 
 @NgModule({
   imports: [
@@ -38,7 +40,8 @@ import {EstilosServices} from '../../general/utils/estilos.services';
   declarations: [
     CrearComponent,
     BienesServiciosIndividualComponent,
-    BienesServiciosMasivaComponent
+    BienesServiciosMasivaComponent,
+    BienesServiciosMasivaDetalleComponent
   ],
   providers: [
     Servidores,

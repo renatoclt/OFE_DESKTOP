@@ -1,7 +1,7 @@
 export class Parametros {
     idparametro: number;
     parametro_descripcion: string;
-    id_dominio: any;
+    id_dominio: number;
     id_idioma: number;
     codigo_dominio: string;
     descripcion_dominio: string;

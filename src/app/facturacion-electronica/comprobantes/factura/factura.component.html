@@ -37,7 +37,7 @@
                   </label>
                   <input ng2-auto-complete autocomplete="off" #inputRazonSocial type="text" id="txtRazonSocial" name="txtRazonSocial" formControlName="txtRazonSocial"
                     [source]="listarOrganizacionesDeAutcompletado.bind(this)" [list-formatter]="autocompleListFormatter" [value-formatter]="autocompleListFormatter"
-                    [loading-text]="'cargando' | translate" (valueChanged)="busqueda()" (change)="cambioAutocomplete()" min-chars=1 [accept-user-input]="true"
+                    [loading-text]="'cargando' | translate" (valueChanged)="busqueda()" (change)="cambioAutocomplete()" min-chars=1
                     [no-match-found-text]="'noSeEncontraronResultados' | translate" class="form-control">
                 </div>
               </div>

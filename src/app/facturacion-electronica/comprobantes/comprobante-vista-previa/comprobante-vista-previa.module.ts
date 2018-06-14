@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {CommonModule, DecimalPipe} from '@angular/common';
 import {ComprobanteVistaPreviaComponent} from './comprobante-vista-previa.component';
 import { DataTableModule } from '../../general/data-table/data-table.module';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -13,6 +13,7 @@ import { PersistenciaPost } from 'app/facturacion-electronica/percepcion-retenci
 import { CreacionComprobantes } from 'app/facturacion-electronica/general/services/comprobantes/creacionComprobantes';
 import { MensajeService } from 'app/facturacion-electronica/general/services/utils/mensaje.service';
 import { CatalogoDocumentoIdentidadService } from '../../general/utils/catalogo-documento-identidad.service';
+import {DirectivasModule} from '../../general/directivas/directivas.module';
 //import { SpinnerService } from 'app/service/spinner.service';
 
 @NgModule({
@@ -22,7 +23,7 @@ import { CatalogoDocumentoIdentidadService } from '../../general/utils/catalogo-
     TranslateModule,
     DataTableModule,
     HttpModule,
-    HttpClientModule,
+    HttpClientModule
   ],
   declarations: [
     ComprobanteVistaPreviaComponent

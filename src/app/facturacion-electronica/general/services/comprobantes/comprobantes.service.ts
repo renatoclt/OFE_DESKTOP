@@ -71,6 +71,10 @@ export class ComprobantesService {
           data[nombreKeyJson].map(
             (item) => {
               item['tsFechaemision'] = that._utilsService.obtenerFecha(item['tsFechaemision']);
+              const ticket = item['vcParamTicket'];
+              item['vcParamTicket'] = ticket ? ticket : '-';
+              const ticketRetencion = item['vcTicketRetencion'];
+              item['vcTicketRetencion'] = ticketRetencion ? ticketRetencion : '-';
               item['deDctomonto'] = Number(item['deDctomonto']).toFixed(2);
               item['deTotalcomprobantepago'] = Number(item['deTotalcomprobantepago']).toFixed(2);
               if (item['tsParamFechabaja'] === null) {

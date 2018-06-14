@@ -32,7 +32,6 @@ export class TipoNotaCreditoDatatableComponent implements OnInit, DoCheck, OnDes
   tipoNotaCredito: string;
   tipoNotaCreditoSubscription: Subscription;
   pasoAVistaPreviaSubscription: Subscription;
-  estaUsandoPersistenciaSubscription: Subscription;
 
   itemAEditar: DetalleNotaCredito;
 

@@ -41,3 +41,7 @@ table thead > tr {
   background-color: #e6e6e6;
   color: #6d6d6d;
 }
+
+.archivos_personalizados {
+  height: 100px;
+}

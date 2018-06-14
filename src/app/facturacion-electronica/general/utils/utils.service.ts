@@ -48,12 +48,24 @@ export class UtilsService {
     return Number(new Date(anio, mes, dia, hora, min, seg, ms));
   }
 
-  convertirFechaStringATimestamp(fechaString: string, separador: string = '/') {
+  convertirFechaStringATimestamp(fechaString: string, separador: string = '/', formatoFechaEntrada: FormatoFecha = FormatoFecha.DIA_MES_ANIO) {
     const fechaActual = new Date();
     const fechaParseada = fechaString.split(separador);
-    const dia = Number(fechaParseada[0]);
-    const mes = Number(fechaParseada[1]) - 1;
-    const anio = Number(fechaParseada[2]);
+    let dia;
+    let mes;
+    let anio;
+    switch (formatoFechaEntrada) {
+      case FormatoFecha.DIA_MES_ANIO:
+        dia = Number(fechaParseada[0]);
+        mes = Number(fechaParseada[1]) - 1;
+        anio = Number(fechaParseada[2]);
+        break;
+      case FormatoFecha.ANIO_MES_DIA:
+        dia = Number(fechaParseada[2]);
+        mes = Number(fechaParseada[1]) - 1;
+        anio = Number(fechaParseada[0]);
+        break;
+    }
     return this.convertirATimestamp(
       anio, mes, dia, fechaActual.getHours(),
       fechaActual.getMinutes(), fechaActual.getSeconds(), fechaActual.getMilliseconds());

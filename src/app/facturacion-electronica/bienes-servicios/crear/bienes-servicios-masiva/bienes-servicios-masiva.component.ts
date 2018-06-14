@@ -68,7 +68,8 @@ export class BienesServiciosMasivaComponent implements OnInit {
       new ColumnaDataTable('usuario', 'usuario'),
       new ColumnaDataTable('fecha', 'fecha'),
       new ColumnaDataTable('nombreArchivo', 'nombreArchivo'),
-      new ColumnaDataTable('tamañoArchivo', 'tamanhoArchivo')
+      new ColumnaDataTable('tamañoArchivo', 'tamanhoArchivo'),
+      new ColumnaDataTable('estado', 'estado')
     ];
     this.tipoMetodoMasiva = this._productoMasivoService.TIPO_ATRIBUTO_DOCUMENTO_MASIVO_QRY;
     this.parametrosMasiva = new HttpParams()
@@ -80,6 +81,7 @@ export class BienesServiciosMasivaComponent implements OnInit {
     this.archivoSeleccionado = new BehaviorSubject<FileList>(null);
     this.tipomasiva = ModoVistaAccion.ICONOS;
     this.accionesMasiva = [
+      new Accion('visualizar', new Icono('visibility', 'btn-info'), TipoAccion.VISUALIZAR),
       new Accion('descargar', new Icono('file_download', 'btn-info'), TipoAccion.DESCARGAR)
     ];
   }
@@ -173,6 +175,16 @@ export class BienesServiciosMasivaComponent implements OnInit {
     const tipoAccion = evento[0];
     const archivoMasiva: ArchivoMasiva = evento[1];
     switch (tipoAccion) {
+      case TipoAccion.VISUALIZAR:
+        this.router.navigate(['bienes-servicios/crear/masiva/detalle/', archivoMasiva.idDocumentoMasivo], {
+          queryParams: {
+            idDocumentoMasivo: archivoMasiva.idDocumentoMasivo,
+            totalRegistros: archivoMasiva.totalRegistros,
+            nombreArchivo: archivoMasiva.nombreArchivo,
+            totalErrores: archivoMasiva.totalRegistrosErroneos,
+          }, skipLocationChange: true
+        });
+        break;
       case TipoAccion.DESCARGAR:
         this._archivoService.descargararchivotipo(archivoMasiva.nombreArchivo, TIPO_ARCHIVO_CSV.idArchivo);
         break;

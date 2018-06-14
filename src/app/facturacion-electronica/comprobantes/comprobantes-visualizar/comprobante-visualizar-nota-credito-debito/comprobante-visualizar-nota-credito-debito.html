@@ -254,8 +254,8 @@
                 {{'descargar' | translate}}
                 <b class="caret"></b>
                 <ul class="dropdown-menu">
-                  <li *ngFor="let archivo of tiposArchivos">
-                    <a (click)="guardarArchivo(archivo)">{{archivo.descripcion}}</a>
+                  <li *ngFor="let archivo of tiposArchivos" [class]="habilitarTipoArchivo(archivo) ? '' : 'disabled'">
+                    <a class="disabled" (click)="guardarArchivo(archivo, $event)">{{archivo.descripcion}}</a>
                   </li>
                 </ul>
               </button>

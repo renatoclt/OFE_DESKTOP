@@ -3,7 +3,7 @@
     <div class="col-sm-12">
       <div class="card">
         <div class="card-header card-header-text" data-background-color="blue">
-          <h4 class="card-title">{{titulo | translate}}</h4>
+          <h4 class="card-title">{{titulo | translate :{comprobante: nombreComprobante} }}</h4>
         </div>
         <div class="card-content">
           <div class="row">
@@ -18,7 +18,7 @@
               <nav class="navbar navbar-info" role="navigation"></nav>
               <div class="row"><p> &nbsp; </p></div>
               <app-data-table
-                #tablaNormal
+                #tablaSeries
                 (iniciarData)="iniciarDataTabla($event)"
                 [idTabla]="'tablaSeries'"
                 [habilitarAgregar]="true"
@@ -30,6 +30,7 @@
                 [habilitarAcciones]="true"
                 [habilitarCheckBox]="true"
                 [habilitarEliminar]="true"
+                (eliminar)="eliminarSeries($event)"
                 [nombreIdDelItem]="nombreIdDelItem"
                 [usaServicio]="true"
                 [servicio]="_seriesService"
@@ -56,5 +57,7 @@
 <app-series-crear-editar
   #editarItemComponent
   [idModal]="idModal"
+  [tituloModal]="tituloModal"
+  [idAccionModal]="idAccionModal"
 >
 </app-series-crear-editar>

@@ -5,7 +5,7 @@
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="material-icons">clear</i></button>
         <div class="row">
           <div class="col-md-4">
-            <h5 class="modal-title" id="myModalLabel">{{'editarItem' | translate}}</h5>
+            <h5 class="modal-title" id="myModalLabel">{{tituloModal}}</h5>
           </div>
         </div>
       </div>
@@ -39,6 +39,22 @@
             <label>{{'regla3Series' | translate}}</label>
           </div>
         </div>
+        <div class="row">
+          <div class="col-xs-1 col-sm-1 col-md-1" style="padding-right: 0px; width: 10px;">
+            <label><i class="material-icons" style="font-size: 10px">play_arrow</i></label>
+          </div>
+          <div class="col-xs-11 col-sm-11 col-md-11">
+            <label>{{'regla4Series' | translate}}</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-1 col-sm-1 col-md-1" style="padding-right: 0px; width: 10px;">
+            <label><i class="material-icons" style="font-size: 10px">play_arrow</i></label>
+          </div>
+          <div class="col-xs-11 col-sm-11 col-md-11">
+            <label>{{'regla5Series' | translate}}</label>
+          </div>
+        </div>
         <form [formGroup]="seriesFormGroup" autocomplete="off">
           <div class="row">
             <div class="col-md-12">
@@ -58,6 +74,22 @@
                 </div>
                 <div class="col-md-6">
                   <div class="form-group label-floating">
+                    <label class="control-label">{{'correlativoInicial' | translate}}</label>
+                    <input id="txtCorrelativoInicial" formControlName="txtCorrelativoInicial" class="form-control" correlativoDirective
+                           type="text">
+                    <div class="row" *ngIf="!seriesFormGroup.get('txtCorrelativoInicial').valid && seriesFormGroup.get('txtCorrelativoInicial').touched">
+                      <div class="col-md-12">
+                      <span *ngIf="seriesFormGroup.get('txtCorrelativoInicial').hasError('required')"
+                            class="text-danger">{{'campoRequerido' | translate}}
+                      </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group label-floating">
                     <label class="control-label">{{'nombreSucursal' | translate}}</label>
                     <input id="txtNombreSucursal" formControlName="txtNombreSucursal" autocomplete="off" class="form-control"
                            type="text">
@@ -70,33 +102,17 @@
                     </div>
                   </div>
                 </div>
-              </div>
-              <div class="row">
                 <div class="col-md-6">
                   <div class="form-group label-floating">
                     <label class="control-label">{{'direccionMac' | translate}}</label>
-                    <input id="txtDireccionMac" formControlName="txtDireccionMac" class="form-control" type="text">
-                    <div class="row" *ngIf="!seriesFormGroup.get('txtDireccionMac').valid && seriesFormGroup.get('txtDireccionMac').touched">
-                      <div class="col-md-12">
-                      <span *ngIf="seriesFormGroup.get('txtDireccionMac').hasError('required')"
-                            class="text-danger">{{'campoRequerido' | translate}}
-                      </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="form-group label-floating">
-                    <label class="control-label">{{'correlativoInicial' | translate}}</label>
-                    <input id="txtCorrelativoInicial" formControlName="txtCorrelativoInicial" class="form-control" correlativoDirective
-                           type="text">
-                    <div class="row" *ngIf="!seriesFormGroup.get('txtCorrelativoInicial').valid && seriesFormGroup.get('txtCorrelativoInicial').touched">
-                      <div class="col-md-12">
-                      <span *ngIf="seriesFormGroup.get('txtCorrelativoInicial').hasError('required')"
-                            class="text-danger">{{'campoRequerido' | translate}}
-                      </span>
-                      </div>
-                    </div>
+                    <input [MacDirective]="true" id="txtDireccionMac" formControlName="txtDireccionMac" class="form-control" type="text">
+                    <!--<div class="row" *ngIf="!seriesFormGroup.get('txtDireccionMac').valid && seriesFormGroup.get('txtDireccionMac').touched">-->
+                      <!--<div class="col-md-12">-->
+                      <!--<span *ngIf="seriesFormGroup.get('txtDireccionMac').hasError('required')"-->
+                            <!--class="text-danger">{{'campoRequerido' | translate}}-->
+                      <!--</span>-->
+                      <!--</div>-->
+                    <!--</div>-->
                   </div>
                 </div>
               </div>

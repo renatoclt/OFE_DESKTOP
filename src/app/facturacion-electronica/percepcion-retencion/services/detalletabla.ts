@@ -4,6 +4,7 @@ import { Servidores } from '../../general/services/servidores';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { BasePaginacion } from '../../general/services/base.paginacion';
 import {SpinnerService} from '../../../service/spinner.service';
+import {ColumnaDataTable} from '../../general/data-table/utils/columna-data-table';
 
 @Injectable()
 export class Detalletabla {
@@ -31,8 +32,20 @@ export class Detalletabla {
     const dataRetornar: BehaviorSubject<[BasePaginacion, T[]]> = new BehaviorSubject<[BasePaginacion, T[]]>([basePaginacion, []]);
     this.httpClient.get<T[]>( nuevaUrl, {
       params: parametros
-    }).take(1).
-    subscribe(
+    })
+      .map(
+        data => {
+          data['_embedded'][nombreKeyJson].map(
+            (item) => {
+              item['deTotMoneDes'] = Number(item['deTotMoneDes']).toFixed(2);
+              item['nuTotImpDest'] = Number(item['nuTotImpDest']).toFixed(2);
+              item['nuTotImpAux'] = Number(item['nuTotImpAux']).toFixed(2);
+            }
+          );
+          return data;
+        }
+      )
+      .subscribe(
       (data) => {
         const totalPaginas = data['page']['totalPages'] - 1;
         const paginaActual = data['page']['number'];

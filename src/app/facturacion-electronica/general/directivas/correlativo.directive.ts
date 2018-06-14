@@ -100,6 +100,10 @@ export class CorrelativoDirective {
       let cadena: String;
       cadena = '';
       cadena = this.control.value;
+      if (Number(cadena) <= 0 ) {
+          this.control.reset('');
+          return;
+      }
       let cadenaFinal: String;
       cadenaFinal = '';
       for ( let a = 0; a < cadena.length; a++) {

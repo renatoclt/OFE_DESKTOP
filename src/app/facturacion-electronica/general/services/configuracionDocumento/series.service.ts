@@ -14,7 +14,7 @@ declare var swal: any;
 
 @Injectable()
 export class SeriesService {
-//OFFLINE  private url = '/seriess/search/filtros';
+  private pathSeriess = '/seriess';
   private pathSeries = '/seriess';
   private pathSearch = '/search';
   private pathFiltros = '/filtros';
@@ -24,6 +24,7 @@ export class SeriesService {
   private urlFiltroSecundario: string;
   private urlSerieQueries: string;
   private urlSeriess: string;
+  private urlSeries: string;
 
   TIPO_ATRIBUTO_SERIES: string;
 
@@ -50,19 +51,17 @@ export class SeriesService {
       }
     );
 
-      return series;
-    }
+    return series;
+  }
 
-  filtroSeries(
-      id_entidad: string,
-      id_tipo_comprobante: string,
-      id_tipo_serie: string,
-  ): BehaviorSubject<any[]> {
-      const parametros = new HttpParams()
-          .set('id_entidad', id_entidad)
-          .set('id_tipo_comprobante', id_tipo_comprobante)
-          .set('id_tipo_serie', id_tipo_serie);
-      return this.buscar(parametros, this.urlFiltro);
+  filtroSeries(id_entidad: string,
+               id_tipo_comprobante: string,
+               id_tipo_serie: string,): BehaviorSubject<any[]> {
+    const parametros = new HttpParams()
+      .set('id_entidad', id_entidad)
+      .set('id_tipo_comprobante', id_tipo_comprobante)
+      .set('id_tipo_serie', id_tipo_serie);
+    return this.buscar(parametros, this.urlFiltro);
   }
 
   filtroSecundarioSeries(id_entidad: string,
@@ -74,12 +73,12 @@ export class SeriesService {
   }
 
   obtenerTodo(): BehaviorSubject<Serie[]> {
-      const series: BehaviorSubject<Serie[]> = new BehaviorSubject<Serie[]>([]);
-      this.httpClient.get(this.urlFiltro).subscribe(
-          data => {
-              series.next(data['_embedded']['serieRedises']);
-          }
-      );
+    const series: BehaviorSubject<Serie[]> = new BehaviorSubject<Serie[]>([]);
+    this.httpClient.get(this.urlFiltro).subscribe(
+      data => {
+        series.next(data['_embedded']['serieRedises']);
+      }
+    );
 
     return series;
   }
@@ -127,6 +126,16 @@ export class SeriesService {
     const basePaginacion: BasePaginacion = new BasePaginacion();
     const dataRetornar: BehaviorSubject<[BasePaginacion, T[]]> = new BehaviorSubject<[BasePaginacion, T[]]>([basePaginacion, undefined]);
     this.httpClient.get<T[]>(nuevaUrl, {params: parametros})
+      .map(
+        data => {
+          data['_embedded'][nombreKeyJson].map(
+            (item) => {
+              item['direccionMac'] = item['direccionMac'] ? item['direccionMac'] : '-';
+            }
+          );
+          return data;
+        }
+      )
       .subscribe(
         (data) => {
           this._spinnerService.set(false);
@@ -159,13 +168,16 @@ export class SeriesService {
   crearSerie(serie: SeriesCrear) {
     this._spinnerService.set(true);
     const respuesta = new BehaviorSubject<SeriesQuery>(null);
-    this.httpClient.post<SeriesQuery>(this.urlSeriess, JSON.stringify(serie)).subscribe(
+    this.httpClient.post<SeriesQuery>(this.urlSeries, JSON.stringify(serie)).subscribe(
       data => {
-        this._spinnerService.set(true);
+        this._spinnerService.set(false);
         let accionExitosa = '';
         this._translateService.get('accionExitosa').take(1).subscribe(nombre => accionExitosa = nombre);
         let mensajeCreacionSerie = '';
         this._translateService.get('mensajeCreacionSerie').take(1).subscribe(nombre => mensajeCreacionSerie = nombre);
+        if (Number(data.tipoSerie) === 0) {
+          this._translateService.get('sincronizarSistemaOffline').take(1).subscribe(nombre => mensajeCreacionSerie += '. ' + nombre);
+        }
         let continuar = '';
         this._translateService.get('continuar').take(1).subscribe(nombre => continuar = nombre);
         swal({
@@ -180,9 +192,8 @@ export class SeriesService {
         respuesta.next(data);
       },
       error => {
-        this._spinnerService.set(true);
+        this._spinnerService.set(false);
         let errorSerie = '';
-        respuesta.error(error);
         this._translateService.get('errorSerie').take(1).subscribe(nombre => errorSerie = nombre);
         let continuar = '';
         this._translateService.get('continuar').take(1).subscribe(nombre => continuar = nombre);
@@ -193,9 +204,10 @@ export class SeriesService {
           confirmButtonText: continuar,
           buttonsStyling: false
         });
-
+        respuesta.error(error);
       }
     );
+    return respuesta;
   }
 
   actualizarSerie(serie: SeriesQuery) {
@@ -203,14 +215,16 @@ export class SeriesService {
     const respuesta = new BehaviorSubject<SeriesQuery>(null);
     this.httpClient.post<SeriesQuery>(this.urlSeriess, JSON.stringify(serie)).subscribe(
       data => {
-        this._spinnerService.set(true);
+        this._spinnerService.set(false);
         let accionExitosa = '';
         this._translateService.get('accionExitosa').take(1).subscribe(nombre => accionExitosa = nombre);
         let mensajeActualizarSerie = '';
         this._translateService.get('mensajeActualizarSerie').take(1).subscribe(nombre => mensajeActualizarSerie = nombre);
+        if (Number(data.tipoSerie) === 0) {
+          this._translateService.get('sincronizarSistemaOffline').take(1).subscribe(nombre => mensajeActualizarSerie += '. ' + nombre);
+        }
         let continuar = '';
         this._translateService.get('continuar').take(1).subscribe(nombre => continuar = nombre);
-        respuesta.next(data);
         swal({
           type: 'success',
           title: accionExitosa,
@@ -220,10 +234,10 @@ export class SeriesService {
           confirmButtonText: continuar,
           buttonsStyling: false
         });
+        respuesta.next(data);
       },
       error => {
-        this._spinnerService.set(true);
-        respuesta.error(error);
+        this._spinnerService.set(false);
         let errorSerie = '';
         this._translateService.get('errorSerie').take(1).subscribe(nombre => errorSerie = nombre);
         let continuar = '';
@@ -235,7 +249,66 @@ export class SeriesService {
           confirmButtonText: continuar,
           buttonsStyling: false
         });
+        respuesta.error(error);
+      }
+    );
+    return respuesta;
+  }
 
+  eliminarSeries(series: SeriesQuery[]) {
+    this._spinnerService.set(true);
+    let idsSeries = '';
+    let hayOffline = false;
+    for (const serie of series) {
+      if (Number(serie.tipoSerie) === 0) {
+        hayOffline = true;
+      }
+      idsSeries += serie.idSerie + ',';
+    }
+    idsSeries = idsSeries.slice(0, -1);
+    const parametros = new HttpParams()
+      .set('ids', idsSeries);
+    const respuesta = new BehaviorSubject<boolean>(false);
+
+    this.httpClient.delete<SeriesQuery[]>(this.urlSeries, {
+      params: parametros
+    } ).subscribe(
+      data => {
+        this._spinnerService.set(false);
+        let accionExitosa = '';
+        this._translateService.get('accionExitosa').take(1).subscribe(nombre => accionExitosa = nombre);
+        let mensajeProductosEliminados = '';
+        this._translateService.get('mensajeProductosEliminados').take(1).subscribe(nombre => mensajeProductosEliminados = nombre);
+        if (hayOffline) {
+          this._translateService.get('sincronizarSistemaOffline').take(1).subscribe(nombre => mensajeProductosEliminados += '. ' + nombre);
+        }
+        let continuar = '';
+        this._translateService.get('continuar').take(1).subscribe(nombre => continuar = nombre);
+        swal({
+          type: 'success',
+          title: accionExitosa,
+          html:
+          '<div class="text-center">' + mensajeProductosEliminados + '</div>',
+          confirmButtonClass: 'btn btn-success',
+          confirmButtonText: continuar,
+          buttonsStyling: false
+        });
+        respuesta.next(true);
+      },
+      error => {
+        this._spinnerService.set(false);
+        let errorSerie = '';
+        this._translateService.get('errorSerie').take(1).subscribe(nombre => errorSerie = nombre);
+        let continuar = '';
+        this._translateService.get('continuar').take(1).subscribe(nombre => continuar = nombre);
+        swal({
+          type: 'error',
+          title: errorSerie,
+          confirmButtonClass: 'btn btn-danger',
+          confirmButtonText: continuar,
+          buttonsStyling: false
+        });
+        respuesta.error(false);
       }
     );
     return respuesta;

@@ -25,6 +25,7 @@ import {PercepcionRetencionReferenciasService} from '../services/percepcion-rete
 import {PersistenciaServiceRetencion} from '../services/persistencia.service';
 import {ArchivoMasivaService} from '../services/archivoMasiva.service';
 import {EstadoArchivoService} from '../../general/utils/estadoArchivo.service';
+import {ManejoMensajes} from '../../general/utils/manejo-mensajes';
 
 @NgModule({
   imports: [
@@ -63,7 +64,8 @@ import {EstadoArchivoService} from '../../general/utils/estadoArchivo.service';
     PersistenciaPost,
     ComprobantesService,
     RetencionService,
-    PercepcionRetencionReferenciasService
+    PercepcionRetencionReferenciasService,
+    ManejoMensajes
   ]
 })
 export class ItemCrearEditarModule { }

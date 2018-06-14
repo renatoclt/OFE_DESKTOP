@@ -12,12 +12,12 @@ const routes: Routes = [
       },
       {
         path: 'crear',
-        loadChildren: '../bienes-servicios/crear/crear.module#CrearModule'
-      }// ,
-      // {
-      //   path: 'consultar',
-      //   loadChildren: '../configuracion/empresa-emisora/consulta.module#ConsultaModule',
-      // }
+        loadChildren: './crear/crear.module#CrearModule'
+      },
+      {
+        path: 'consultar',
+        loadChildren: './consultar-bienes-servicios/consultar-bienes-servicios.module#ConsultarBienesServiciosModule',
+      }
     ]
   }
 ];

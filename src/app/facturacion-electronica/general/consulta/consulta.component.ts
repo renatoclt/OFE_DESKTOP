@@ -38,6 +38,9 @@ import {ValidadorPersonalizado} from '../services/utils/validadorPersonalizado';
 import {PadreComprobanteService} from '../../comprobantes/services/padre-comprobante.service';
 import {UtilsService} from '../utils/utils.service';
 import {ColumnaDataTable} from '../data-table/utils/columna-data-table';
+import {TIPO_ARCHIVO_CDR, TIPO_ARCHIVO_PDF, TIPO_ARCHIVO_XML} from '../models/archivos/tipoArchivo';
+import {ArchivoService} from '../services/archivos/archivo.service';
+import {EstilosServices} from '../utils/estilos.services';
 declare var $, swal: any;
 
 @Component({
@@ -108,11 +111,7 @@ export class ConsultaComponent implements OnInit, AfterViewInit {
     new Accion('Dar de Baja', new Icono('check-circle', 'btn-info'), TipoAccion.ANULAR, 'chEstadocomprobantepago', [3]),
     new Accion('bitacora', new Icono('check-circle', 'btn-info'), TipoAccion.BITACORA),
   ];
-  public AccionesResumenBoletas: Accion[] = [
-    new Accion('visualizar', new Icono('check-circle', 'btn-info'), TipoAccion.VISUALIZAR),
-    new Accion('Dar de Baja', new Icono('check-circle', 'btn-info'), TipoAccion.ANULAR, 'chEstadocomprobantepago', [3]),
-    new Accion('bitacora', new Icono('check-circle', 'btn-info'), TipoAccion.BITACORA),
-  ];
+  public accionesResumenBoletas: Accion[];
 
   public tipo: any = ModoVistaAccion.ICONOS;
   public tipoComprobante: any = ModoVistaAccion.COMBO;
@@ -123,6 +122,7 @@ export class ConsultaComponent implements OnInit, AfterViewInit {
   @ViewChild('tablaConsultaDocumentoRelacionado') tablaConsultaDocumentoRelacionado: DataTableComponent<ConsultaDocumentoRelacionado>;
   @ViewChild('tablaConsultaComprobante') tablaComprobante: DataTableComponent<ConsultaComprobante>;
   @ViewChild('tablaConsultaPercepcionRetencion') tablaPercepcionRetencion: DataTableComponent<ConsultaPercepcionRetencion>;
+  @ViewChild('tablaConsultaResumenBoletas') tablaConsultaResumenBoletas: DataTableComponent<ConsultaComprobante>;
 
   @ViewChild('modalBitacora') modalBitacora: BsModalComponent;
 
@@ -130,6 +130,7 @@ export class ConsultaComponent implements OnInit, AfterViewInit {
     private _route: ActivatedRoute,
     private _catalogoDocumentos: CatalogoDocumentoIdentidadService,
     private _router: Router,
+    private _estilosService: EstilosServices,
     private _tipos: TiposService,
     private _rutas: RutasService,
     private _persistencia: PersistenciaService,
@@ -140,6 +141,7 @@ export class ConsultaComponent implements OnInit, AfterViewInit {
     private _persistenciaRetencion: PersistenciaServiceRetencion,
     public _translateService: TranslateService,
     private _padreComprobanteService: PadreComprobanteService,
+    public _archivoService: ArchivoService,
     private _utilsService: UtilsService) {
     this._padreComprobanteService.actualizarComprobante(this._route.snapshot.data['codigo'], this._route.snapshot.data['mostrarCombo']);
     this.flagConsulta = true;
@@ -176,16 +178,16 @@ export class ConsultaComponent implements OnInit, AfterViewInit {
       new ColumnaDataTable('importeTotal', 'deTotalcomprobantepago', {'text-align': 'right'})
     ];
     this.columnasResumenBoletas = [
-      new ColumnaDataTable('tipoDocumento', 'entidadcompradora.vcTipoDocumento'),
-      new ColumnaDataTable('numeroDocumento', 'entidadcompradora.vcDocumento'),
-      new ColumnaDataTable('ticket', 'vcTicketRetencion'),
-      new ColumnaDataTable('numeroSerie', 'vcSerie'),
-      new ColumnaDataTable('correlativo', 'vcCorrelativo'),
+      new ColumnaDataTable('ticket', 'vcParamTicket'),
+      new ColumnaDataTable('numeroComprobante', 'serieCorrelativo'),
       new ColumnaDataTable('fechaEmision', 'tsFechaemision'),
-      new ColumnaDataTable('fechaEnvio', 'tsFechaenvio'),
-      new ColumnaDataTable('estado', 'chEstadocomprobantepagocomp'),
-      new ColumnaDataTable('importeTotal', 'deDctomonto', {'text-align': 'right'})
+      new ColumnaDataTable('PDF', TipoAccion.DESCARGAR_PDF),
+      new ColumnaDataTable('XML', TipoAccion.DESCARGAR_XML),
+      new ColumnaDataTable('CDR', TipoAccion.DESCARGAR_CDR),
+      new ColumnaDataTable('estado', 'chEstadocomprobantepagocomp')
     ];
+
+    this.iniciarDataTablas();
 
     this.ordenarPorElCampoPercepcionRetencion = 'tsFechaemision';
     this.documentoRelacionadoFlag = false;
@@ -198,11 +200,70 @@ export class ConsultaComponent implements OnInit, AfterViewInit {
     this.formatoTipoDocumento = 0;
     this.tamanioTipoDocumento = 0;
   }
+
+  iniciarDataTablas() {
+    this.accionesResumenBoletas = [
+      new Accion('PDF',
+        new Icono('file_download', 'btn-info'),
+        TipoAccion.DESCARGAR_PDF,
+        'chEstadocomprobantepago',
+        [
+          this._tipos.TIPO_ESTADO_AUTORIZADO,
+          this._tipos.TIPO_ESTADO_AUTORIZADO_CON_OBSERVACIONES,
+          this._tipos.TIPO_ESTADO_RECHAZADO,
+          this._tipos.TIPO_ESTADO_BLOQUEADO,
+          this._tipos.TIPO_ESTADO_ERROR,
+          this._tipos.TIPO_ESTADO_PENDIENTE_DE_ENVIO,
+          this._tipos.TIPO_ESTADO_DADO_DE_BAJA
+        ]
+      ),
+      new Accion('XML',
+        new Icono('file_download', 'btn-info'),
+        TipoAccion.DESCARGAR_XML,
+        'chEstadocomprobantepago',
+        [
+          this._tipos.TIPO_ESTADO_AUTORIZADO,
+          this._tipos.TIPO_ESTADO_AUTORIZADO_CON_OBSERVACIONES,
+          this._tipos.TIPO_ESTADO_RECHAZADO,
+          this._tipos.TIPO_ESTADO_BLOQUEADO,
+          this._tipos.TIPO_ESTADO_PENDIENTE_DE_ENVIO,
+          this._tipos.TIPO_ESTADO_DADO_DE_BAJA
+        ]
+      ),
+      new Accion('CDR',
+        new Icono('file_download', 'btn-info'),
+        TipoAccion.DESCARGAR_CDR,
+        'chEstadocomprobantepago',
+        [
+          this._tipos.TIPO_ESTADO_AUTORIZADO,
+          this._tipos.TIPO_ESTADO_AUTORIZADO_CON_OBSERVACIONES,
+          this._tipos.TIPO_ESTADO_RECHAZADO,
+          this._tipos.TIPO_ESTADO_DADO_DE_BAJA
+        ]
+      )
+    ];
+  }
+
+  public ejecutarAccionComoAtributo(evento) {
+    const tipoAccion = evento[0];
+    const archivoDeBaja = evento[1];
+    console.log(tipoAccion);
+    switch ( tipoAccion ) {
+      case TipoAccion.DESCARGAR_PDF:
+        this._archivoService.descargararchivotipo( archivoDeBaja['inIdcomprobantepago'] , TIPO_ARCHIVO_PDF.idArchivo);
+        break;
+      case TipoAccion.DESCARGAR_XML:
+        this._archivoService.descargararchivotipo( archivoDeBaja['inIdcomprobantepago'] , TIPO_ARCHIVO_XML.idArchivo);
+        break;
+      case TipoAccion.DESCARGAR_CDR:
+        this._archivoService.descargararchivotipo( archivoDeBaja['inIdcomprobantepago'] , TIPO_ARCHIVO_CDR.idArchivo);
+        break;
+    }
+  }
+
   ngOnInit() {
     this.InitForm();
     this.setCamposFormulario();
-	  this.setFormatoDocumento();
-
   }
   ngAfterViewInit(): void {
     if (this.flagResumenBoletas) {
@@ -305,10 +366,10 @@ export class ConsultaComponent implements OnInit, AfterViewInit {
         this.tipoComprobanteFlag = true;
         this.tipoDocumentoFlag = false;
         this.ticketFlag = true;
-        this.estadoFlag = true;
+        this.estadoFlag = false;
         this.documentoRelacionadoFlag = false;
         this.comprobanteFlag = false;
-        this.percepcionRecepcionFlag = true;
+        this.percepcionRecepcionFlag = false;
         this.flagEstadoRequired = true;
         this.estadoSerie = false;
         //  this.consultaFormGroup.controls['cmbEstado'].setValidators([Validators.required]);
@@ -416,7 +477,10 @@ export class ConsultaComponent implements OnInit, AfterViewInit {
       'dateFechaEmisionAl': new FormControl(fechaActual, [
         Validators.required
       ])
-    }, ValidadorPersonalizado.fechaDeberiaSerMenor('dateFechaEmisionDel', 'dateFechaEmisionAl', 'errorFecha'));
+    }, Validators.compose([
+      ValidadorPersonalizado.validarCorrelativos('cmbSerie', 'txtNúmeroCorrelativoInicial', 'txtNúmeroCorrelativoFinal'),
+      ValidadorPersonalizado.fechaDeberiaSerMenor('dateFechaEmisionDel', 'dateFechaEmisionAl', 'errorFecha')
+    ]));
     console.log(fechaActual);
     this.consultaFormGroup.controls['dateFechaEmisionDel'].setValue(fechaActual);
     this.consultaFormGroup.controls['dateFechaEmisionAl'].setValue(fechaActual);
@@ -453,6 +517,8 @@ export class ConsultaComponent implements OnInit, AfterViewInit {
   public setTipoDocumento() {
     let codigosDocumentosIdentidad: string[] = [];
     this.consultaFormGroup.controls['txtTicket'].disable();
+    this.consultaFormGroup.controls['cmbSerie'].reset();
+    this._estilosService.agregarEstiloInput('cmbSerie', 'is-empty');
     console.log(this.consultaFormGroup.controls['cmbTipoComprobante'].value);
     switch (this.consultaFormGroup.controls['cmbTipoComprobante'].value) {
       case this._tipos.TIPO_DOCUMENTO_FACTURA:
@@ -467,9 +533,10 @@ export class ConsultaComponent implements OnInit, AfterViewInit {
         this.consultaFormGroup.controls['txtTicket'].disable();
         codigosDocumentosIdentidad = [
           this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_RUC,
+          this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_DNI,
           this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_CARNET_EXTRANJERIA,
           this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_PASAPORTE,
-          this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_CEDULA_DIPLOMATICA_IDENTIDAD,
+          // this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_CEDULA_DIPLOMATICA_IDENTIDAD,
           this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_OTROS
         ];
         this.consultaFormGroup.controls['cmbTipoDocumento'].enable();
@@ -479,9 +546,10 @@ export class ConsultaComponent implements OnInit, AfterViewInit {
         this.consultaFormGroup.controls['txtTicket'].disable();
         codigosDocumentosIdentidad = [
           this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_RUC,
+            this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_DNI,
           this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_CARNET_EXTRANJERIA,
           this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_PASAPORTE,
-          this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_CEDULA_DIPLOMATICA_IDENTIDAD,
+          // this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_CEDULA_DIPLOMATICA_IDENTIDAD,
           this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_OTROS
         ];
         this.consultaFormGroup.controls['cmbTipoDocumento'].enable();
@@ -491,9 +559,10 @@ export class ConsultaComponent implements OnInit, AfterViewInit {
         this.consultaFormGroup.controls['txtTicket'].disable();
         codigosDocumentosIdentidad = [
           this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_RUC,
+            this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_DNI,
           this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_CARNET_EXTRANJERIA,
           this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_PASAPORTE,
-          this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_CEDULA_DIPLOMATICA_IDENTIDAD,
+          // this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_CEDULA_DIPLOMATICA_IDENTIDAD,
           this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_OTROS
         ];
         this.consultaFormGroup.controls['cmbTipoDocumento'].enable();
@@ -511,7 +580,7 @@ export class ConsultaComponent implements OnInit, AfterViewInit {
           this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_RUC,
           this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_CARNET_EXTRANJERIA,
           this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_PASAPORTE,
-          this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_CEDULA_DIPLOMATICA_IDENTIDAD,
+          // this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_CEDULA_DIPLOMATICA_IDENTIDAD,
           this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_OTROS
         ];
         this.consultaFormGroup.controls['cmbTipoDocumento'].enable();
@@ -525,7 +594,7 @@ export class ConsultaComponent implements OnInit, AfterViewInit {
           this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_DNI,
           this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_CARNET_EXTRANJERIA,
           this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_PASAPORTE,
-          this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_CEDULA_DIPLOMATICA_IDENTIDAD,
+          // this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_CEDULA_DIPLOMATICA_IDENTIDAD,
           this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_OTROS
         ];
         this.consultaFormGroup.controls['cmbTipoDocumento'].enable();
@@ -534,7 +603,7 @@ export class ConsultaComponent implements OnInit, AfterViewInit {
         this.ticketFlag = true;
         this.consultaFormGroup.controls['txtTicket'].enable();
         codigosDocumentosIdentidad = [
-          this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_RUC_OFF,
+          this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_RUC,
           // this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_CARNET_EXTRANJERIA,
           // this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_PASAPORTE,
           // this._catalogoDocumentos.TIPO_DOCUMENTO_IDENTIDAD_CEDULA_DIPLOMATICA_IDENTIDAD,
@@ -550,7 +619,7 @@ export class ConsultaComponent implements OnInit, AfterViewInit {
         this.consultaFormGroup.controls['txtNumeroDocumento'].disable();
         codigosDocumentosIdentidad = [];
     }
-    
+
     // this.consultaFormGroup.controls['cmbTipoDocumento'].setValue('-1');
     // this.eliminarEstiloInput('cmbTipoDocumento', 'is-empty');
     this.tiposDocumentos = this._tablaMaestraService.obtenerPorCodigosDeTablaMaestra(this.todosTiposDocumentoIdentidad, codigosDocumentosIdentidad);
@@ -780,19 +849,19 @@ export class ConsultaComponent implements OnInit, AfterViewInit {
   }
   public filtroResumenBoletas() {
     this.setDtoFiltroComprobante();
-    this.consultaQuery.numeroPagina = this.tablaPercepcionRetencion.paginacion.pagina.getValue().toString();
+    this.consultaQuery.numeroPagina = this.tablaConsultaResumenBoletas.paginacion.pagina.getValue().toString();
     this.validacionesFiltroComprobante();
     if ( this.flagConsulta ) {
       console.log('SERVICIO');
       this.setParametrosFiltroConsulta();
       this.urlConsulta = this._comprobantes.urlConsultaQuery;
-      this.tablaPercepcionRetencion.setParametros(this.parametrosConsulta);
+      this.tablaConsultaResumenBoletas.setParametros(this.parametrosConsulta);
       //this.cabeceraPercepcionRecepcion.push('');
-      this.atributosPercepcionRetencion = [
-        'entidadcompradora.vcTipoDocumento', 'entidadcompradora.vcDocumento', 'ticketResumen', 'vcSerie',
-        'vcCorrelativo', 'tsFechaemision', 'tsFechaenvio', 'chEstadocomprobantepagocomp', 'deDctomonto'
-      ];
-      this.tablaPercepcionRetencion.cargarData( );
+      // this.atributosPercepcionRetencion = [
+      //   'entidadcompradora.vcTipoDocumento', 'entidadcompradora.vcDocumento', 'ticketResumen', 'vcSerie',
+      //   'vcCorrelativo', 'tsFechaemision', 'tsFechaenvio', 'chEstadocomprobantepagocomp', 'deDctomonto'
+      // ];
+      this.tablaConsultaResumenBoletas.cargarData( );
       this.tipoConsultaGeneral = this._comprobantes.TIPO_ATRIBUTO_COMPROBANTES_QUERY;
     }
   }
@@ -1025,7 +1094,7 @@ export class ConsultaComponent implements OnInit, AfterViewInit {
         .set('nroDocumento', this.consultaQuery.numeroDocumento)
         .set('ticket', this.consultaQuery.ticket)
         .set('estado', this.consultaQuery.estado)
-        .set('nroSerie', this.consultaQuery.serie)
+        .set('nroSerie', this.consultaQuery.serie ? this.consultaQuery.serie : '')
         .set('correlativoInicial', this.consultaQuery.correlativoInicial)
         .set('correlativoFinal', this.consultaQuery.correlativoFinal)
         .set('nroPagina', this.consultaQuery.numeroPagina)

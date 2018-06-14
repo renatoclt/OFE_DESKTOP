@@ -230,7 +230,7 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
                                             (Number(this.listaProductos[a].cantidad) * Number(this.listaProductos[a].precioUnitario))
                                           ).toString();
         this.factura.subTotalComprobanteConcepto = this.factura.subTotalComprobanteConcepto +
-                                            Number(this.listaProductos[a].cantidad) * Number(this.listaProductos[a].precioUnitario);
+                                                    Number(this.listaProductos[a].cantidad) * Number(this.listaProductos[a].precioUnitario);
       }
       this.factura.subTotal = (montoTipoOperacion + this.factura.sumaIsc);
       if (this.tipoIgvItems === this._catalogoIgvService.IGV_GRAVADO_RANGO) {
@@ -737,9 +737,6 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
           .then((result) => {
             if (result) {
               that._persistenciaService.eliminarListaItemsFactura();
-              that.listaProductos = that._persistenciaService.getListaProductos();
-              that.tabla.insertarData(that.listaProductos);
-              this.recargarTabla();
               that._persistenciaService.setEstadoFacturaAnticipo(false);
               that.esFacturaAnticipo = false;
               that.facturaFormGroup.controls['txtDetraccion'].enable();
@@ -762,7 +759,6 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
     //  this.recargarTabla();
   }
   public seleccionFacturaAnticipo(value: boolean) {
-    // this.guardarOrganizacion();
     let mensajeDocumentosRelacionadosExistentes: string;
     let tituloAdvertencia: string;
     let eliminarLabel: string;
@@ -823,7 +819,7 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
             '<label class="control-label">Monto Factura Anticipo (sin IGV)<span class="star">*</span> </label>' +
             '<input type="text" id="montoAnticipo" type="text" class="form-control"/> ' +
             '<label>' + formatoMonedaLabel + '</label>' +
-            '</div>',
+      '</div>',
       allowOutsideClick: false,
 
       preConfirm: () => {
@@ -831,11 +827,13 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
           setTimeout(() => {
             let bandera = 0;
             let banderaCero = false;
-            const regExp = /([0-9,]{1,9})|([.]([0-9]{2}))/g;
+            // const regExp = /([0-9,]{1,9})|([.]([0-9]{2}))/g;
+            const regExp = /[0-9]+(\.[0-9][0-9]?)?/g;
             let montoAnticipo = $('#montoAnticipo').val();
             montoAnticipo = montoAnticipo.split(',');
-            const montoAnticipoInvalidos = montoAnticipo.filter(function (monto) {
-              if (!regExp.test(monto)) {
+            const montoAnticipoInvalidos = montoAnticipo.filter(function(monto){
+              const validacion = regExp.test(monto);
+              if (!validacion){
                 bandera = 1;
                 return true;
               } else {
@@ -850,15 +848,11 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
                   }
                   return false;
                 }
-                /*if (Number(monto) <= 0 ) {
-                  bandera = 2;
-                  return true;
-                }
-                return false;*/
+
               }
             });
-            if (bandera) {
-              switch (bandera) {
+            if (bandera){
+              switch(bandera) {
                 case 1: swal.showValidationError(), reject(new Error('Formato Inválido'));
                         break;
                 case 2: swal.showValidationError(), reject(new Error('Monto Inválido'));
@@ -879,7 +873,7 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
       .catch((result) => console.log('CANCEL')
       )
       .then((result) => {
-        if (result) {
+        if(result) {
             this.setFacturaAnticipo(Number(that.formatearNumeroADecimales(Number(result)) ));
             swal({
               type: 'success',
@@ -979,7 +973,7 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
         ),
         'txtRazonSocial': new FormControl('', [
           Validators.required,
-          Validators.pattern('[A-Za-z0-9áéíóúÁÉÍÓÚ/%\\s-.;,]+'),
+          Validators.pattern('[A-Za-z0-9áéíóúÁÉÍÓÚ/%\\s-.;]+'),
           Validators.maxLength(100),
           Validators.minLength(1)
         ]
@@ -1117,12 +1111,6 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
                   }
                   return false;
                 }
-                /*
-                if (Number(monto) <= 0 ) {
-                  bandera = 2;
-                  return true;
-                }
-                return false;*/
               }
             });
             if (bandera){
@@ -1170,11 +1158,9 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
   tipoProductoSeleccionado(producto: TipoProducto) {
     switch (producto.codigo) {
       case this._tipos.TIPO_PRODUCTO_BIEN:
-        // this.guardarOrganizacion();
         this.irAgregarBien();
         break;
       case this._tipos.TIPO_PRODUCTO_SERVICIO:
-        // this.guardarOrganizacion();
         this.irAgregarServicio();
         break;
     }
@@ -1266,7 +1252,7 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
   cambioAutocomplete() {
     if (typeof this.facturaFormGroup.get('txtRazonSocial').value === 'object') {
       this.estadoautocomplete.next(true);
-    } 
+    }
     // else {
     //   this.facturaFormGroup.get('txtRuc').reset();
     //   this.facturaFormGroup.get('txtDireccionFiscal').reset();
@@ -1334,12 +1320,12 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
     organizacion.correo = this.facturaFormGroup.controls['txtCorreo'].value;
     organizacion.direccion = this.facturaFormGroup.controls['txtDireccionFiscal'].value;
     organizacion.nombreComercial = this.facturaFormGroup.controls['txtRazonSocial'].value;
-    organizacion.ruc = this.facturaFormGroup.controls['txtRuc'].value; 
+    organizacion.ruc = this.facturaFormGroup.controls['txtRuc'].value;
     if(organizacion.ruc.toString().length > 10)
       this._conceptoDocumentoService.guardarOrganizacion(organizacion).subscribe(data =>{
         console.log('**************************************************');
         console.log(data);
-        
+
       });
   }
 }

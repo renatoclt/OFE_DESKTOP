@@ -133,12 +133,12 @@ export class TipoNotaDebitoNormalComponent implements OnInit, OnDestroy {
   }
 
   limpiar() {
-    this.notaDebitoNormalFormGroup.controls['txtMontoInteresPorMora'].setValue('0.00');
+    this.notaDebitoNormalFormGroup.controls['txtMontoInteresPorMora'].setValue('');
   }
 
   iniciarFormGroup() {
     this.notaDebitoNormalFormGroup = new FormGroup({
-      'txtMontoInteresPorMora': new FormControl({value: '0.00', disabled: false},
+      'txtMontoInteresPorMora': new FormControl({value: '', disabled: false},
         [Validators.required, Validators.min(0.01)])
     });
     this.padreFormGroup.addControl(this.nombreControl, this.notaDebitoNormalFormGroup);

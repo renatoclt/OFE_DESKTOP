@@ -192,6 +192,11 @@ export class RetencionUnitariaComponent implements OnInit, OnDestroy {
 
   listarOrganizacionesDeAutcompletado(keyword: any) {
     if (keyword) {
+      if (this.entidad_uno && this.entidad_uno.denominacion !== keyword) {
+        this.productFormGroup.get('txtruc').reset();
+        this.productFormGroup.get('txtdireccionfiscal').reset();
+        this.productFormGroup.get('txtcorreo').reset();
+      }
       return this._entidadServices.buscarPorRazonSocial(keyword, '6');
     } else {
       return Observable.of([]);
@@ -254,7 +259,7 @@ export class RetencionUnitariaComponent implements OnInit, OnDestroy {
                   this.productFormGroup.controls['txtdireccionfiscal'].enable();
                 } else {
                   this.productFormGroup.controls['txtcorreo'].disable();
-                } 
+                }
                 this._entidadPersistenciaService.setEntidad(this.entidad_uno);
                 setTimeout(function () {
                   $('input').each(function () {
@@ -274,7 +279,7 @@ export class RetencionUnitariaComponent implements OnInit, OnDestroy {
           this.productFormGroup.controls['razonsocial'].reset();
           this.productFormGroup.controls['txtcorreo'].reset();
           this.productFormGroup.controls['txtdireccionfiscal'].reset();
-        }    
+        }
       }
 
   }
@@ -282,7 +287,7 @@ export class RetencionUnitariaComponent implements OnInit, OnDestroy {
   cambioAutocomplete () {
     if ( typeof this.productFormGroup.get('razonsocial').value === 'object') {
       this.estadoautocomplete.next(true);
-    } 
+    }
     // else {
     //   this.productFormGroup.get('txtruc').reset();
     //   this.productFormGroup.get('txtdireccionfiscal').reset();
@@ -406,7 +411,7 @@ export class RetencionUnitariaComponent implements OnInit, OnDestroy {
     organizacion.correo = this.productFormGroup.controls['txtcorreo'].value;
     organizacion.direccion = this.productFormGroup.controls['txtdireccionfiscal'].value;
     organizacion.nombreComercial = this.productFormGroup.controls['razonsocial'].value;
-    organizacion.ruc = this.productFormGroup.controls['txtruc'].value; 
+    organizacion.ruc = this.productFormGroup.controls['txtruc'].value;
     if(organizacion.ruc.toString().length > 10)
       this._servicioRetencion.guardarOrganizacion(organizacion);
   }
@@ -427,5 +432,5 @@ export class RetencionUnitariaComponent implements OnInit, OnDestroy {
   actualizarCorreo(evento){
     this.retencioncab.email = this.productFormGroup.controls['txtcorreo'].value;
   }
-  
+
 }

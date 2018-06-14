@@ -11,11 +11,7 @@ import { CorreoService } from './services/correo/correo.service';
 import { SeriesService } from './services/configuracionDocumento/series.service';
 import { DirectivasModule } from './directivas/directivas.module';
 import {EntidadService} from './services/organizacion/entidad.service';
-import { SincronizacionService } from './services/sincronizacion/sincronizacion.service';
-import { UtilsService } from './utils/utils.service';
-//OFFLINE CAMBIO
-// import { VistaPreviaComprobantesComponent } from './vista-previa-comprobantes/vista-previa-comprobantes.component';
-
+import {UtilsService} from './utils/utils.service';
 
 @NgModule({
   imports: [
@@ -33,8 +29,7 @@ import { UtilsService } from './utils/utils.service';
     CorreoService,
     SeriesService,
     EntidadService,
-    UtilsService,
-    SincronizacionService
+    UtilsService
   ],
   declarations: []
 })

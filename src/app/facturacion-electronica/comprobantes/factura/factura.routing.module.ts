@@ -61,7 +61,8 @@ const routes: Routes = [
           codigo: '01',
           tipoAccion: 1,
           tipoDocumento: '01',
-          mostrarCombo: false
+          mostrarCombo: false,
+          tipoItem: 'S'
         }
       },
       {
@@ -71,7 +72,8 @@ const routes: Routes = [
           codigo: '01',
           tipoAccion: 2,
           tipoDocumento: '01',
-          mostrarCombo: false
+          mostrarCombo: false,
+          tipoItem: 'S'
         }
       },
       {
@@ -81,7 +83,8 @@ const routes: Routes = [
           codigo: '01',
           tipoAccion: 3,
           tipoDocumento: '01',
-          mostrarCombo: false
+          mostrarCombo: false,
+          tipoItem: 'B'
         }
       },
       {
@@ -91,7 +94,8 @@ const routes: Routes = [
           codigo: '01',
           tipoAccion: 4,
           tipoDocumento: '01',
-          mostrarCombo: false
+          mostrarCombo: false,
+          tipoItem: 'B'
         }
       },
       {

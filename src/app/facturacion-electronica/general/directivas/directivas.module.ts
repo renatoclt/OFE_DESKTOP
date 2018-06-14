@@ -13,6 +13,7 @@ import {MayusculaDirective} from './mayuscula.directive';
 import {PrecioPipe} from '../pipes/precio.pipe';
 import {MayusculaPipe} from '../pipes/mayuscula.pipe';
 import { DisableControlDirective } from './disableControl.directive';
+import { MacDirective } from './mac.directive';
 
 @NgModule({
   imports: [
@@ -31,7 +32,8 @@ import { DisableControlDirective } from './disableControl.directive';
     SerieDirective,
     CodigoDirective,
     MayusculaDirective,
-    DisableControlDirective
+    DisableControlDirective,
+    MacDirective
   ],
   exports: [
     CorrelativoDirective,
@@ -43,12 +45,14 @@ import { DisableControlDirective } from './disableControl.directive';
     SerieDirective,
     CodigoDirective,
     MayusculaDirective,
-    DisableControlDirective
+    DisableControlDirective,
+    MacDirective
   ],
   providers: [
     PrecioPipe,
     DatePipe,
-    DecimalPipe
+    DecimalPipe,
+    MayusculaPipe
   ]
 })
 export class DirectivasModule { }

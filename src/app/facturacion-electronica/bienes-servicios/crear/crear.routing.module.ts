@@ -3,6 +3,7 @@ import {RouterModule, Routes} from '@angular/router';
 import {CrearComponent} from './crear.component';
 import {BienesServiciosIndividualComponent} from './bienes-servicios-individual/bienes-servicios-individual.component';
 import {BienesServiciosMasivaComponent} from './bienes-servicios-masiva/bienes-servicios-masiva.component';
+import {BienesServiciosMasivaDetalleComponent} from './bienes-servicios-masiva/bienes-servicios-masiva-detalle/bienes-servicios-masiva-detalle.component';
 
 const routes: Routes = [
   {
@@ -33,6 +34,13 @@ const routes: Routes = [
               id: 'BienesServiciosMasivaComponent'
             }
           },
+          {
+            path: 'masiva/detalle/:id',
+            component: BienesServiciosMasivaDetalleComponent,
+            data: {
+              id: 'BienesServiciosMasivaDetalleComponent'
+            }
+          }
         ]
       }
     ]

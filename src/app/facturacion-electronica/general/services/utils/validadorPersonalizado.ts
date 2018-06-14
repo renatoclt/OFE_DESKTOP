@@ -42,8 +42,15 @@ export class ValidadorPersonalizado {
 
   static fechaDeberiaSerMenor(fechaInicialString: string, fechaFinalString: string, nombreError: string): ValidatorFn {
     return (formGroup: FormGroup): ValidationErrors => {
-      const fechaInicialParseada = formGroup.controls[fechaInicialString].value.split('/');
-      const fechaFinalParseada = formGroup.controls[fechaFinalString].value.split('/');
+      const fechaInicialStringAux = formGroup.controls[fechaInicialString].value;
+      const fechaFinalStringAux = formGroup.controls[fechaFinalString].value;
+      if (fechaInicialStringAux === null|| fechaFinalStringAux === null) {
+        const errores: ValidationErrors = {};
+        errores['required'] = '';
+        return errores;
+      }
+      const fechaInicialParseada = fechaInicialStringAux.split('/');
+      const fechaFinalParseada = fechaFinalStringAux.split('/');
       return this.compararFechas(fechaInicialParseada, nombreError, fechaFinalParseada);
     };
   }
@@ -134,7 +141,7 @@ export class ValidadorPersonalizado {
       const numero1 = Number(formGroup.controls[nombreControl].value);
       const numero2 = Number(leyenda.value[atributoLeyenda]);
       const esCorrectoTipo = nombresNotaLista.includes(tipoNota.value);
-      if (formGroup.controls[nombreControl].disabled) {
+      if (formGroup.controls[nombreControl].disabled && atributoLeyenda !== 'total') {
         return null;
       }
       if (esCorrectoTipo) {
@@ -176,5 +183,51 @@ export class ValidadorPersonalizado {
         return null;
       }
     };
+  }
+
+  static validarCorrelativos(serieControl: string, correlativoInicialControl: string, correlativoFinalControl: string): ValidatorFn {
+    return (formGroup: FormGroup): ValidationErrors => {
+      const correlativoInicial = formGroup.controls[correlativoInicialControl].value;
+      const correlativoFinal = formGroup.controls[correlativoFinalControl].value;
+      const serie = formGroup.controls[serieControl].value;
+      const errores: ValidationErrors = {};
+      const esNuloCorrelativoInicial = this.esNulo(correlativoInicial);
+      const esNuloCorrelativoFinal = this.esNulo(correlativoFinal);
+      const esNuloSerie = this.esNulo(serie);
+      if (esNuloSerie && esNuloCorrelativoInicial && esNuloCorrelativoFinal) {
+        return null;
+      } else {
+        if (esNuloSerie){
+          if (!esNuloCorrelativoInicial || !esNuloCorrelativoFinal) {
+            errores['serieError'] = 'serieRequerida';
+            return errores;
+          }
+        } else {
+          if (!esNuloCorrelativoInicial) {
+           if(esNuloCorrelativoFinal) {
+              return null;
+            } else {
+             if (Number(correlativoInicial) >= Number(correlativoFinal)) {
+               errores['correlativoInicialError'] = 'correlativoInicialDebeSerMenorACorrelativoFinal';
+               return errores;
+             } else {
+               return null;
+             }
+            }
+          } else {
+            if (esNuloCorrelativoFinal) {
+              return null;
+            } else {
+              errores['correlativoFinalError'] = 'correlativoInicialRequerido';
+              return errores;
+            }
+          }
+        }
+      }
+    };
+  }
+
+  static esNulo(valor: any) {
+    return valor === null || valor === '';
   }
 }

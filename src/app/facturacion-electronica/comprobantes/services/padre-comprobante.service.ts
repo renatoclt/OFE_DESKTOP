@@ -79,6 +79,8 @@ export class PadreComprobanteService {
     const codigosComprobantes = [
       this._tiposService.TIPO_DOCUMENTO_FACTURA,
       this._tiposService.TIPO_DOCUMENTO_BOLETA,
+      this._tiposService.TIPO_DOCUMENTO_NOTA_CREDITO,
+      this._tiposService.TIPO_DOCUMENTO_NOTA_DEBITO
     ];
     this._tiposDeComprobantes = this._tablaMaestraService.obtenerPorCodigosDeTablaMaestra(this.todosTiposComprobantes, codigosComprobantes);
     this.buscarPorCodigo(this._tiposService.TIPO_DOCUMENTO_FACTURA);

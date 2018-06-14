@@ -19,6 +19,8 @@ import {SpinnerService} from '../../../service/spinner.service';
 import {RefreshService} from '../../general/services/refresh.service';
 import {PadreRetencionPercepcionService} from '../services/padre-retencion-percepcion.service';
 import {ColumnaDataTable} from '../../general/data-table/utils/columna-data-table';
+import {UtilsService} from '../../general/utils/utils.service';
+import {FormatoFecha} from '../../general/utils/formato-fechas';
 declare var  swal: any;
 
 @Component({
@@ -54,12 +56,13 @@ export class VistapreviaRetencionComponent implements OnInit {
   public dianorm: string;
   public series: string;
   public tipo_moneda: string;
-  public total_importe: number;
+  public total_importe: string;
   public org_busqueda: Entidad;
   public retencion_principal: PrincipalRetencion;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
+              private _utilsService: UtilsService,
               private persistenciaService: PersistenciaServiceRetencion,
               private RetencionCabecerapersistenciaService: RetencionpersiscabeceraService,
               private _nuevodocumento: NuevoDocumentoService,
@@ -93,11 +96,12 @@ export class VistapreviaRetencionComponent implements OnInit {
     this.retencioncab = this.RetencionCabecerapersistenciaService.getCabeceraRetencion();
     this.org_busqueda = this._entidadPersistenciaService.getEntidad();
     if (this.retencioncab != null) {
-      this.total_importe = 0;
+      let totalAux = 0;
       this.listaitems = this.persistenciaService.getListaProductos();
       for (let i = 0 ; i < this.listaitems.length; i++ ) {
-        this.total_importe += Number(this.listaitems[i].totalImporteDestino);
+        totalAux += Number(this.listaitems[i].totalImporteDestino);
       }
+      this.total_importe = totalAux.toFixed(2);
 
       const fechastr = this.retencioncab.fecPago.toString().split('/');
       const dia = fechastr[0];
@@ -113,9 +117,6 @@ export class VistapreviaRetencionComponent implements OnInit {
         this.dianorm = dia;
       }
       const anio = fechastr[2];
-      const arr = this.retencioncab.total.toString().split('.');
-      const entero = arr[0];
-      const decimal = arr[1];
       this.rucemisor = this.retencioncab.rucProveedor;                  // COMPRADORA
       this.razonsocialemisor = this.retencioncab.razonSocialProveedor;  // COMPRADORA
       this.domiciliofiscalemisor = this.retencioncab.direccionproveedor;         // COMPRADORA
@@ -125,10 +126,8 @@ export class VistapreviaRetencionComponent implements OnInit {
       this.observacion = this.retencioncab.observacionComprobante;
       this.fechaemisiones =  anio + '-' + this.mesnorm + '-' + this.dianorm;
       this.totales = this.retencioncab.total;
-      this.total_importe = Number( parseFloat( this.total_importe.toString() ).toFixed(2));
       this.tipo_moneda = this.retencioncab.moneda.toString();
-      this.totalespalabaras =  (WrittenNumber(Number(entero), { lang: 'es' }) + ' ' +
-        'SOLES' + ' CON ' + WrittenNumber(Number(decimal), { lang: 'es' }) + ' CENTÍMOS.');
+      this.calcularTotales();
       this.tipocambio = '-';
       this.banco = '-';
       this.series = this.retencioncab.serie;
@@ -161,6 +160,17 @@ export class VistapreviaRetencionComponent implements OnInit {
     this.entidadreceptora.notifica = 'S';
   }
 
+
+
+  public calcularTotales() {
+    this.totalespalabaras = Number(this.retencioncab.total).toFixed(2);
+    const arr = this.totalespalabaras.split('.');
+    const entero = arr[0];
+    const decimal = arr[1];
+    this.totalespalabaras =  (WrittenNumber(Number(entero), { lang: 'es' }) + ' '
+      + ' CON ' + decimal + '/100 SOLES.');
+  }
+
   regresar() {
     this.Refresh.CargarPersistencia = true;
     console.log('this.Refresh.CargarPersistencia - VISTAPREVIA ');
@@ -186,11 +196,14 @@ export class VistapreviaRetencionComponent implements OnInit {
     this.retencion_principal.fechaEmision = new Date(Number(anio), Number(mes) - 1, Number(dia), 0, 0, 0, 0).getTime();
     this.retencion_principal.observacionComprobante = this.retencioncab.observacionComprobante;
     this.retencion_principal.tipoComprobante = this.retencioncab.tipocomprobanteproveedor;
-    this.retencion_principal.montoPagado = this.retencioncab.totalimporte - this.retencioncab.total;
+    this.retencion_principal.montoPagado = 0;
+    // this.retencion_principal.montoPagado = this.retencioncab.totalimporte - this.retencioncab.total;
     this.retencion_principal.monedaDescuento = 'PEN';
     this.retencion_principal.montoDescuento = this.retencioncab.total;
     this.retencion_principal.descuento = 0.00;  // POR DEFECTO 0
-    this.retencion_principal.totalComprobante = this.retencioncab.totalimporte;
+    // this.retencion_principal.totalComprobante = this.retencioncab.totalimporte;
+    this.retencion_principal.totalComprobante = this.retencioncab.totalimporte - this.retencioncab.total;
+
     this.retencion_principal.tipoItem = 3; // POR DEFECTO
     this.retencion_principal.idTablaMoneda = this._tipos.ID_TABLA_TIPO_MONEDA;
     this.retencion_principal.idRegistroMoneda = this._tipos.TIPO_MONEDA_SOL;
@@ -210,7 +223,8 @@ export class VistapreviaRetencionComponent implements OnInit {
       this.documentoreferenciaunit.tipoDocumentoOrigen = persistencia_detalle[i].tipoDocumentoOrigen;
       this.documentoreferenciaunit.serieDocumentoDestino = persistencia_detalle[i].serieDocumentoDestino;
       this.documentoreferenciaunit.correlativoDocumentoDestino = persistencia_detalle[i].correlativoDocumentoDestino;
-      this.documentoreferenciaunit.fechaEmisionDestino = new Date (persistencia_detalle[i].fechaEmisionDestino).getTime();
+      this.documentoreferenciaunit.fechaEmisionDestino =
+        this._utilsService.convertirFechaStringATimestamp(persistencia_detalle[i].fechaEmisionDestino, '-', FormatoFecha.ANIO_MES_DIA);
       this.documentoreferenciaunit.totalImporteDestino = persistencia_detalle[i].totalImporteDestino;
       this.documentoreferenciaunit.totalImporteAuxiliarDestino = persistencia_detalle[i].totalImporteAuxiliarDestino;
       this.documentoreferenciaunit.totalPorcentajeAuxiliarDestino = persistencia_detalle[i].totalPorcentajeAuxiliarDestino;
@@ -232,10 +246,11 @@ export class VistapreviaRetencionComponent implements OnInit {
       data => {
         const datapost = new Post_retencion();
         const that = this;
-        if (data) {
-           console.log('ir a la pagina');
+        setTimeout(function () {
+         if (data) {
            that.router.navigate(['percepcion-retencion/retencion/crear/individual/emision', data.id]);
-        }
+         }
+         },  3000 );
       },
       error => {
       }
