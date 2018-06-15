@@ -29,6 +29,7 @@ import {Ng2AutoCompleteModule} from 'ng2-auto-complete';
 import {Detalletabla} from './services/detalletabla';
 import {PadreComprobanteService} from '../comprobantes/services/padre-comprobante.service';
 import {PadreRetencionPercepcionService} from './services/padre-retencion-percepcion.service';
+import {TiposService} from '../general/utils/tipos.service';
 
 @NgModule({
   imports: [
@@ -67,7 +68,8 @@ import {PadreRetencionPercepcionService} from './services/padre-retencion-percep
     PercepcionRetencionReferenciasService,
     Detalletabla,
     PadreComprobanteService,
-    PadreRetencionPercepcionService
+    PadreRetencionPercepcionService,
+    TiposService
 ],
   exports: [
     PercepcionRetencionComponent

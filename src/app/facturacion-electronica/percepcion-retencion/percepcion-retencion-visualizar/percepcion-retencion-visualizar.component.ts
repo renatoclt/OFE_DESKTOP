@@ -1,4 +1,4 @@
-import {AfterViewChecked, AfterViewInit, Component, OnChanges, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import * as WrittenNumber from 'written-number';
 import {HttpClient} from '@angular/common/http';
@@ -13,24 +13,21 @@ import { PersistenciaEntidadService } from '../services/persistencia.entidad.ser
 import { RetencionpersiscabeceraService } from '../services/retencionpersiscabecera.service';
 import { NuevoDocumentoService } from '../../general/services/documento/nuevoDocumento';
 import { PersistenciaPost } from '../services/persistencia-post';
-import { Post_retencion } from '../models/post_retencion';
 import { ComprobantesService } from '../../general/services/comprobantes/comprobantes.service';
 import { ComprobantesQuery } from '../../resumen-bajas/models/comprobantes-query';
-import { error } from 'util';
 import { TipoArchivo, TIPOS_ARCHIVOS } from 'app/facturacion-electronica/general/models/archivos/tipoArchivo';
 import { Servidores } from 'app/facturacion-electronica/general/services/servidores';
 import { CorreoService } from 'app/facturacion-electronica/general/services/correo/correo.service';
-import { Console } from '@angular/core/src/console';
 import {ArchivoService} from '../../general/services/archivos/archivo.service';
-import {saveAs} from 'file-saver';
-import { RetencionService } from 'app/facturacion-electronica/general/services/comprobantes/retencion.service';
 import { HttpParams } from '@angular/common/http';
 import { ConsultaDocumentoQuery } from 'app/facturacion-electronica/general/models/consultaDocumentoQuery';
 import { PercepcionRetencionReferenciasService } from 'app/facturacion-electronica/percepcion-retencion/services/percepcion-retencion-referencias.service';
-import { SpinnerService } from 'app/service/spinner.service';
-import {Comprobante} from '../models/comprobante';
 import {Detalletabla} from '../services/detalletabla';
 import {ColumnaDataTable} from '../../general/data-table/utils/columna-data-table';
+import {TIPO_ARCHIVO_PDF} from '../../general/models/archivos/tipoArchivo';
+import {DocumentoQuery} from '../../general/models/comprobantes';
+import {TiposService} from '../../general/utils/tipos.service';
+import {BehaviorSubject} from 'rxjs/BehaviorSubject';
   declare var $, swal: any;
 
 
@@ -40,6 +37,8 @@ import {ColumnaDataTable} from '../../general/data-table/utils/columna-data-tabl
     styleUrls: ['./percepcion-retencion-visualizar.component.css']
 })
 export class PercepcionRetencionVisualizarComponent implements OnInit {
+  public documento: DocumentoQuery;
+
   public parametrosVisualizar: HttpParams;
   public urlVisualizarRetencion: string;
   public tipoConsultaVisualizarRetencion: string;
@@ -55,6 +54,8 @@ export class PercepcionRetencionVisualizarComponent implements OnInit {
   public documentoreferenciaunit: Rdetalle = new Rdetalle();
   public columnasTabla: ColumnaDataTable[];
   @ViewChild('tablaNormal') tabla: DataTableComponent<Retencionebiz>;
+////////////////////////////////////////////////////
+
   public rucreceptor: number;              // COMPRADORA
   public razonsocialreceptor: string;      // COMPRADORA
   public domiciliofiscalreceptor: string;  // COMPRADORA
@@ -73,9 +74,10 @@ export class PercepcionRetencionVisualizarComponent implements OnInit {
   public tipo_moneda: string;
   public monedacabe: string;
   public comprobante: string;
-  public totalImporte: number;
+  public totalImporte: string;
   public retencion_principal: PrincipalRetencion;
   public uuid_pdf: any;
+  esRetencion: BehaviorSubject<boolean>;
 
   constructor(
               private route: ActivatedRoute,
@@ -86,15 +88,16 @@ export class PercepcionRetencionVisualizarComponent implements OnInit {
               private _entidadPersistenciaService: PersistenciaEntidadService,
               private httpClient: HttpClient,
               private _postpersisservice: PersistenciaPost,
-              private _retencionService: RetencionService,
               private _comprobantesService: ComprobantesService,
               private _servidores: Servidores,
               private correoService: CorreoService,
               public _percepcionRetencionReferenciasService: PercepcionRetencionReferenciasService,
               public _detalletabla: Detalletabla,
-              private archivoServicio: ArchivoService
+              private archivoServicio: ArchivoService,
+              private _tiposService: TiposService
               ) {
                   this.retencion_principal = new PrincipalRetencion();
+                  this.esRetencion = new BehaviorSubject(false);
                   this.entidadlogueo = new Entidad;
                   this.entidadreceptora = new Entidad;
                   this.listaitems = [];
@@ -105,11 +108,9 @@ export class PercepcionRetencionVisualizarComponent implements OnInit {
                     new ColumnaDataTable('fechaEmision', 'daFecEmiDest'),
                     new ColumnaDataTable('Moneda Origen', 'vcMonedaDestino'),
                     new ColumnaDataTable('importeTotal', 'deTotMoneDes', {'text-align': 'right'}),
-                    new ColumnaDataTable('importeTotalsoles', 'nuTotImpDest', {'text-align': 'right'}),
-                    new ColumnaDataTable('importeRetencionsoles', 'nuTotImpAux', {'text-align': 'right'}),
-                    new ColumnaDataTable('Nro Doc ERP', 'vcPolizaFactura')
+                    new ColumnaDataTable('importeTotalsoles', 'nuTotImpDest', {'text-align': 'right'})
                   ];
-                 }
+              }
 
   ngOnInit() {
     // this.spineractivar();
@@ -118,12 +119,21 @@ export class PercepcionRetencionVisualizarComponent implements OnInit {
     this.uuid = this.persistenciaService.getUUIDConsultaRetenecion();
     console.log('UUID');
     console.log(this.uuid);
-    documentos_query = this._retencionService.buscarPorUuid(this.uuid);
-    const urlDefecto = this._servidores.HOSTLOCAL + '/documento?id=' + this.uuid;
     this._comprobantesService.visualizar(this.uuid).subscribe (
       data => {
         if (data) {
           console.log(data);
+          if (data.vcIdregistrotipocomprobante === this._tiposService.TIPO_DOCUMENTO_RETENCION) {
+            this.esRetencion.next(true);
+            this.columnasTabla.push(
+              new ColumnaDataTable('importeRetencionsoles', 'nuTotImpAux', {'text-align': 'right'}),
+            );
+          } else {
+            this.esRetencion.next(false);
+            this.columnasTabla.push(
+              new ColumnaDataTable('importePercepcionSoles', 'nuTotImpAux', {'text-align': 'right'}),
+            );
+          }
           this.cargarData(data);
         }
         // this.docmentos_query = JSON.parse(data);
@@ -136,6 +146,7 @@ export class PercepcionRetencionVisualizarComponent implements OnInit {
 
 
   public cargarData(data: any) {
+      this.documento = data;
       this.comprobante = data.vcTipocomprobante;
       this.razonsocialemisor = data.entidadproveedora.vcNomComercia;
       this.rucemisor = data.entidadproveedora.vcDocumento;
@@ -151,28 +162,24 @@ export class PercepcionRetencionVisualizarComponent implements OnInit {
       this.fechaemisiones = data.tsFechacreacion;
       this.tipoComprobante = data.vcTipocomprobante;
       this.tipocambio = '';
-      this.totalImporte = data.deTotalcomprobantepago;
+      this.totalImporte = Number(data.deTotalcomprobantepago).toFixed(2);
       this.totalRetencion = data.deDctomonto.toFixed(2);
       this.tipocambio = this.formatearNumeroFormatoMoneda(Number(this.tipocambio));
       // this.tabla.insertarData(this.listaitems);
       this.calcularTotales();
   }
+
   public cargarDataTabla() {
     const dtoConsulta: ConsultaDocumentoQuery = new ConsultaDocumentoQuery();
 
     this.parametrosVisualizar = new HttpParams()
     .set('comprobanteID', this.uuid);
-    this.urlVisualizarRetencion = this._percepcionRetencionReferenciasService.urlQry;
+    this.urlVisualizarRetencion = this._detalletabla.urlQry;
     this.tabla.setParametros(this.parametrosVisualizar);
     console.log('LA SUPER CONSULTA');
     this.tipoConsultaVisualizarRetencion = this._detalletabla.TIPO_ATRIBUTO_REFERENCIAS;
-  
-
-    //documentos_query = this._comprobantes.filtroDefecto(consultaRetencion);
-    this.tipoConsultaVisualizarRetencion = this._percepcionRetencionReferenciasService.TIPO_ATRIBUTO_REFERENCIAS;
-    //this.tabla.cargarData();
-
   }
+
   public formatearNumeroFormatoMoneda ( numero: number): string {
     return numero.toFixed(2);
   }
@@ -186,15 +193,25 @@ export class PercepcionRetencionVisualizarComponent implements OnInit {
     + ' CON ' + decimal + '/100 SOLES.');
   }
 
-  guardarArchivo(archivo: TipoArchivo) {
-    console.log('DESCARGA DE ARCHIVOS TIPOS');
-    console.log( archivo.idArchivo);
-    console.log(this.uuid);
-    this.archivoServicio.descargararchivotipo(this.uuid, archivo.idArchivo);
+  guardarArchivo(archivo: TipoArchivo, event: Event) {
+    if (event.target['parentElement'].className !== 'disabled') {
+      this.archivoServicio.descargararchivotipo(this.uuid, archivo.idArchivo);
+    }
+  }
+
+  habilitarTipoArchivo(archivo: TipoArchivo) {
+    if (
+      this.documento &&
+      Number(this.documento.chEstadocomprobantepago) === this._tiposService.TIPO_ESTADO_PENDIENTE_DE_ENVIO &&
+      archivo.idArchivo !== TIPO_ARCHIVO_PDF.idArchivo
+    ) {
+      return false;
+    }
+    return true;
   }
 
   regresar() {
-    this.router.navigateByUrl('percepcion-retencion/consultar');
+     this.router.navigateByUrl('percepcion-retencion/consultar');
   }
 
 
@@ -207,6 +224,7 @@ export class PercepcionRetencionVisualizarComponent implements OnInit {
     this.archivoServicio.retornarArchivoRetencionPercepcionbase(this.uuid)
       .subscribe(
         data => {
+          console.log(data);
           if (data) {
             const winparams = 'dependent = yes, locationbar = no, menubar = yes, resizable, screenX = 50, screenY = 50, width = 800, height = 800';
             const htmlPop = '<embed width=100% height=100% type="application/pdf" src="data:application/pdf;base64,' + data + '"> </embed>';
@@ -216,12 +234,14 @@ export class PercepcionRetencionVisualizarComponent implements OnInit {
           // console.log(this.data);
         }
       );
+    console.log(this.uuid);
   }
 
   iniciarData(event) {
     this.cargarDataTabla();
     this.calcularTotales();
   }
+
   showSwal() {
     const that = this;
 
@@ -269,7 +289,10 @@ export class PercepcionRetencionVisualizarComponent implements OnInit {
       const numeroComprobante: string = that.uuid;
       const serie = that.series;
       const correlativo = that.correlativo;
-      const tipoComprobante = that.tipoComprobante;
+      let tipoComprobante = that.tipoComprobante;
+      if (!that.esRetencion.value) {
+        tipoComprobante = 'Percepción';
+      }
       // const fechaEmision = new Date(that.fechaemisiones).toISOString();
       const fechaEmision = that.fechaemisiones;
       const ubicacion = that.uuid + '-1.pdf';

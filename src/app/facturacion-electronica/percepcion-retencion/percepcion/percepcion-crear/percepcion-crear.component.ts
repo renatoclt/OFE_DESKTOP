@@ -174,6 +174,7 @@ export class PercepcionCrearComponent implements OnInit {
       this.percepcionFormGroup.controls['txtruc'].setValue(entidadReceptora.documento);
       this.percepcionFormGroup.controls['razonsocial'].setValue(entidadReceptora.denominacion);
       this.percepcionFormGroup.controls['txtcorreo'].setValue(entidadReceptora.correoElectronico);
+      this.percepcionFormGroup.controls['txtcorreo'].enable(true);
       this.percepcionFormGroup.controls['txtdireccionfiscal'].setValue(entidadReceptora.direccionFiscal);
 
       this._estilosService.eliminarEstiloInput('txtruc', 'is-empty');
@@ -394,6 +395,9 @@ export class PercepcionCrearComponent implements OnInit {
     percepcionCabecera.porcentajePercepcion = this.verificarMontoPorcentajePercepcion(percepcionCabecera.tipoPorcentajePercepcion);
 
     const percepcionAuxiliar = new PercepcionCrearAuxiliar();
+    if (this.entidadEmisor) {
+      this.entidadEmisor.correoElectronico = this.percepcionFormGroup.controls['txtcorreo'].value;
+    }
     percepcionAuxiliar.entidadReceptora = this.entidadEmisor;
     percepcionAuxiliar.cabecera = percepcionCabecera;
     percepcionAuxiliar.detalle = this.tabla.getData();

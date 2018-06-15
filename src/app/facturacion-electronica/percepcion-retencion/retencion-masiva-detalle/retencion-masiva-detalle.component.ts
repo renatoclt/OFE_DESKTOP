@@ -47,7 +47,7 @@ export class RetencionMasivaDetalleComponent implements OnInit {
       new ColumnaDataTable('fila', 'fila'),
       new ColumnaDataTable('serie', 'serie'),
       new ColumnaDataTable('numeroCorrelativo', 'correlativo'),
-      new ColumnaDataTable('descripcionError', 'descripcionError', {'text-align': 'left'})
+      new ColumnaDataTable('descripcionError', 'error', {'text-align': 'left'})
     ];
     this.ordenarPorElCampo = 'serie';
     this.tipoMetodoMasiva = this._archivosMasivaService.TIPO_ATRIBUTO_DETALLE_DOCUMENTO_MASIVO;

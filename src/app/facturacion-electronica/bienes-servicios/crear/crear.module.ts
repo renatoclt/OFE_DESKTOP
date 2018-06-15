@@ -53,16 +53,18 @@ import {ArchivoMasivaService} from '../../percepcion-retencion/services/archivoM
     PadreComprobanteService,
     ProductoMasivoService,
     EstilosServices,
+    ArchivoMasivaService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptorService,
       multi: true
     }
-],
+  ],
   exports: [
     CrearComponent,
     BienesServiciosIndividualComponent,
-    BienesServiciosMasivaComponent
+    BienesServiciosMasivaComponent,
+    BienesServiciosMasivaDetalleComponent
   ]
 })
 export class CrearModule { }

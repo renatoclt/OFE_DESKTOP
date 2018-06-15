@@ -20,6 +20,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {Comprobante} from '../../../general/models/comprobantes/comprobante';
 import {Subscription} from 'rxjs/Subscription';
 import {DatePipe} from '@angular/common';
+import {ManejoMensajes} from '../../../general/utils/manejo-mensajes';
 
 declare var swal: any;
 
@@ -51,6 +52,7 @@ export class PercepcionItemCrearComponent implements OnInit, OnDestroy {
   titulo: string;
   constructor(private route: ActivatedRoute,
               private router: Router,
+              private manejoMensajes: ManejoMensajes,
               private _comprobantesService: ComprobantesService,
               private _tiposService: TiposService,
               private _tablaMaestraService: TablaMaestraService,
@@ -175,7 +177,11 @@ export class PercepcionItemCrearComponent implements OnInit, OnDestroy {
     const fecha_actual = fecha.getDate().toString() + '/' + (fecha.getMonth() + 1).toString() + '/' + fecha.getFullYear().toString();
     this.itemFormGroup = new FormGroup({
       'cmbTipoComprobante': new FormControl('', [Validators.required]),
-      'txtSerieComprobante': new FormControl('' , [Validators.required]),
+      'txtSerieComprobante': new FormControl('' , [
+          Validators.required,
+          Validators.minLength(4),
+          Validators.maxLength(4)
+      ]),
       'txtCorrelativoComprobante': new FormControl('' , [Validators.required]),
       'txtMontoComprobante': new FormControl('0.00', [
         Validators.required,
@@ -338,7 +344,6 @@ export class PercepcionItemCrearComponent implements OnInit, OnDestroy {
     this.itemAEditar.importeSolesComprobante = this.itemFormGroup.controls['txtImporteSoles'].value;
     this.itemAEditar.tipoPorcentajePercepcion = this.itemFormGroup.controls['cmbPorcentajePercepcion'].value;
     this.itemAEditar.montoPercepcion = this.itemFormGroup.controls['txtMontoPercepcion'].value;
-    this._percepcionComunService.itemDetalleEditar.next(this.itemAEditar);
   }
 
   guardarItem(esEditable: boolean) {
@@ -354,7 +359,28 @@ export class PercepcionItemCrearComponent implements OnInit, OnDestroy {
       }
     } else {
       this.obtenerNuevaDataItem();
-      this.regresar();
+      if (this.verificarExistenciaItem()) {
+        this.manejoMensajes.mostrarMensajeAdvertencia('itemRegistrado', 'verificarItemRetencionPercepcion');
+      } else {
+        this._percepcionComunService.itemDetalleEditar.next(this.itemAEditar);
+        // this.manejoMensajes.mostrarMensajeAdvertencia('itemRegistrado', 'verificarItemRetencionPercepcion');
+        this.manejoMensajes.mostrarMensajeExitoso();
+        this.regresar();
+      }
+    }
+  }
+
+  verificarExistenciaItem() {
+    for (const detalle of this._percepcionComunService.percepcionAuxiliar.value.detalle) {
+      if (
+        detalle.tipoComprobante.codigo === this.itemAEditar.tipoComprobante.codigo &&
+        detalle.serieComprobante === this.itemAEditar.serieComprobante &&
+        detalle.correlativoComprobante === this.itemAEditar.correlativoComprobante
+        // && detalle.fechaEmisionComprobante === this.itemAEditar.fechaEmisionComprobante
+      ) {
+        return true;
+      }
+      return false;
     }
   }
 
