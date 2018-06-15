@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Servidores} from '../servidores';
 import {HttpClient, HttpParams} from '@angular/common/http';
-import {TABLA_MAESTRA_TIPO_DOCUMENTO, TablaMaestra, TABLA_MAESTRA_UNIDADES_MEDIDA} from '../../models/documento/tablaMaestra';
+import {TABLA_MAESTRA_TIPO_DOCUMENTO, ID_ENTIDAD_DEFECTO , TablaMaestra, TABLA_MAESTRA_UNIDADES_MEDIDA} from '../../models/documento/tablaMaestra';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import { error } from 'util';
 import { SpinnerService } from 'app/service/spinner.service';
@@ -11,7 +11,7 @@ export class TablaMaestraService {
   private url: string = '/maestra';
   private buscar: string = '/search';
   private filtro: string = '/filtros';
-  private filtrosEspeciales: string = '/filtrosespeciales';
+  private filtrosEspeciales: string = '/filtros';
 
   constructor(private servidores: Servidores,
               private httpClient: HttpClient,

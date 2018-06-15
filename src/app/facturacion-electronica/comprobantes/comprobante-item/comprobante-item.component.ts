@@ -846,16 +846,17 @@ export class ComprobanteItemComponent implements OnInit, AfterViewInit {
     }
 
     private seleccionarTipoPrecioVenta() {
+        console.log(this._tipos.TIPO_PRECIO_PRECIO_UNITARIO_CODIGO);
         $('radioTipoIgvGravado').disable = true;
         this.itemFormGroup.controls['radioTipoIgv'].reset()
-        switch(this.itemFormGroup.controls['cmbTipoPrecioVenta'].value) {
-            case this._tipos.TIPO_PRECIO_PRECIO_UNITARIO_CODIGO:
+        switch(Number(this.itemFormGroup.controls['cmbTipoPrecioVenta'].value)) {
+            case Number(this._tipos.TIPO_PRECIO_PRECIO_UNITARIO_CODIGO):
                 $('#radioTipoIgvGravado').prop('disabled', false);
                 $('#radioTipoIgvInafecto').prop('disabled', true);
                 $('#radioTipoIgvExonerado').prop('disabled', true);
                 // this.itemFormGroup.controls['radioTipoIgv'].setValue('10');
                 break;
-            case this._tipos.TIPO_PRECIO_VALOR_REFERENCIAL_UNITARIO_CODIGO:
+            case Number(this._tipos.TIPO_PRECIO_VALOR_REFERENCIAL_UNITARIO_CODIGO):
                 $('#radioTipoIgvGravado').prop('disabled', true);
                 $('#radioTipoIgvInafecto').prop('disabled', false);
                 $('#radioTipoIgvExonerado').prop('disabled', false);

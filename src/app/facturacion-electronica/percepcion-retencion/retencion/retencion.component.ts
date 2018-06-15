@@ -13,7 +13,6 @@ export class RetencionComponent implements OnInit {
   constunitaria = 'RetencionUnitariaComponent';
 
   @ViewChild('unitaria') unitaria: ElementRef;
-  @ViewChild('masiva') masiva: ElementRef;
 
   constructor( private router: Router,
                private route: ActivatedRoute,
@@ -26,13 +25,8 @@ export class RetencionComponent implements OnInit {
         if (data) {
           if (data.codigo === this._tiposService.TIPO_DOCUMENTO_RETENCION) {
             const idruta = this.route.children[0]['data']['value']['id'];
-            if (idruta === this.constunitaria ) {
-              this.unitaria.nativeElement.className = 'active';
-              this.masiva.nativeElement.className = '';
-            } else {
-              this.masiva.nativeElement.className = 'active';
-              this.unitaria.nativeElement.className = '';
-            }
+            this.unitaria.nativeElement.className = 'active';
+            // this.masiva.nativeElement.className = '';
           }
         }
       }
@@ -44,6 +38,6 @@ export class RetencionComponent implements OnInit {
   }
 
   llamar_masiva() {
-    this.router.navigateByUrl('percepcion-retencion/retencion/crear/masiva');
+    this.router.navigateByUrl('percepcion-retencion/retencion/crear/individual');
   }
 }
