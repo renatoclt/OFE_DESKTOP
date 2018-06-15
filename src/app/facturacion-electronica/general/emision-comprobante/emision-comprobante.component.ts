@@ -3,7 +3,7 @@ import {CorreoService} from '../services/correo/correo.service';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {ActivatedRoute, Params, Router} from '@angular/router';
 import {ArchivoService} from '../services/archivos/archivo.service';
-import {TIPO_ARCHIVO_PDF, TipoArchivo, TIPOS_ARCHIVOS} from '../models/archivos/tipoArchivo';
+import {TIPO_ARCHIVO_PDF, TipoArchivo, TIPOS_ARCHIVOS, TIPOS_ARCHIVOS_OFFLINE} from '../models/archivos/tipoArchivo';
 import {TranslateService} from '@ngx-translate/core';
 import {ComprobantesService} from '../services/comprobantes/comprobantes.service';
 import {Subscription} from 'rxjs/Subscription';
@@ -40,7 +40,7 @@ export class EmisionComprobanteComponent implements OnInit, OnDestroy {
               private _padreComprobanteService: PadreComprobanteService) {
     this._padreComprobanteService.actualizarComprobante(this.route.snapshot.data['codigo'], this.route.snapshot.data['mostrarCombo']);
     this.pdfSrc = new BehaviorSubject({data: []});
-    this.tiposArchivos = TIPOS_ARCHIVOS;
+    this.tiposArchivos = TIPOS_ARCHIVOS_OFFLINE;
     this.deshabilitar = new BehaviorSubject(true);
     this.comprobanteSubscription = new Subscription();
     this.deshabilitarSubscription = new Subscription();

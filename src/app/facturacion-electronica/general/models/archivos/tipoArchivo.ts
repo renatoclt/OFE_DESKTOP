@@ -23,3 +23,7 @@ export const TIPOS_ARCHIVOS: TipoArchivo[] = [
   TIPO_ARCHIVO_CDR,
   TIPO_ARCHIVO_XML
 ];
+
+export const TIPOS_ARCHIVOS_OFFLINE: TipoArchivo[] = [
+  TIPO_ARCHIVO_PDF,
+];

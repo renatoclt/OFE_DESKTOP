@@ -3,7 +3,7 @@ import {ActivatedRoute, Params, Router} from '@angular/router';
 import { CorreoService } from '../../general/services/correo/correo.service';
 import { ArchivoService } from '../../general/services/archivos/archivo.service';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import {TIPO_ARCHIVO_PDF, TipoArchivo, TIPOS_ARCHIVOS} from '../../general/models/archivos/tipoArchivo';
+import {TIPO_ARCHIVO_PDF, TipoArchivo, TIPOS_ARCHIVOS,TIPOS_ARCHIVOS_OFFLINE} from '../../general/models/archivos/tipoArchivo';
 import { Servidores } from 'app/facturacion-electronica/general/services/servidores';
 import {escape} from 'querystring';
 import {SpinnerService} from '../../../service/spinner.service';
@@ -25,7 +25,8 @@ export class ComprobanteEmitirComponent implements OnInit {
   pdfSrc: BehaviorSubject<{}>= new BehaviorSubject<{}>({data: []});
   public comprobante: DocumentoQuery = new DocumentoQuery();
 
-  tiposArchivos: TipoArchivo[] = TIPOS_ARCHIVOS;
+  // tiposArchivos: TipoArchivo[] = TIPOS_ARCHIVOS;
+  tiposArchivos: TipoArchivo[] = TIPOS_ARCHIVOS_OFFLINE;
   pdf: any;
   public idComprobante: string;
   public comprobanteEmitidoPersistencia = new ComprobanteEmitido();

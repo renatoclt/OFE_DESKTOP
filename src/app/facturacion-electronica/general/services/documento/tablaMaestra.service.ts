@@ -17,7 +17,7 @@ export class TablaMaestraService {
               private httpClient: HttpClient,
               private _spinner: SpinnerService
             ) {
-    this.url = this.servidores.AFEDOCUQRY + this.url;
+    this.url = this.servidores.HOSTLOCAL + this.url;
   }
 
   obtenerTodoTablaMaestra(): BehaviorSubject<TablaMaestra[]> {
