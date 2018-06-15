@@ -20,7 +20,7 @@ const routes: Routes = [
         component: RetencionComponent,
         children: [
           {
-            path: '', pathMatch: 'full', redirectTo: 'masiva'
+            path: '', pathMatch: 'full', redirectTo: 'individual'
           },
           {
             path: 'individual',
@@ -37,7 +37,7 @@ const routes: Routes = [
             data: {
               mostrarCombo: true,
               codigo: '20',
-              id: 'RetencionMasivaComponent'
+              id: 'RetencionUnitariaComponent'
             }
           },
         ]

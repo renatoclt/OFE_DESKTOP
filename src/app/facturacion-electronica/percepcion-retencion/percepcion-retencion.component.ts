@@ -43,6 +43,7 @@ export class PercepcionRetencionComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.padreRetencionPercepcionService.cargarTiposComprobantes();
     this.comprobanteSeleccinadoSubscription.unsubscribe();
   }
 

@@ -110,6 +110,7 @@ export class RetencionUnitariaComponent implements OnInit, OnDestroy {
     this.cargarProductoEditarLleno();
     this.cargarServiciosArranque();
     this.setTipoComprobante();
+    
     this.serieService.filtroSeries(localStorage.getItem('id_entidad'), this._tipos.TIPO_DOCUMENTO_RETENCION, this._tipos.TIPO_SERIE_OFFLINE.toString())
       .subscribe(
         valor => {

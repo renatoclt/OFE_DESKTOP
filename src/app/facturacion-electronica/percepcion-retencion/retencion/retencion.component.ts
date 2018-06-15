@@ -22,6 +22,7 @@ export class RetencionComponent implements OnInit {
   ngOnInit() {
     this.padreRetencionPercepcionService.comprobanteSeleccionado.subscribe(
       data => {
+        this.unitaria.nativeElement.className = 'active';
         if (data) {
           if (data.codigo === this._tiposService.TIPO_DOCUMENTO_RETENCION) {
             const idruta = this.route.children[0]['data']['value']['id'];
