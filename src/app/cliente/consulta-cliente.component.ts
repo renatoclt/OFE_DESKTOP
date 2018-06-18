@@ -122,7 +122,6 @@ export class ConsultaClienteComponent implements OnInit {
         ];
         this.tiposComprobantes =
             this._tablaMaestraService.obtenerPorCodigosDeTablaMaestra(this.todosTiposComprobantes, codigosComprobantes);
-        console.log(this.tiposComprobantes);
 
     }
     private InitForm() {
@@ -227,7 +226,6 @@ export class ConsultaClienteComponent implements OnInit {
         const that = this;
         this.tiposDocumentos =
             this._tablaMaestraService.obtenerPorCodigosDeTablaMaestra(this.todosTiposDocumentoIdentidad, codigosDocumentosIdentidad);
-        console.log(this.tiposDocumentos);
 
         this.eliminarEstiloInput('cmbTipoDocumento', 'is-empty');
         this.consultaFormGroup.controls['cmbTipoDocumento'].enable();
@@ -347,7 +345,6 @@ export class ConsultaClienteComponent implements OnInit {
         this.consultaQuery.numeroPagina = this.tablaComprobanteCliente.paginacion.pagina.getValue().toString();
         //  this.validacionesFiltroComprobante();
         if (this.flagConsulta) {
-            console.log('SERVICIO');
             this.setParametrosFiltroConsulta();
             this.urlConsulta = this._comprobantesCliente.urlConsultaQueryCliente;
             this.tablaComprobanteCliente.setParametros(this.parametrosConsulta);
@@ -493,7 +490,6 @@ export class ConsultaClienteComponent implements OnInit {
     itemSeleccionado = evento[1];
     switch (evento[0]) {
       case TipoAccion.VISUALIZAR:
-        console.log(itemSeleccionado.inIdcomprobantepago);
         this.comprobanteVisualizar.uuid = itemSeleccionado.inIdcomprobantepago;
         this.comprobanteVisualizar.serie = itemSeleccionado.vcSerie;
         this.comprobanteVisualizar.correlativo = itemSeleccionado.vcCorrelativo;

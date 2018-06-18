@@ -449,7 +449,6 @@ export class EmpresaEmisoraComponent implements OnInit {
         archivoBase64img = archivoReaderCertificado.result.split(',')[1];
         const documento: string = localStorage.getItem('org_ruc');
         const data: string = archivoBase64img;
-        console.log('---entrando imagen', archivoEntrada);
         archivoEntrada.cargarLogo(documento, data);
       };
     }
@@ -457,18 +456,15 @@ export class EmpresaEmisoraComponent implements OnInit {
 
   public cargarCertificadoDigital(archivoEntrada: ArchivoSubir) {
     if (this.certificadoSeleccionado.value) {
-      console.log(this.certificadoSeleccionado.value);
       const archivoReaderCertificado = new FileReader();
       const archivoCertificado = this.certificadoSeleccionado.value[0];
       archivoReaderCertificado.readAsDataURL(archivoCertificado);
-      console.log( archivoReaderCertificado.result.split(',')[1]);
       let archivoBase64img = '';
 
       archivoReaderCertificado.onload = function (event) {
         archivoBase64img = archivoReaderCertificado.result.split(',')[1];
         const documento: string = localStorage.getItem('org_ruc');
         const data: string = archivoBase64img;
-        console.log('---entrando certificado', archivoEntrada);
         archivoEntrada.cargarCertificado(documento, data);
       };
     }
@@ -494,7 +490,6 @@ export class EmpresaEmisoraComponent implements OnInit {
     const that = this;
     setTimeout(
       () => {
-        console.log('---entrando total', archivoEntrada)
         this.organizaciones.actualizar_entidad(archivoEntrada).subscribe(
           data => {
             if (data) {

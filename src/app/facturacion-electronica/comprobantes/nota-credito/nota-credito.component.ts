@@ -325,8 +325,6 @@ export class NotaCreditoComponent implements OnInit, OnDestroy {
       this._tiposService.TIPO_ESTADO_AUTORIZADO,
       this._tiposService.TIPO_ESTADO_AUTORIZADO_CON_OBSERVACIONES
     ];
-    console.log(estadoComprobante);
-    console.log(tiposEstadosAceptados.findIndex(item => item === Number(estadoComprobante)) !== -1);
     return tiposEstadosAceptados.findIndex(item => item === Number(estadoComprobante)) !== -1;
   }
 

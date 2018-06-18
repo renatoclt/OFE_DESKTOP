@@ -149,8 +149,6 @@ export class DataTableComponent<T> implements OnInit, AfterViewInit, OnDestroy {
         const order = dtInstance.order();
         if ( order !== [] && order[0] !== undefined) {
           const atributo = Number(order[0][0]);
-          //console.log('entro ordenar');
-          //console.log(atributo);
           let len: number = that.columnas.length + 1;
           if (that.habilitarCheckBox) {
             len += 1;
@@ -169,8 +167,6 @@ export class DataTableComponent<T> implements OnInit, AfterViewInit, OnDestroy {
               that.paginacion.orden.next(that.columnas[(atributo - 1)].atributo + ',' + order[0][1]);
             }
           }
-          // console.log('---------odenar');
-          // console.log(that.paginacion.orden.value);
           that.cargarData();
         }
       } );
@@ -315,8 +311,6 @@ export class DataTableComponent<T> implements OnInit, AfterViewInit, OnDestroy {
       // );
       this.itemsSeleccionados.push(...this.dataTemporal.value);
     }
-    console.log('ine -------');
-    console.log(this.itemsSeleccionados);
   }
 
   eliminarDataTemporalEnItemSeleccionados() {
@@ -538,8 +532,6 @@ export class DataTableComponent<T> implements OnInit, AfterViewInit, OnDestroy {
   }
 
   insertarData(data: T[]) {
-    //console.log('DATA DATATABLE');
-    //console.log(data);
     if (!this.usaServicio) {
       this.dataTableServicio.setData(data);
       this.cargarDataLocal();

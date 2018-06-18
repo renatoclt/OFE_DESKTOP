@@ -15,7 +15,6 @@ export class ComprobantePersonaService {
 
     public registrarPersona(entidad : persona) {
         var entidadJson = JSON.stringify(entidad);
-        console.log(entidadJson);
         this._httpClient.post(this.urlPersonaRegistro, entidad).subscribe(
             res => {
                 console.log(res);

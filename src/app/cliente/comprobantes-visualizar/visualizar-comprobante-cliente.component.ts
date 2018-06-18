@@ -60,7 +60,6 @@ export class VisualizarComprobanteClienteComponent implements OnInit {
     this.archivoServicio.retornarArchivoRetencionPercepcionbase(this.idComprobante)
       .subscribe(
         data => {
-          console.log(data);
           if (data) {
             const winparams = 'dependent = yes, locationbar = no, menubar = yes, resizable, screenX = 50,' +
               ' screenY = 50, width = 800, height = 800';
@@ -68,10 +67,8 @@ export class VisualizarComprobanteClienteComponent implements OnInit {
             const printWindow = window.open('', 'PDF', winparams);
             printWindow.document.write(htmlPop);
           }
-          // console.log(this.data);
         }
       );
-    console.log(this.data);
   }
 
   showSwal() {
@@ -145,16 +142,11 @@ export class VisualizarComprobanteClienteComponent implements OnInit {
     this.archivoServicio.base.subscribe(
       (data) => {
         that.pdfSrc.next(data);
-        console.log('PDF');
-        console.log(this.pdfSrc.value);
       }
     );
   }
 
   guardarArchivo(archivo: TipoArchivo) {
-    console.log('DESCARGA DE ARCHIVOS TIPOS');
-    console.log( archivo.idArchivo);
-    console.log(this.idComprobante);
     this.archivoServicio.descargararchivotipo(this.idComprobante, archivo.idArchivo);
   }
   public regresar() {

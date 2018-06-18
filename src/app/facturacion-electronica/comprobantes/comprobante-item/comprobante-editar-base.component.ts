@@ -23,25 +23,18 @@ export class ComprobanteEditarBaseComponent implements OnInit {
         private _tipos: TiposService,
         private Refresh: RefreshService
     ) {
-        console.log('BASE ACCESO');
         this.producto = new DetalleEbiz();
         const sub = this._route
         .params
         .subscribe(params => {
             this.idPosicion = +params['id'] ;
-            
-            console.log(this.idPosicion);
         });
-        console.log(this.idPosicion);
         this.producto = this._persistenciaService.getItemProducto( this.idPosicion );
-        console.log('PRODUCTO A EDITAR');
-        console.log(this.producto);
         // falta validación if producto no existe, no deberia haber ese problema,
         // si se redirecciona aqui es porque el producto sera editado y existe
         this.redireccionar();
     }
     ngOnInit() {
-        console.log( 'ON INIT' );
     }
     public redireccionar() {
         switch ( this.producto.tipoProducto ) {
