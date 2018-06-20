@@ -66,7 +66,6 @@ export class ComprobanteEmitirComponent implements OnInit {
     })
     .subscribe(
       (data) => {
-        console.log(data);
         this.comprobante = JSON.parse(data);
       },
       error => {
@@ -79,7 +78,6 @@ export class ComprobanteEmitirComponent implements OnInit {
       (params: Params) => {
         this.idComprobante = params['id'];
         this.obtenerArchivoParaMostrar(params['id']);
-        console.log(this.idComprobante);
       }
     );
   }
@@ -87,7 +85,6 @@ export class ComprobanteEmitirComponent implements OnInit {
     this.archivoServicio.retornarArchivoRetencionPercepcionbase(this.idComprobante)
       .subscribe(
         data => {
-          console.log(data);
           if (data) {
             const winparams = 'dependent = yes, locationbar = no, menubar = yes, resizable, screenX = 50,' +
               ' screenY = 50, width = 800, height = 800';
@@ -161,7 +158,6 @@ export class ComprobanteEmitirComponent implements OnInit {
       (data) => {
         that.pdfSrc.next(data);
         that.getDocumento();
-        console.log(this.pdfSrc.value);
       }
     );
   }

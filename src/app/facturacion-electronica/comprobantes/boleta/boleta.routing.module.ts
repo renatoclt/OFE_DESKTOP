@@ -93,7 +93,8 @@ const routes: Routes = [
         component: ComprobanteVistaPreviaComponent,
         data: {
           tipoDocumento: '03',
-          titulo: 'Boleta'
+          titulo: 'Boleta',
+          mostrarCombo: false
         }
       },
 

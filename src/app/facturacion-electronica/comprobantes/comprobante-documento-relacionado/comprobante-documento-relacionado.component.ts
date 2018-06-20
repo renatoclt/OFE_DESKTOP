@@ -221,7 +221,6 @@ export class ComprobanteDocumentoRelacionadoComponent implements OnInit, AfterVi
     }
     public cargarItemDocumentoRelacionado() {
         this.itemsDocumentoRelacionado = this._persistencia.getDocumentosReferencia();
-        console.log(this.itemsDocumentoRelacionado);
         this.flagItems = true;
         if ( this.itemsDocumentoRelacionado.length > 0 ) {
             this.tablaDocumentoRelacionado.insertarData( this.itemsDocumentoRelacionado );
@@ -338,8 +337,6 @@ export class ComprobanteDocumentoRelacionadoComponent implements OnInit, AfterVi
         let itemSeleccionado: DocumentoReferencia = new DocumentoReferencia();
         itemSeleccionado = evento[1];
         this.itemEditarDocumentoReferencia = itemSeleccionado;
-        console.log('ITEM DOCUMENTO REFERENCIA');
-        console.log(itemSeleccionado);
         switch ( accion ) {
             case TipoAccion.EDITAR:
                 this.editarItem();
@@ -378,8 +375,6 @@ export class ComprobanteDocumentoRelacionadoComponent implements OnInit, AfterVi
                     'El item se ingreso correctamente.',
                     'success'
                 );
-            }   else {
-                console.log('Cancelado');
             }
         }
         );
@@ -399,16 +394,11 @@ export class ComprobanteDocumentoRelacionadoComponent implements OnInit, AfterVi
         if ( this.documentoRelacionadoFormGroup.controls['txtImporteAUsar'].valid ) {
             importeAUsar = Number (this.documentoRelacionadoFormGroup.controls['txtImporteAUsar'].value);
             importeTotal = Number (this.documentoRelacionadoFormGroup.controls['txtImporteTotal'].value);
-            console.log( importeAUsar + ' <= ' + importeTotal );
             if ( importeAUsar <= importeTotal && importeAUsar !== 0) {
-                console.log( 'TRUE' );
                 this.flagComprobante = true;
             } else {
                 this.flagComprobante = false;
             }
-            console.log( this.flagComprobante );
-            console.log( !this.documentoRelacionadoFormGroup.valid );
-            console.log( this.flagComprobante && (!this.documentoRelacionadoFormGroup.valid) );
         } else {
             this.flagComprobante = false;
         }

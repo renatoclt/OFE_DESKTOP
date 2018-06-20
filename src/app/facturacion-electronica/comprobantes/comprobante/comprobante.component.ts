@@ -18,11 +18,9 @@ export class ComprobanteComponent {
             private _router: Router,
             private _rutas: RutasService ) {
         this.cargarDataPrueba();
-        // console.log( this.productitoMuestraEditar );
     }
 
     public verProductos() {
-        console.log( 'PRODUCTOS' );
     }
     public cargarDataPrueba() {
         this.productitoMuestraEditar = new Producto();

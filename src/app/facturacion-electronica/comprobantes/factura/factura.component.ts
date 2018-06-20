@@ -141,8 +141,6 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   ngOnInit() {
     this.initFormGroup();
-    console.log('this.Refresh.CargarPersistencia - ONINIT');
-    console.log(this.Refresh.CargarPersistencia);
     if (!this.Refresh.CargarPersistencia) {
         this._persistenciaService.removePersistenciaSimple('documentosReferencia');
         this._persistenciaService.removePersistenciaSimple('checkFacturaAnticipo');
@@ -973,7 +971,7 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
         ),
         'txtRazonSocial': new FormControl('', [
           Validators.required,
-          Validators.pattern('[A-Za-z0-9áéíóúÁÉÍÓÚ/%\\s-.;]+'),
+          Validators.pattern('[A-Za-z0-9áéíóúÁÉÍÓÚ/%\\s-.;,]+'),
           Validators.maxLength(100),
           Validators.minLength(1)
         ]
@@ -1166,9 +1164,9 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
   public probarBotonVistaPrevia() {
-    console.log(this.facturaFormGroup.controls);
-    console.log('!( ' + this.flagVistaPrevia + ' && ' + this.facturaFormGroup.valid + ' )');
-    console.log(!(this.flagVistaPrevia && this.facturaFormGroup.valid));
+    // console.log(this.facturaFormGroup.controls);
+    // console.log('!( ' + this.flagVistaPrevia + ' && ' + this.facturaFormGroup.valid + ' )');
+    // console.log(!(this.flagVistaPrevia && this.facturaFormGroup.valid));
   }
   /**
    * Metodo que realiza la busqueda para autocompletar
@@ -1204,7 +1202,9 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
             }
           );
         }
-        } else if( !this.facturaFormGroup.controls['txtcorreo'].enabled && this.facturaFormGroup.controls['txtRazonSocial'].value.toString().length < 1){
+        } else 
+        // if( !this.facturaFormGroup.controls['txtcorreo'].enabled && this.facturaFormGroup.controls['txtRazonSocial'].value.toString().length < 1)
+        {
           this.facturaFormGroup.controls['txtRazonSocial'].reset();
           this.facturaFormGroup.controls['txtCorreo'].reset();
           this.facturaFormGroup.controls['txtDireccionFiscal'].reset();
@@ -1323,9 +1323,6 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
     organizacion.ruc = this.facturaFormGroup.controls['txtRuc'].value;
     if(organizacion.ruc.toString().length > 10)
       this._conceptoDocumentoService.guardarOrganizacion(organizacion).subscribe(data =>{
-        console.log('**************************************************');
-        console.log(data);
-
       });
   }
 }

@@ -202,7 +202,6 @@ export class ComprobanteVistaPreviaComponent implements OnInit {
                 this._creacionComprobantes.crearFactura(this.comprobante).subscribe(
                     data => {
                         if (data !== null) {
-                            console.log(data);
                             this._persistencia.setPersistenciaSimple<ComprobanteEmitido>( 'comprobanteEmitido', data);
                             this._persistencia.removePersistenciaSimple('factura');
                             this._persistencia.removePersistenciaSimple('listaProductos');
@@ -223,7 +222,6 @@ export class ComprobanteVistaPreviaComponent implements OnInit {
                 this._creacionComprobantes.crearBoleta(this.comprobante).subscribe(
                     data => {
                         if (data !== null) {
-                            console.log(data);
                             this._persistencia.setPersistenciaSimple<ComprobanteEmitido>( 'comprobanteEmitido', data);
                             this._persistencia.removePersistenciaSimple('factura');
                             this._persistencia.removePersistenciaSimple('boleta');
@@ -245,9 +243,6 @@ export class ComprobanteVistaPreviaComponent implements OnInit {
     }
     public setJSONComprobante() {
         //  AQUI CONVERTIR A STRING LOS CAMPOS QUE ESTAN COMO NUMBER
-        console.log('FACTURA');
-        console.log(this.cabeceraDatosFactura);
-        console.log(this.comprobante);
         let jsonFactura: FacturaEbiz = new FacturaEbiz();
         jsonFactura.importeReferencial = this.comprobante.importeReferencial;
         jsonFactura.totalComprobante = this.comprobante.totalComprobante;
